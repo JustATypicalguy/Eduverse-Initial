@@ -88,7 +88,7 @@ export default function Contact() {
                       <Phone className="text-white" size={24} />
                     </div>
                     <h3 className="font-semibold text-gray-800 mb-2">Phone</h3>
-                    <p className="text-nilo-gray">+1 (555) 123-4567</p>
+                    <p className="text-nilo-gray">01000701016</p>
                   </CardContent>
                 </Card>
                 
@@ -108,7 +108,7 @@ export default function Contact() {
                       <MapPin className="text-white" size={24} />
                     </div>
                     <h3 className="font-semibold text-gray-800 mb-2">Location</h3>
-                    <p className="text-nilo-gray">123 Education Ave<br />Global City, GC 12345</p>
+                    <p className="text-nilo-gray">6th of October City<br />Giza, Egypt</p>
                   </CardContent>
                 </Card>
               </div>
