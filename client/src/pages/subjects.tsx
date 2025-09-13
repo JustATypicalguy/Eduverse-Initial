@@ -46,7 +46,7 @@ export default function Subjects() {
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h1 className="text-4xl font-bold text-gray-800 mb-4">Academic Subjects</h1>
-            <p className="text-xl text-nilo-gray max-w-3xl mx-auto">
+            <p className="text-xl text-eduverse-gray max-w-3xl mx-auto">
               Comprehensive curriculum covering all essential subjects with innovative teaching 
               methods and real-world applications.
             </p>
@@ -63,7 +63,7 @@ export default function Subjects() {
                 <Card 
                   key={category.id}
                   className={`bg-gradient-to-br ${gradientClasses} hover:shadow-lg transition-shadow cursor-pointer ${
-                    selectedCategory === category.id ? 'ring-2 ring-nilo-blue' : ''
+                    selectedCategory === category.id ? 'ring-2 ring-eduverse-blue' : ''
                   }`}
                   onClick={() => setSelectedCategory(selectedCategory === category.id ? null : category.id)}
                 >
@@ -82,7 +82,7 @@ export default function Subjects() {
           {/* Selected Category Details */}
           {selectedCategory && (
             <div className="mb-12">
-              <div className="bg-nilo-light rounded-2xl p-8">
+              <div className="bg-eduverse-light rounded-2xl p-8">
                 <h3 className="text-3xl font-bold text-gray-800 mb-6">
                   {subjectCategories.find(cat => cat.id === selectedCategory)?.name} Subjects
                 </h3>
@@ -109,7 +109,7 @@ export default function Subjects() {
           )}
           
           {/* Featured Subject Detail */}
-          <div className="bg-nilo-light rounded-2xl p-8 lg:p-12">
+          <div className="bg-eduverse-light rounded-2xl p-8 lg:p-12">
             <div className="grid lg:grid-cols-2 gap-8 items-center">
               <div>
                 <h3 className="text-3xl font-bold text-gray-800 mb-6">Interactive Learning Experience</h3>
@@ -119,25 +119,25 @@ export default function Subjects() {
                 </p>
                 <div className="space-y-4">
                   <div className="flex items-center space-x-3">
-                    <div className="w-6 h-6 bg-nilo-blue rounded-full flex items-center justify-center">
+                    <div className="w-6 h-6 bg-eduverse-blue rounded-full flex items-center justify-center">
                       <Check className="text-white" size={14} />
                     </div>
                     <span className="text-gray-700">Project-based learning approach</span>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <div className="w-6 h-6 bg-nilo-blue rounded-full flex items-center justify-center">
+                    <div className="w-6 h-6 bg-eduverse-blue rounded-full flex items-center justify-center">
                       <Check className="text-white" size={14} />
                     </div>
                     <span className="text-gray-700">Technology-enhanced classrooms</span>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <div className="w-6 h-6 bg-nilo-blue rounded-full flex items-center justify-center">
+                    <div className="w-6 h-6 bg-eduverse-blue rounded-full flex items-center justify-center">
                       <Check className="text-white" size={14} />
                     </div>
                     <span className="text-gray-700">International curriculum standards</span>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <div className="w-6 h-6 bg-nilo-blue rounded-full flex items-center justify-center">
+                    <div className="w-6 h-6 bg-eduverse-blue rounded-full flex items-center justify-center">
                       <Check className="text-white" size={14} />
                     </div>
                     <span className="text-gray-700">Personalized learning paths</span>

@@ -8,8 +8,8 @@ export default function About() {
       <section className="py-20 bg-white">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h1 className="text-4xl font-bold text-gray-800 mb-4">About Nilo</h1>
-            <p className="text-xl text-nilo-gray max-w-3xl mx-auto">
+            <h1 className="text-4xl font-bold text-gray-800 mb-4">About EduVerse</h1>
+            <p className="text-xl text-eduverse-gray max-w-3xl mx-auto">
               A pioneering educational institution dedicated to nurturing young minds and preparing them for a 
               globally connected world through innovative education and cultural diversity.
             </p>
@@ -17,13 +17,13 @@ export default function About() {
           
           <div className="grid lg:grid-cols-3 gap-12 mb-16">
             {/* Mission */}
-            <Card className="text-center bg-nilo-light">
+            <Card className="text-center bg-eduverse-light">
               <CardContent className="p-8">
-                <div className="w-16 h-16 bg-nilo-blue rounded-full flex items-center justify-center mx-auto mb-6">
+                <div className="w-16 h-16 bg-eduverse-blue rounded-full flex items-center justify-center mx-auto mb-6">
                   <Target className="text-white" size={32} />
                 </div>
                 <h3 className="text-2xl font-bold text-gray-800 mb-4">Our Mission</h3>
-                <p className="text-nilo-gray leading-relaxed">
+                <p className="text-eduverse-gray leading-relaxed">
                   To provide exceptional international education that develops critical thinkers, 
                   compassionate leaders, and global citizens ready to make a positive impact on the world.
                 </p>
@@ -31,13 +31,13 @@ export default function About() {
             </Card>
             
             {/* Vision */}
-            <Card className="text-center bg-nilo-light">
+            <Card className="text-center bg-eduverse-light">
               <CardContent className="p-8">
-                <div className="w-16 h-16 bg-nilo-blue rounded-full flex items-center justify-center mx-auto mb-6">
+                <div className="w-16 h-16 bg-eduverse-blue rounded-full flex items-center justify-center mx-auto mb-6">
                   <Eye className="text-white" size={32} />
                 </div>
                 <h3 className="text-2xl font-bold text-gray-800 mb-4">Our Vision</h3>
-                <p className="text-nilo-gray leading-relaxed">
+                <p className="text-eduverse-gray leading-relaxed">
                   To be a leading educational institution that inspires excellence, celebrates diversity, 
                   and creates a collaborative learning environment where every student thrives.
                 </p>
@@ -45,13 +45,13 @@ export default function About() {
             </Card>
             
             {/* Values */}
-            <Card className="text-center bg-nilo-light">
+            <Card className="text-center bg-eduverse-light">
               <CardContent className="p-8">
-                <div className="w-16 h-16 bg-nilo-blue rounded-full flex items-center justify-center mx-auto mb-6">
+                <div className="w-16 h-16 bg-eduverse-blue rounded-full flex items-center justify-center mx-auto mb-6">
                   <Heart className="text-white" size={32} />
                 </div>
                 <h3 className="text-2xl font-bold text-gray-800 mb-4">Our Values</h3>
-                <p className="text-nilo-gray leading-relaxed">
+                <p className="text-eduverse-gray leading-relaxed">
                   Excellence, Integrity, Respect, Innovation, and Global Citizenship guide everything we do, 
                   fostering an inclusive community of lifelong learners.
                 </p>
@@ -70,7 +70,7 @@ export default function About() {
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-800">International Baccalaureate (IB)</h4>
-                    <p className="text-nilo-gray">World School authorization for PYP, MYP, and DP</p>
+                    <p className="text-eduverse-gray">World School authorization for PYP, MYP, and DP</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-4">
@@ -79,7 +79,7 @@ export default function About() {
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-800">Cambridge International</h4>
-                    <p className="text-nilo-gray">IGCSE and A-Level program accreditation</p>
+                    <p className="text-eduverse-gray">IGCSE and A-Level program accreditation</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-4">
@@ -88,7 +88,7 @@ export default function About() {
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-800">WASC Accredited</h4>
-                    <p className="text-nilo-gray">Western Association of Schools and Colleges</p>
+                    <p className="text-eduverse-gray">Western Association of Schools and Colleges</p>
                   </div>
                 </div>
               </div>
@@ -106,11 +106,11 @@ export default function About() {
       </section>
 
       {/* Educational Philosophy */}
-      <section className="py-20 bg-nilo-light">
+      <section className="py-20 bg-eduverse-light">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-800 mb-4">Our Educational Philosophy</h2>
-            <p className="text-xl text-nilo-gray max-w-3xl mx-auto">
+            <p className="text-xl text-eduverse-gray max-w-3xl mx-auto">
               We believe in developing the whole child through inquiry-based learning, 
               international-mindedness, and personal growth.
             </p>
@@ -121,7 +121,7 @@ export default function About() {
               <CardContent className="p-6">
                 <div className="text-4xl mb-4">🌍</div>
                 <h3 className="font-semibold text-gray-800 mb-2">Global Citizenship</h3>
-                <p className="text-sm text-nilo-gray">
+                <p className="text-sm text-eduverse-gray">
                   Developing awareness and understanding of global issues and interconnectedness.
                 </p>
               </CardContent>
@@ -131,7 +131,7 @@ export default function About() {
               <CardContent className="p-6">
                 <div className="text-4xl mb-4">🔍</div>
                 <h3 className="font-semibold text-gray-800 mb-2">Inquiry-Based Learning</h3>
-                <p className="text-sm text-nilo-gray">
+                <p className="text-sm text-eduverse-gray">
                   Encouraging curiosity and critical thinking through student-led investigations.
                 </p>
               </CardContent>
@@ -141,7 +141,7 @@ export default function About() {
               <CardContent className="p-6">
                 <div className="text-4xl mb-4">🤝</div>
                 <h3 className="font-semibold text-gray-800 mb-2">Collaboration</h3>
-                <p className="text-sm text-nilo-gray">
+                <p className="text-sm text-eduverse-gray">
                   Building teamwork and communication skills through collaborative projects.
                 </p>
               </CardContent>
@@ -151,7 +151,7 @@ export default function About() {
               <CardContent className="p-6">
                 <div className="text-4xl mb-4">💡</div>
                 <h3 className="font-semibold text-gray-800 mb-2">Innovation</h3>
-                <p className="text-sm text-nilo-gray">
+                <p className="text-sm text-eduverse-gray">
                   Embracing creativity and new technologies to enhance learning experiences.
                 </p>
               </CardContent>

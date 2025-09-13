@@ -1,4 +1,4 @@
-import niloLogoPath from "@assets/Nailo_1753652288928.jpg";
+import eduverseLogoPath from "@assets/WhatsApp Image 2025-09-13 at 19.43.50_7a419c45_1757781891961.jpg";
 
 interface LogoProps {
   className?: string;
@@ -21,16 +21,18 @@ export function Logo({ className = "", size = "md", showText = true }: LogoProps
 
   return (
     <div className={`flex items-center space-x-3 ${className}`}>
-      <div className={`${sizeClasses[size]} bg-eduverse-blue rounded-lg flex items-center justify-center overflow-hidden`}>
+      <div className={`${sizeClasses[size]} rounded-lg flex items-center justify-center overflow-hidden`}>
         <img 
-          src={niloLogoPath} 
+          src={eduverseLogoPath} 
           alt="EduVerse Logo" 
-          className="w-full h-full object-cover"
+          className="w-full h-full object-contain"
         />
       </div>
       {showText && (
         <div>
-          <span className={`${textSizeClasses[size]} font-bold text-eduverse-blue`}>EDUVERSE</span>
+          <span className={`${textSizeClasses[size]} font-bold`}>
+            <span className="text-eduverse-blue">EDU</span><span className="text-eduverse-gold">VERSE</span>
+          </span>
           {size !== "sm" && (
             <p className="text-sm text-eduverse-gray">Education Excellence</p>
           )}

@@ -74,11 +74,11 @@ export default function Admissions() {
   return (
     <div className="pt-24">
       {/* Admissions Header */}
-      <section className="py-20 bg-nilo-light">
+      <section className="py-20 bg-eduverse-light">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h1 className="text-4xl font-bold text-gray-800 mb-4">Admissions</h1>
-            <p className="text-xl text-nilo-gray max-w-3xl mx-auto">
+            <p className="text-xl text-eduverse-gray max-w-3xl mx-auto">
               Join our diverse international community. We welcome students from all backgrounds 
               who are ready to embrace global learning.
             </p>
@@ -91,7 +91,7 @@ export default function Admissions() {
                 <h3 className="text-2xl font-bold text-gray-800 mb-6">Application Process</h3>
                 <div className="space-y-6">
                   <div className="flex items-start space-x-4">
-                    <div className="w-8 h-8 bg-nilo-blue rounded-full flex items-center justify-center text-white font-bold text-sm mt-1">
+                    <div className="w-8 h-8 bg-eduverse-blue rounded-full flex items-center justify-center text-white font-bold text-sm mt-1">
                       1
                     </div>
                     <div>
@@ -102,7 +102,7 @@ export default function Admissions() {
                     </div>
                   </div>
                   <div className="flex items-start space-x-4">
-                    <div className="w-8 h-8 bg-nilo-blue rounded-full flex items-center justify-center text-white font-bold text-sm mt-1">
+                    <div className="w-8 h-8 bg-eduverse-blue rounded-full flex items-center justify-center text-white font-bold text-sm mt-1">
                       2
                     </div>
                     <div>
@@ -113,7 +113,7 @@ export default function Admissions() {
                     </div>
                   </div>
                   <div className="flex items-start space-x-4">
-                    <div className="w-8 h-8 bg-nilo-blue rounded-full flex items-center justify-center text-white font-bold text-sm mt-1">
+                    <div className="w-8 h-8 bg-eduverse-blue rounded-full flex items-center justify-center text-white font-bold text-sm mt-1">
                       3
                     </div>
                     <div>
@@ -124,7 +124,7 @@ export default function Admissions() {
                     </div>
                   </div>
                   <div className="flex items-start space-x-4">
-                    <div className="w-8 h-8 bg-nilo-blue rounded-full flex items-center justify-center text-white font-bold text-sm mt-1">
+                    <div className="w-8 h-8 bg-eduverse-blue rounded-full flex items-center justify-center text-white font-bold text-sm mt-1">
                       4
                     </div>
                     <div>
@@ -136,7 +136,7 @@ export default function Admissions() {
                   </div>
                 </div>
                 
-                <div className="mt-8 p-6 bg-nilo-light rounded-lg">
+                <div className="mt-8 p-6 bg-eduverse-light rounded-lg">
                   <h4 className="font-semibold text-gray-800 mb-3">Important Dates</h4>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
@@ -267,7 +267,7 @@ export default function Admissions() {
                   
                   <Button 
                     type="submit" 
-                    className="w-full bg-nilo-blue text-white hover:bg-nilo-dark"
+                    className="w-full bg-eduverse-blue text-white hover:bg-eduverse-dark"
                     disabled={applicationMutation.isPending}
                   >
                     {applicationMutation.isPending ? "Submitting..." : "Submit Application"}

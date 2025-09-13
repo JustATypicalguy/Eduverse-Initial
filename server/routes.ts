@@ -71,7 +71,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       let response: string;
       if (!isEducational) {
-        response = "I'm Nilo AI, and I'm designed to help with educational questions only. I can assist you with subjects, curriculum, study tips, learning strategies, and school programs. Please ask me something related to education, and I'll be happy to help!";
+        response = "I'm EduVerse AI, and I'm designed to help with educational questions only. I can assist you with subjects, curriculum, study tips, learning strategies, and school programs. Please ask me something related to education, and I'll be happy to help!";
       } else {
         response = await answerEducationalQuestion(message);
       }

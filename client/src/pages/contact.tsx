@@ -72,7 +72,7 @@ export default function Contact() {
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h1 className="text-4xl font-bold text-gray-800 mb-4">Contact Us</h1>
-            <p className="text-xl text-nilo-gray max-w-3xl mx-auto">
+            <p className="text-xl text-eduverse-gray max-w-3xl mx-auto">
               Ready to join our global learning community? Get in touch with our admissions team for more information.
             </p>
           </div>
@@ -82,33 +82,33 @@ export default function Contact() {
             <div className="lg:col-span-2 space-y-8">
               {/* Contact Cards */}
               <div className="grid md:grid-cols-3 gap-6">
-                <Card className="text-center bg-nilo-light">
+                <Card className="text-center bg-eduverse-light">
                   <CardContent className="p-6">
-                    <div className="w-12 h-12 bg-nilo-blue rounded-full flex items-center justify-center mx-auto mb-4">
+                    <div className="w-12 h-12 bg-eduverse-blue rounded-full flex items-center justify-center mx-auto mb-4">
                       <Phone className="text-white" size={24} />
                     </div>
                     <h3 className="font-semibold text-gray-800 mb-2">Phone</h3>
-                    <p className="text-nilo-gray">01000701016</p>
+                    <p className="text-eduverse-gray">01000701016</p>
                   </CardContent>
                 </Card>
                 
-                <Card className="text-center bg-nilo-light">
+                <Card className="text-center bg-eduverse-light">
                   <CardContent className="p-6">
-                    <div className="w-12 h-12 bg-nilo-blue rounded-full flex items-center justify-center mx-auto mb-4">
+                    <div className="w-12 h-12 bg-eduverse-blue rounded-full flex items-center justify-center mx-auto mb-4">
                       <Mail className="text-white" size={24} />
                     </div>
                     <h3 className="font-semibold text-gray-800 mb-2">Email</h3>
-                    <p className="text-nilo-gray">admissions@nilo.edu</p>
+                    <p className="text-eduverse-gray">admissions@eduverse.edu</p>
                   </CardContent>
                 </Card>
                 
-                <Card className="text-center bg-nilo-light">
+                <Card className="text-center bg-eduverse-light">
                   <CardContent className="p-6">
-                    <div className="w-12 h-12 bg-nilo-blue rounded-full flex items-center justify-center mx-auto mb-4">
+                    <div className="w-12 h-12 bg-eduverse-blue rounded-full flex items-center justify-center mx-auto mb-4">
                       <MapPin className="text-white" size={24} />
                     </div>
                     <h3 className="font-semibold text-gray-800 mb-2">Location</h3>
-                    <p className="text-nilo-gray">6th of October City<br />Giza, Egypt</p>
+                    <p className="text-eduverse-gray">6th of October City<br />Giza, Egypt</p>
                   </CardContent>
                 </Card>
               </div>
@@ -124,7 +124,7 @@ export default function Contact() {
             </div>
             
             {/* Contact Form */}
-            <Card className="bg-nilo-light">
+            <Card className="bg-eduverse-light">
               <CardContent className="p-8">
                 <h3 className="text-2xl font-bold text-gray-800 mb-6">Send us a Message</h3>
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -184,7 +184,7 @@ export default function Contact() {
                   
                   <Button 
                     type="submit" 
-                    className="w-full bg-nilo-blue text-white hover:bg-nilo-dark"
+                    className="w-full bg-eduverse-blue text-white hover:bg-eduverse-dark"
                     disabled={contactMutation.isPending}
                   >
                     {contactMutation.isPending ? "Sending..." : "Send Message"}

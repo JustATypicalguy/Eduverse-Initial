@@ -34,7 +34,7 @@ export default function AiChat() {
     const welcomeMessage: ChatMessage = {
       id: "welcome",
       message: "",
-      response: "Hello! I'm Nilo AI, your educational assistant. I can help you with questions about academic subjects, curriculum, study tips, learning strategies, and school programs. What would you like to know?",
+      response: "Hello! I'm EduVerse AI, your educational assistant. I can help you with questions about academic subjects, curriculum, study tips, learning strategies, and school programs. What would you like to know?",
       isUser: false,
       timestamp: new Date(),
     };
@@ -99,13 +99,13 @@ export default function AiChat() {
   return (
     <div className="pt-24">
       {/* AI Chat Header */}
-      <section className="py-20 bg-gradient-to-br from-nilo-blue to-nilo-dark text-white">
+      <section className="py-20 bg-gradient-to-br from-eduverse-blue to-eduverse-dark text-white">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <div className="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-6">
               <Bot className="text-white" size={48} />
             </div>
-            <h1 className="text-4xl font-bold mb-4">Ask Nilo AI</h1>
+            <h1 className="text-4xl font-bold mb-4">Ask EduVerse AI</h1>
             <p className="text-xl text-blue-100 max-w-3xl mx-auto">
               Your intelligent educational assistant. Ask questions about our subjects, programs, 
               curriculum, or any educational topic.
@@ -116,14 +116,14 @@ export default function AiChat() {
             {/* Chat Interface */}
             <Card className="overflow-hidden shadow-2xl">
               {/* Chat Header */}
-              <div className="bg-nilo-light p-6 border-b">
+              <div className="bg-eduverse-light p-6 border-b">
                 <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-nilo-blue rounded-full flex items-center justify-center">
+                  <div className="w-12 h-12 bg-eduverse-blue rounded-full flex items-center justify-center">
                     <Bot className="text-white" size={24} />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-gray-800">Nilo AI Assistant</h3>
-                    <p className="text-nilo-gray">Specialized in educational topics and school information</p>
+                    <h3 className="text-xl font-bold text-gray-800">EduVerse AI Assistant</h3>
+                    <p className="text-eduverse-gray">Specialized in educational topics and school information</p>
                   </div>
                   <div className="ml-auto">
                     <div className="flex items-center space-x-2 text-sm text-green-600">
@@ -140,7 +140,7 @@ export default function AiChat() {
                   <div key={msg.id}>
                     {msg.isUser ? (
                       <div className="flex items-start space-x-3 justify-end">
-                        <div className="bg-nilo-blue rounded-lg p-4 max-w-md text-white">
+                        <div className="bg-eduverse-blue rounded-lg p-4 max-w-md text-white">
                           <p>{msg.message}</p>
                         </div>
                         <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center flex-shrink-0">
@@ -149,10 +149,10 @@ export default function AiChat() {
                       </div>
                     ) : (
                       <div className="flex items-start space-x-3">
-                        <div className="w-8 h-8 bg-nilo-blue rounded-full flex items-center justify-center flex-shrink-0">
+                        <div className="w-8 h-8 bg-eduverse-blue rounded-full flex items-center justify-center flex-shrink-0">
                           <Bot className="text-white" size={16} />
                         </div>
-                        <div className="bg-nilo-light rounded-lg p-4 max-w-md">
+                        <div className="bg-eduverse-light rounded-lg p-4 max-w-md">
                           <p className="text-gray-800 whitespace-pre-wrap">{msg.response}</p>
                         </div>
                       </div>
@@ -162,10 +162,10 @@ export default function AiChat() {
                 
                 {chatMutation.isPending && (
                   <div className="flex items-start space-x-3">
-                    <div className="w-8 h-8 bg-nilo-blue rounded-full flex items-center justify-center flex-shrink-0">
+                    <div className="w-8 h-8 bg-eduverse-blue rounded-full flex items-center justify-center flex-shrink-0">
                       <Bot className="text-white" size={16} />
                     </div>
-                    <div className="bg-nilo-light rounded-lg p-4 max-w-md">
+                    <div className="bg-eduverse-light rounded-lg p-4 max-w-md">
                       <p className="text-gray-800">Thinking...</p>
                     </div>
                   </div>
@@ -184,12 +184,12 @@ export default function AiChat() {
                       value={inputMessage}
                       onChange={(e) => setInputMessage(e.target.value)}
                       disabled={chatMutation.isPending}
-                      className="focus:ring-2 focus:ring-nilo-blue focus:border-transparent"
+                      className="focus:ring-2 focus:ring-eduverse-blue focus:border-transparent"
                     />
                   </div>
                   <Button 
                     type="submit" 
-                    className="bg-nilo-blue text-white hover:bg-nilo-dark flex items-center space-x-2"
+                    className="bg-eduverse-blue text-white hover:bg-eduverse-dark flex items-center space-x-2"
                     disabled={chatMutation.isPending || !inputMessage.trim()}
                   >
                     <Send size={16} />
@@ -207,7 +207,7 @@ export default function AiChat() {
                         variant="outline"
                         size="sm"
                         onClick={() => handleSuggestedQuestion(question)}
-                        className="text-xs hover:bg-nilo-blue hover:text-white transition-colors"
+                        className="text-xs hover:bg-eduverse-blue hover:text-white transition-colors"
                       >
                         {question}
                       </Button>
@@ -221,7 +221,7 @@ export default function AiChat() {
             <div className="mt-8 text-center">
               <p className="text-blue-100 text-sm flex items-center justify-center">
                 <Info className="mr-2" size={16} />
-                Nilo AI is designed to answer educational questions only. For admissions and administrative inquiries, please use our contact form.
+                EduVerse AI is designed to answer educational questions only. For admissions and administrative inquiries, please use our contact form.
               </p>
             </div>
           </div>

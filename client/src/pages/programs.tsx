@@ -7,11 +7,11 @@ export default function Programs() {
   return (
     <div className="pt-24">
       {/* Programs Header */}
-      <section className="py-20 bg-nilo-light">
+      <section className="py-20 bg-eduverse-light">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h1 className="text-4xl font-bold text-gray-800 mb-4">Academic Programs</h1>
-            <p className="text-xl text-nilo-gray max-w-3xl mx-auto">
+            <p className="text-xl text-eduverse-gray max-w-3xl mx-auto">
               Comprehensive educational pathways designed to challenge, inspire, and prepare 
               students for university and beyond.
             </p>
@@ -32,7 +32,7 @@ export default function Programs() {
                   </div>
                   <h3 className="text-2xl font-bold text-gray-800">Elementary School</h3>
                 </div>
-                <p className="text-nilo-gray mb-6">Ages 5-10 | Primary Years Programme (PYP)</p>
+                <p className="text-eduverse-gray mb-6">Ages 5-10 | Primary Years Programme (PYP)</p>
                 <p className="text-gray-600 mb-6">
                   Foundation years focusing on inquiry-based learning, creativity, and building 
                   essential skills through play and exploration.
@@ -51,7 +51,7 @@ export default function Programs() {
                     Creative arts integration
                   </li>
                 </ul>
-                <Button className="w-full bg-nilo-blue text-white hover:bg-nilo-dark">
+                <Button className="w-full bg-eduverse-blue text-white hover:bg-eduverse-dark">
                   Learn More
                 </Button>
               </CardContent>
@@ -71,7 +71,7 @@ export default function Programs() {
                   </div>
                   <h3 className="text-2xl font-bold text-gray-800">Middle School</h3>
                 </div>
-                <p className="text-nilo-gray mb-6">Ages 11-14 | Middle Years Programme (MYP)</p>
+                <p className="text-eduverse-gray mb-6">Ages 11-14 | Middle Years Programme (MYP)</p>
                 <p className="text-gray-600 mb-6">
                   Challenging academic curriculum that encourages students to make connections 
                   between subjects and real-world applications.
@@ -90,7 +90,7 @@ export default function Programs() {
                     Leadership opportunities
                   </li>
                 </ul>
-                <Button className="w-full bg-nilo-blue text-white hover:bg-nilo-dark">
+                <Button className="w-full bg-eduverse-blue text-white hover:bg-eduverse-dark">
                   Learn More
                 </Button>
               </CardContent>
@@ -110,7 +110,7 @@ export default function Programs() {
                   </div>
                   <h3 className="text-2xl font-bold text-gray-800">High School</h3>
                 </div>
-                <p className="text-nilo-gray mb-6">Ages 15-18 | Diploma Programme (DP)</p>
+                <p className="text-eduverse-gray mb-6">Ages 15-18 | Diploma Programme (DP)</p>
                 <p className="text-gray-600 mb-6">
                   Rigorous pre-university curriculum that develops intellectual, personal, 
                   emotional and social skills needed for university success.
@@ -129,7 +129,7 @@ export default function Programs() {
                     Extended essay project
                   </li>
                 </ul>
-                <Button className="w-full bg-nilo-blue text-white hover:bg-nilo-dark">
+                <Button className="w-full bg-eduverse-blue text-white hover:bg-eduverse-dark">
                   Learn More
                 </Button>
               </CardContent>
@@ -143,7 +143,7 @@ export default function Programs() {
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-800 mb-4">Curriculum Framework</h2>
-            <p className="text-xl text-nilo-gray max-w-3xl mx-auto">
+            <p className="text-xl text-eduverse-gray max-w-3xl mx-auto">
               Our international curriculum is designed to develop well-rounded, globally-minded students.
             </p>
           </div>
@@ -153,7 +153,7 @@ export default function Programs() {
               <CardContent className="p-6">
                 <div className="text-4xl mb-4">📚</div>
                 <h3 className="font-semibold text-gray-800 mb-2">Academic Excellence</h3>
-                <p className="text-sm text-nilo-gray">
+                <p className="text-sm text-eduverse-gray">
                   Rigorous academics that challenge students to reach their full potential across all subject areas.
                 </p>
               </CardContent>
@@ -163,7 +163,7 @@ export default function Programs() {
               <CardContent className="p-6">
                 <div className="text-4xl mb-4">🌐</div>
                 <h3 className="font-semibold text-gray-800 mb-2">International Mindedness</h3>
-                <p className="text-sm text-nilo-gray">
+                <p className="text-sm text-eduverse-gray">
                   Developing global perspectives and cultural understanding through diverse experiences.
                 </p>
               </CardContent>
@@ -173,7 +173,7 @@ export default function Programs() {
               <CardContent className="p-6">
                 <div className="text-4xl mb-4">🎨</div>
                 <h3 className="font-semibold text-gray-800 mb-2">Creative Expression</h3>
-                <p className="text-sm text-nilo-gray">
+                <p className="text-sm text-eduverse-gray">
                   Encouraging creativity through arts, music, drama, and innovative project-based learning.
                 </p>
               </CardContent>
@@ -183,7 +183,7 @@ export default function Programs() {
               <CardContent className="p-6">
                 <div className="text-4xl mb-4">⚽</div>
                 <h3 className="font-semibold text-gray-800 mb-2">Physical Development</h3>
-                <p className="text-sm text-nilo-gray">
+                <p className="text-sm text-eduverse-gray">
                   Promoting healthy lifestyles through sports, fitness, and wellness programs.
                 </p>
               </CardContent>
@@ -193,7 +193,7 @@ export default function Programs() {
               <CardContent className="p-6">
                 <div className="text-4xl mb-4">🤝</div>
                 <h3 className="font-semibold text-gray-800 mb-2">Service Learning</h3>
-                <p className="text-sm text-nilo-gray">
+                <p className="text-sm text-eduverse-gray">
                   Building character through community service and social responsibility initiatives.
                 </p>
               </CardContent>
@@ -203,7 +203,7 @@ export default function Programs() {
               <CardContent className="p-6">
                 <div className="text-4xl mb-4">💭</div>
                 <h3 className="font-semibold text-gray-800 mb-2">Critical Thinking</h3>
-                <p className="text-sm text-nilo-gray">
+                <p className="text-sm text-eduverse-gray">
                   Developing analytical and problem-solving skills for lifelong learning success.
                 </p>
               </CardContent>
@@ -212,7 +212,7 @@ export default function Programs() {
           
           <div className="text-center mt-12">
             <Link href="/subjects">
-              <Button className="bg-nilo-blue text-white hover:bg-nilo-dark px-8 py-3">
+              <Button className="bg-eduverse-blue text-white hover:bg-eduverse-dark px-8 py-3">
                 Explore Our Subjects
               </Button>
             </Link>
