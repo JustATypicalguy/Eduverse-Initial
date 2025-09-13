@@ -1,14 +1,14 @@
-# Replit.md - Nilo Education Website
+# Replit.md - EduVerse Education Website
 
 ## Overview
 
-This is a full-stack web application for Nilo, built with a modern React frontend and Express.js backend. The application serves as a creative educational platform featuring information about programs, comprehensive subjects, admissions, and an AI-powered educational chat assistant. The website has been redesigned with a modern, creative approach featuring animations, gradients, and emojis for a more engaging user experience.
+This is a full-stack web application for EduVerse, built with a modern React frontend and Express.js backend. The application serves as a creative educational platform featuring information about programs, comprehensive subjects, admissions, and an AI-powered educational chat assistant. The website has been redesigned with a modern, creative approach featuring animations, gradients, and emojis for a more engaging user experience.
 
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
-Website style: Creative and modern design with animations, no "International School" references, just "Nilo"
-Brand identity: Uses the uploaded Nilo logo, emphasizes education excellence and creativity
+Website style: Creative and modern design with animations, no "International School" references, just "EduVerse"
+Brand identity: Uses the uploaded EduVerse logo, emphasizes education excellence and creativity
 
 ## System Architecture
 
@@ -47,7 +47,7 @@ Brand identity: Uses the uploaded Nilo logo, emphasizes education excellence and
 - **Subjects**: Comprehensive curriculum breakdown by subject categories with interactive features
 - **Admissions**: Application form for prospective students
 - **Contact**: Contact form and institutional information
-- **AI Chat**: Educational assistant powered by OpenAI GPT-4o (branded as "Nilo AI")
+- **AI Chat**: Educational assistant powered by OpenAI GPT-4o (branded as "EduVerse AI")
 
 ### AI Integration
 - **Educational Content Filter**: Determines if questions are education-related

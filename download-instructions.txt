@@ -1,4 +1,4 @@
-NILO WEBSITE - DOWNLOAD INSTRUCTIONS
+EDUVERSE WEBSITE - DOWNLOAD INSTRUCTIONS
 ===================================
 
 ESSENTIAL FILES TO DOWNLOAD:
@@ -18,7 +18,7 @@ HOW TO DOWNLOAD INDIVIDUAL FILES:
 
 SETUP ON YOUR LAPTOP:
 1. Install Node.js from nodejs.org
-2. Create a new folder called 'nilo-website'
+2. Create a new folder called 'eduverse-website'
 3. Put all downloaded files in their correct folders
 4. Open terminal in the project folder
 5. Run: npm install

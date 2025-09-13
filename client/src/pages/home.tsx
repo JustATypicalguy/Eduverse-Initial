@@ -17,12 +17,12 @@ export default function Home() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="text-center lg:text-left animate-fade-in">
               <div className="mb-6">
-                <span className="bg-gradient-to-r from-eduverse-blue to-eduverse-green bg-clip-text text-transparent text-lg font-semibold">
+                <span className="bg-gradient-to-r from-eduverse-gold to-yellow-500 bg-clip-text text-transparent text-lg font-semibold">
                   🌟 Excellence in Education
                 </span>
               </div>
               <h1 className="text-5xl lg:text-7xl font-bold text-gray-800 mb-6">
-                Welcome to <span className="bg-gradient-to-r from-eduverse-blue to-eduverse-green bg-clip-text text-transparent animate-gradient">EduVerse</span>
+                Welcome to <span className="text-eduverse-gold font-extrabold animate-gradient" style={{color: '#D4AF37'}}>EduVerse</span>
               </h1>
               <p className="text-xl text-eduverse-gray mb-8 leading-relaxed">
                 🚀 Empowering global citizens through excellence in education, fostering creativity, 
@@ -30,7 +30,7 @@ export default function Home() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Link href="/programs">
-                  <Button className="bg-gradient-to-r from-eduverse-blue to-eduverse-green text-white px-8 py-4 rounded-xl creative-shadow hover:scale-105 transition-transform">
+                  <Button className="bg-gradient-to-r from-eduverse-blue to-eduverse-gold text-white px-8 py-4 rounded-xl creative-shadow hover:scale-105 transition-transform">
                     ✨ Explore Our Curriculum
                   </Button>
                 </Link>
@@ -104,13 +104,13 @@ export default function Home() {
       {/* Quick Overview Section */}
       <section className="py-20 bg-gradient-to-br from-white via-blue-50 to-purple-50 relative overflow-hidden">
         {/* Background Elements */}
-        <div className="absolute top-10 right-10 w-32 h-32 bg-gradient-to-r from-eduverse-blue to-eduverse-green rounded-full opacity-10 animate-float"></div>
+        <div className="absolute top-10 right-10 w-32 h-32 bg-gradient-to-r from-eduverse-blue to-eduverse-gold rounded-full opacity-10 animate-float"></div>
         <div className="absolute bottom-20 left-20 w-24 h-24 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full opacity-10 animate-pulse-slow"></div>
         
         <div className="container mx-auto px-6 relative">
           <div className="text-center mb-16 animate-fade-in">
             <h2 className="text-5xl font-bold text-gray-800 mb-4">
-              🌟 Why Choose <span className="bg-gradient-to-r from-eduverse-blue to-purple-600 bg-clip-text text-transparent">EduVerse</span>?
+              🌟 Why Choose <span className="bg-gradient-to-r from-eduverse-gold to-yellow-500 bg-clip-text text-transparent font-bold">EduVerse</span>?
             </h2>
             <p className="text-xl text-eduverse-gray max-w-3xl mx-auto">
               Discover what makes our educational community exceptional and transformative.
@@ -177,7 +177,7 @@ export default function Home() {
         <div className="container mx-auto px-6 relative">
           <div className="text-center mb-16 animate-fade-in">
             <h2 className="text-5xl font-bold text-gray-800 mb-4">
-              📚 Explore Our <span className="bg-gradient-to-r from-eduverse-blue to-purple-600 bg-clip-text text-transparent">Subjects</span>
+              📚 Explore Our <span className="bg-gradient-to-r from-eduverse-gold to-yellow-500 bg-clip-text text-transparent font-bold">Subjects</span>
             </h2>
             <p className="text-xl text-eduverse-gray max-w-3xl mx-auto">
               Comprehensive curriculum designed to inspire curiosity and foster academic excellence across all disciplines.

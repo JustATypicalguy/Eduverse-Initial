@@ -12,6 +12,11 @@ import Subjects from "@/pages/subjects";
 import Admissions from "@/pages/admissions";
 import Contact from "@/pages/contact";
 import AiChat from "@/pages/ai-chat";
+import GroupChat from "@/pages/group-chat";
+import ARLearning from "@/pages/ar-learning";
+import EmotionalLearning from "@/pages/emotional-learning";
+import Avatars from "@/pages/avatars";
+import LMSStructure from "@/pages/lms-structure";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -27,6 +32,11 @@ function Router() {
           <Route path="/admissions" component={Admissions} />
           <Route path="/contact" component={Contact} />
           <Route path="/ai-chat" component={AiChat} />
+          <Route path="/group-chat" component={GroupChat} />
+          <Route path="/ar-learning" component={ARLearning} />
+          <Route path="/emotional-learning" component={EmotionalLearning} />
+          <Route path="/avatars" component={Avatars} />
+          <Route path="/lms-structure" component={LMSStructure} />
           <Route component={NotFound} />
         </Switch>
       </main>
