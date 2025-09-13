@@ -66,27 +66,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Message is required and must be a string" });
       }
 
-      // Check if the question is educational
-      const isEducational = await isEducationalQuestion(message);
-      
-      let response: string;
-      if (!isEducational) {
-        response = "I'm EduVerse AI, and I'm designed to help with educational questions only. I can assist you with subjects, curriculum, study tips, learning strategies, and school programs. Please ask me something related to education, and I'll be happy to help!";
-      } else {
-        response = await answerEducationalQuestion(message);
-      }
+      // Answer any question - no educational filtering
+      const response = await answerEducationalQuestion(message);
 
       // Store the chat message
       const chatMessage = await storage.createChatMessage({
         message,
         response,
-        isEducational: isEducational ? 'yes' : 'no'
+        isEducational: 'yes' // Since we answer everything now
       });
 
       res.json({ 
         message: chatMessage.message, 
         response: chatMessage.response,
-        isEducational 
+        isEducational: true 
       });
     } catch (error) {
       console.error("Chat error:", error);
