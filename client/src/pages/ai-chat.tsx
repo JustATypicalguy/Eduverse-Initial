@@ -34,7 +34,7 @@ export default function AiChat() {
     const welcomeMessage: ChatMessage = {
       id: "welcome",
       message: "",
-      response: "Hello! I'm EduVerse AI, your educational assistant. I can help you with questions about academic subjects, curriculum, study tips, learning strategies, and school programs. What would you like to know?",
+      response: "Hello! 👋 I'm EduVerse AI, your comprehensive educational assistant! I'm here to support your learning journey in every way possible.\n\nI can help you with:\n\n📚 **Academic Subjects**: Math, Science, Languages, History, Arts, and more\n🎯 **Study Support**: Learning strategies, exam prep, note-taking techniques\n🎓 **Educational Guidance**: Course selection, university prep, career planning\n💡 **Homework Help**: Concept explanations, problem-solving, research assistance\n🌟 **Personal Growth**: Building confidence, managing study stress, goal setting\n\nWhether you're struggling with a specific topic or looking to excel further, I'm here to make learning engaging and accessible for you. What would you like to explore today?",
       isUser: false,
       timestamp: new Date(),
     };
@@ -90,10 +90,18 @@ export default function AiChat() {
   };
 
   const suggestedQuestions = [
+    "Help me understand quadratic equations",
+    "What are effective study techniques?",
+    "Explain photosynthesis in simple terms",
+    "How do I write a strong essay?",
     "What is the IB curriculum?",
+    "Tips for managing exam stress",
     "How do I prepare for university?",
-    "What languages can I learn?",
+    "Explain the water cycle",
+    "What languages can I learn at EduVerse?",
+    "Help with research methods",
     "Tell me about STEM programs",
+    "How to improve my presentation skills"
   ];
 
   return (
@@ -107,8 +115,9 @@ export default function AiChat() {
             </div>
             <h1 className="text-4xl font-bold mb-4">Ask EduVerse AI</h1>
             <p className="text-xl text-blue-100 max-w-3xl mx-auto">
-              Your intelligent educational assistant. Ask questions about our subjects, programs, 
-              curriculum, or any educational topic.
+              Your comprehensive educational companion! I'm here to help with homework, 
+              explain concepts, provide study strategies, and support your learning journey 
+              across all subjects and academic levels.
             </p>
           </div>
           
@@ -123,7 +132,7 @@ export default function AiChat() {
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-gray-800">EduVerse AI Assistant</h3>
-                    <p className="text-eduverse-gray">Specialized in educational topics and school information</p>
+                    <p className="text-eduverse-gray">Your friendly educational companion - ready to help with any learning challenge!</p>
                   </div>
                   <div className="ml-auto">
                     <div className="flex items-center space-x-2 text-sm text-green-600">
@@ -180,17 +189,19 @@ export default function AiChat() {
                   <div className="flex-1">
                     <Input
                       type="text"
-                      placeholder="Ask me about subjects, curriculum, or any educational topic..."
+                      placeholder="Ask me anything educational - homework help, study tips, concept explanations, and more!"
                       value={inputMessage}
                       onChange={(e) => setInputMessage(e.target.value)}
                       disabled={chatMutation.isPending}
                       className="focus:ring-2 focus:ring-eduverse-blue focus:border-transparent"
+                      data-testid="input-chat-message"
                     />
                   </div>
                   <Button 
                     type="submit" 
                     className="bg-eduverse-blue text-white hover:bg-eduverse-dark flex items-center space-x-2"
                     disabled={chatMutation.isPending || !inputMessage.trim()}
+                    data-testid="button-send-message"
                   >
                     <Send size={16} />
                     <span>Send</span>
@@ -199,8 +210,8 @@ export default function AiChat() {
                 
                 {/* Suggested Questions */}
                 <div className="mt-4">
-                  <p className="text-sm text-gray-500 mb-2">Suggested questions:</p>
-                  <div className="flex flex-wrap gap-2">
+                  <p className="text-sm text-gray-500 mb-2">💡 Try asking me about:</p>
+                  <div className="flex flex-wrap gap-2 max-h-20 overflow-y-auto">
                     {suggestedQuestions.map((question, index) => (
                       <Button
                         key={index}
@@ -208,6 +219,7 @@ export default function AiChat() {
                         size="sm"
                         onClick={() => handleSuggestedQuestion(question)}
                         className="text-xs hover:bg-eduverse-blue hover:text-white transition-colors"
+                        data-testid={`button-suggested-question-${index}`}
                       >
                         {question}
                       </Button>
@@ -221,7 +233,7 @@ export default function AiChat() {
             <div className="mt-8 text-center">
               <p className="text-blue-100 text-sm flex items-center justify-center">
                 <Info className="mr-2" size={16} />
-                EduVerse AI is designed to answer educational questions only. For admissions and administrative inquiries, please use our contact form.
+                EduVerse AI focuses on educational support and learning assistance. For admissions, enrollment, and school administration, please contact our admissions team.
               </p>
             </div>
           </div>
