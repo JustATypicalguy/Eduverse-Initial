@@ -127,6 +127,51 @@
   .bg-eduverse-gold {
     background-color: var(--eduverse-gold);
   }
+  
+  /* Gradient utilities for EduVerse colors */
+  .from-eduverse-light {
+    --tw-gradient-from: var(--eduverse-light);
+    --tw-gradient-to: rgb(255 255 255 / 0);
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+  }
+  
+  .from-eduverse-blue {
+    --tw-gradient-from: var(--eduverse-blue);
+    --tw-gradient-to: rgb(255 255 255 / 0);
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+  }
+  
+  .from-eduverse-gray {
+    --tw-gradient-from: var(--eduverse-gray);
+    --tw-gradient-to: rgb(255 255 255 / 0);
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+  }
+  
+  /* Border utilities for EduVerse colors */
+  .border-eduverse-blue {
+    border-color: var(--eduverse-blue);
+  }
+  
+  .border-eduverse-gold {
+    border-color: var(--eduverse-gold);
+  }
+  
+  .border-eduverse-gray {
+    border-color: var(--eduverse-gray);
+  }
+  
+  /* Hover utilities for EduVerse colors */
+  .hover\:bg-eduverse-blue:hover {
+    background-color: var(--eduverse-blue);
+  }
+  
+  .hover\:bg-eduverse-gold:hover {
+    background-color: var(--eduverse-gold);
+  }
+  
+  .hover\:text-eduverse-blue:hover {
+    color: var(--eduverse-blue);
+  }
 }
 
 @layer utilities {

@@ -30,7 +30,7 @@ export default function Home() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Link href="/programs">
-                  <Button className="bg-gradient-to-r from-eduverse-blue to-eduverse-gold text-white px-8 py-4 rounded-xl creative-shadow hover:scale-105 transition-transform">
+                  <Button className="bg-gradient-to-r from-blue-600 to-yellow-500 text-white px-8 py-4 rounded-xl creative-shadow hover:scale-105 transition-transform" style={{background: 'linear-gradient(to right, #1e40af, #D4AF37)'}}>
                     ✨ Explore Our Curriculum
                   </Button>
                 </Link>
@@ -49,7 +49,7 @@ export default function Home() {
                   alt="Diverse students learning together in modern classroom" 
                   className="rounded-3xl creative-shadow w-full hover:scale-105 transition-transform duration-500" 
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-eduverse-blue/20 to-transparent rounded-3xl"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-blue-600/20 to-transparent rounded-3xl"></div>
               </div>
               <Card className="absolute -bottom-6 -left-6 border-gray-100 glass-effect animate-bounce-in">
                 <CardContent className="p-6">
@@ -104,7 +104,7 @@ export default function Home() {
       {/* Quick Overview Section */}
       <section className="py-20 bg-gradient-to-br from-white via-blue-50 to-purple-50 relative overflow-hidden">
         {/* Background Elements */}
-        <div className="absolute top-10 right-10 w-32 h-32 bg-gradient-to-r from-eduverse-blue to-eduverse-gold rounded-full opacity-10 animate-float"></div>
+        <div className="absolute top-10 right-10 w-32 h-32 bg-gradient-to-r from-blue-600 to-yellow-500 rounded-full opacity-10 animate-float" style={{background: 'linear-gradient(to right, #1e40af, #D4AF37)'}}></div>
         <div className="absolute bottom-20 left-20 w-24 h-24 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full opacity-10 animate-pulse-slow"></div>
         
         <div className="container mx-auto px-6 relative">
@@ -120,7 +120,7 @@ export default function Home() {
           <div className="grid lg:grid-cols-3 gap-8">
             <Card className="text-center creative-shadow hover:scale-105 transition-all duration-300 bg-gradient-to-br from-blue-50 to-blue-100 border-0 animate-slide-up">
               <CardContent className="p-8">
-                <div className="w-20 h-20 bg-gradient-to-r from-eduverse-blue to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 animate-bounce-in">
+                <div className="w-20 h-20 bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center mx-auto mb-6 animate-bounce-in">
                   <Globe className="text-white" size={36} />
                 </div>
                 <h3 className="text-2xl font-bold text-gray-800 mb-4">🌍 Global Perspective</h3>
@@ -160,7 +160,7 @@ export default function Home() {
           
           <div className="text-center mt-12">
             <Link href="/about">
-              <Button className="bg-gradient-to-r from-eduverse-blue to-purple-600 text-white hover:scale-105 transition-transform px-10 py-4 rounded-xl creative-shadow">
+              <Button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:scale-105 transition-transform px-10 py-4 rounded-xl creative-shadow">
                 ✨ Learn More About Us
               </Button>
             </Link>
