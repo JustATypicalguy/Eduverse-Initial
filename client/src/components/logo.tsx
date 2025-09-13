@@ -21,18 +21,18 @@ export function Logo({ className = "", size = "md", showText = true }: LogoProps
 
   return (
     <div className={`flex items-center space-x-3 ${className}`}>
-      <div className={`${sizeClasses[size]} bg-nilo-blue rounded-lg flex items-center justify-center overflow-hidden`}>
+      <div className={`${sizeClasses[size]} bg-eduverse-blue rounded-lg flex items-center justify-center overflow-hidden`}>
         <img 
           src={niloLogoPath} 
-          alt="Nilo Logo" 
+          alt="EduVerse Logo" 
           className="w-full h-full object-cover"
         />
       </div>
       {showText && (
         <div>
-          <span className={`${textSizeClasses[size]} font-bold text-nilo-blue`}>NILO</span>
+          <span className={`${textSizeClasses[size]} font-bold text-eduverse-blue`}>EDUVERSE</span>
           {size !== "sm" && (
-            <p className="text-sm text-nilo-gray">Education Excellence</p>
+            <p className="text-sm text-eduverse-gray">Education Excellence</p>
           )}
         </div>
       )}

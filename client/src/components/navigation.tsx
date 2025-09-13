@@ -38,9 +38,9 @@ export function Navigation() {
               <Link
                 key={item.name}
                 href={item.href}
-                className={`font-medium hover:text-nilo-blue transition-colors ${
+                className={`font-medium hover:text-eduverse-blue transition-colors ${
                   isActive(item.href) 
-                    ? "text-nilo-blue font-medium" 
+                    ? "text-eduverse-blue font-medium" 
                     : "text-gray-600"
                 }`}
               >
@@ -49,15 +49,15 @@ export function Navigation() {
             ))}
             <Link
               href="/ai-chat"
-              className="bg-nilo-blue text-white px-4 py-2 rounded-lg hover:bg-nilo-dark transition-colors"
+              className="bg-eduverse-blue text-white px-4 py-2 rounded-lg hover:bg-eduverse-dark transition-colors"
             >
-              Ask Nilo AI
+              Ask EduVerse AI
             </Link>
           </div>
           
           {/* Mobile Menu Button */}
           <button
-            className="lg:hidden text-nilo-blue"
+            className="lg:hidden text-eduverse-blue"
             onClick={() => setIsOpen(!isOpen)}
           >
             {isOpen ? <X size={24} /> : <Menu size={24} />}
@@ -74,7 +74,7 @@ export function Navigation() {
                   href={item.href}
                   className={`font-medium ${
                     isActive(item.href) 
-                      ? "text-nilo-blue font-medium" 
+                      ? "text-eduverse-blue font-medium" 
                       : "text-gray-600"
                   }`}
                 >
@@ -83,9 +83,9 @@ export function Navigation() {
               ))}
               <Link
                 href="/ai-chat"
-                className="bg-nilo-blue text-white px-4 py-2 rounded-lg inline-block text-center"
+                className="bg-eduverse-blue text-white px-4 py-2 rounded-lg inline-block text-center"
               >
-                Ask Nilo AI
+                Ask EduVerse AI
               </Link>
             </div>
           </div>
