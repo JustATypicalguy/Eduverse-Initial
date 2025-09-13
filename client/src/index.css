@@ -24,11 +24,12 @@
   --ring: hsl(207, 90%, 54%);
   --radius: 0.5rem;
   
-  /* Nilo specific colors */
-  --nilo-blue: hsl(207, 90%, 54%);
-  --nilo-dark: hsl(207, 90%, 35%);
-  --nilo-light: hsl(210, 40%, 98%);
-  --nilo-gray: hsl(215, 16%, 47%);
+  /* EduVerse specific colors - calm, minimal, student-friendly */
+  --eduverse-blue: hsl(210, 70%, 50%);
+  --eduverse-green: hsl(145, 50%, 55%);
+  --eduverse-light: hsl(210, 40%, 98%);
+  --eduverse-gray: hsl(215, 16%, 47%);
+  --eduverse-dark: hsl(210, 70%, 35%);
 }
 
 .dark {
@@ -66,36 +67,56 @@
 }
 
 @layer components {
-  .nilo-blue {
-    color: var(--nilo-blue);
+  .eduverse-blue {
+    color: var(--eduverse-blue);
   }
   
-  .bg-nilo-blue {
-    background-color: var(--nilo-blue);
+  .bg-eduverse-blue {
+    background-color: var(--eduverse-blue);
   }
   
-  .nilo-dark {
-    color: var(--nilo-dark);
+  .text-eduverse-blue {
+    color: var(--eduverse-blue);
   }
   
-  .bg-nilo-dark {
-    background-color: var(--nilo-dark);
+  .eduverse-green {
+    color: var(--eduverse-green);
   }
   
-  .nilo-light {
-    color: var(--nilo-light);
+  .bg-eduverse-green {
+    background-color: var(--eduverse-green);
   }
   
-  .bg-nilo-light {
-    background-color: var(--nilo-light);
+  .text-eduverse-green {
+    color: var(--eduverse-green);
   }
   
-  .nilo-gray {
-    color: var(--nilo-gray);
+  .eduverse-dark {
+    color: var(--eduverse-dark);
   }
   
-  .text-nilo-gray {
-    color: var(--nilo-gray);
+  .bg-eduverse-dark {
+    background-color: var(--eduverse-dark);
+  }
+  
+  .text-eduverse-dark {
+    color: var(--eduverse-dark);
+  }
+  
+  .eduverse-light {
+    color: var(--eduverse-light);
+  }
+  
+  .bg-eduverse-light {
+    background-color: var(--eduverse-light);
+  }
+  
+  .eduverse-gray {
+    color: var(--eduverse-gray);
+  }
+  
+  .text-eduverse-gray {
+    color: var(--eduverse-gray);
   }
 }
 
@@ -132,7 +153,7 @@
   }
   
   .creative-shadow {
-    box-shadow: 0 20px 40px rgba(0, 123, 255, 0.15), 0 10px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 20px 40px rgba(65, 131, 215, 0.15), 0 10px 20px rgba(0, 0, 0, 0.1);
   }
   
   @keyframes fadeIn {
