@@ -17,7 +17,7 @@ export default function Home() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="text-center lg:text-left animate-fade-in">
               <div className="mb-6">
-                <span className="bg-gradient-to-r from-eduverse-gold to-yellow-500 bg-clip-text text-transparent text-lg font-semibold">
+                <span className="text-eduverse-gold font-semibold text-lg" style={{color: '#D4AF37'}}>
                   🌟 Excellence in Education
                 </span>
               </div>
@@ -110,7 +110,7 @@ export default function Home() {
         <div className="container mx-auto px-6 relative">
           <div className="text-center mb-16 animate-fade-in">
             <h2 className="text-5xl font-bold text-gray-800 mb-4">
-              🌟 Why Choose <span className="bg-gradient-to-r from-eduverse-gold to-yellow-500 bg-clip-text text-transparent font-bold">EduVerse</span>?
+              🌟 Why Choose <span className="text-eduverse-gold font-bold" style={{color: '#D4AF37'}}>EduVerse</span>?
             </h2>
             <p className="text-xl text-eduverse-gray max-w-3xl mx-auto">
               Discover what makes our educational community exceptional and transformative.
@@ -177,7 +177,7 @@ export default function Home() {
         <div className="container mx-auto px-6 relative">
           <div className="text-center mb-16 animate-fade-in">
             <h2 className="text-5xl font-bold text-gray-800 mb-4">
-              📚 Explore Our <span className="bg-gradient-to-r from-eduverse-gold to-yellow-500 bg-clip-text text-transparent font-bold">Subjects</span>
+              📚 Explore Our <span className="text-eduverse-gold font-bold" style={{color: '#D4AF37'}}>Subjects</span>
             </h2>
             <p className="text-xl text-eduverse-gray max-w-3xl mx-auto">
               Comprehensive curriculum designed to inspire curiosity and foster academic excellence across all disciplines.
