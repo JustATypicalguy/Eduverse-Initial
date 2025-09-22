@@ -217,10 +217,44 @@ export default function AiChat() {
   ];
 
   return (
-    <div className="pt-24">
-      {/* AI Chat Header */}
-      <section className="py-20 bg-gradient-to-br from-eduverse-blue to-eduverse-dark text-white">
-        <div className="container mx-auto px-6">
+    <div className="pt-24 min-h-screen">
+      {/* AI Chat Header with Enhanced Background */}
+      <section className="py-20 bg-gradient-to-br from-eduverse-blue via-blue-700 to-eduverse-dark text-white relative overflow-hidden">
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0">
+          {/* Floating geometric shapes */}
+          <div className="absolute top-10 left-10 w-32 h-32 bg-blue-500 rounded-full opacity-10 animate-pulse"></div>
+          <div className="absolute top-32 right-16 w-20 h-20 bg-yellow-400 rounded-full opacity-20 animate-bounce"></div>
+          <div className="absolute bottom-20 left-1/4 w-16 h-16 bg-green-400 rounded-full opacity-15 animate-float"></div>
+          <div className="absolute top-1/2 right-1/3 w-24 h-24 bg-purple-400 rounded-full opacity-12 animate-pulse-slow"></div>
+          
+          {/* Circuit-like patterns */}
+          <div className="absolute top-1/4 left-1/2 w-40 h-40 border-2 border-blue-300 rounded-lg opacity-10 transform rotate-45 animate-spin-slow"></div>
+          <div className="absolute bottom-1/3 right-20 w-28 h-28 border-2 border-yellow-300 rounded-full opacity-15 animate-float"></div>
+          
+          {/* Tech/AI themed dots */}
+          <div className="absolute top-16 left-1/3 flex space-x-2">
+            <div className="w-2 h-2 bg-blue-300 rounded-full opacity-40 animate-ping animate-tech-glow"></div>
+            <div className="w-2 h-2 bg-green-300 rounded-full opacity-40 animate-ping animate-tech-glow" style={{animationDelay: '0.5s'}}></div>
+            <div className="w-2 h-2 bg-yellow-300 rounded-full opacity-40 animate-ping animate-tech-glow" style={{animationDelay: '1s'}}></div>
+          </div>
+          
+          {/* Additional AI/Neural Network Visual */}
+          <div className="absolute top-1/3 left-16 flex items-center space-x-4 opacity-20">
+            <div className="w-3 h-3 bg-cyan-300 rounded-full animate-pulse"></div>
+            <div className="w-px h-8 bg-cyan-300 animate-circuit"></div>
+            <div className="w-4 h-4 bg-cyan-300 rounded-full animate-tech-glow"></div>
+            <div className="w-px h-6 bg-cyan-300 animate-circuit" style={{animationDelay: '1s'}}></div>
+            <div className="w-2 h-2 bg-cyan-300 rounded-full animate-pulse" style={{animationDelay: '2s'}}></div>
+          </div>
+          
+          {/* Binary pattern overlay */}
+          <div className="absolute inset-0 opacity-5" style={{
+            backgroundImage: 'radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 2px, transparent 2px), radial-gradient(circle at 75% 75%, rgba(255,255,255,0.1) 2px, transparent 2px)',
+            backgroundSize: '60px 60px'
+          }}></div>
+        </div>
+        <div className="container mx-auto px-6 relative z-10">
           <div className="text-center mb-16">
             <div className="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-6">
               <Bot className="text-white" size={48} />
@@ -466,6 +500,16 @@ export default function AiChat() {
               <Info className="mr-2" size={16} />
               EduVerse AI focuses on educational support and learning assistance. For admissions, enrollment, and school administration, please contact our admissions team.
             </p>
+          </div>
+        </div>
+        
+        {/* Enhanced Bottom Background Section */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-eduverse-dark to-transparent">
+          <div className="absolute inset-0 overflow-hidden">
+            {/* Floating tech elements at bottom */}
+            <div className="absolute bottom-5 left-1/4 w-6 h-6 border-2 border-blue-300 rotate-45 opacity-20 animate-spin"></div>
+            <div className="absolute bottom-8 right-1/3 w-4 h-4 bg-yellow-300 rounded-full opacity-30 animate-ping"></div>
+            <div className="absolute bottom-12 left-1/2 w-8 h-8 border border-green-300 rounded-full opacity-25 animate-pulse"></div>
           </div>
         </div>
       </section>

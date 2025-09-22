@@ -200,6 +200,18 @@
     animation: gradientShift 4s ease infinite;
   }
   
+  .animate-spin-slow {
+    animation: spinSlow 8s linear infinite;
+  }
+  
+  .animate-tech-glow {
+    animation: techGlow 2s ease-in-out infinite alternate;
+  }
+  
+  .animate-circuit {
+    animation: circuit 5s ease-in-out infinite;
+  }
+  
   .glass-effect {
     backdrop-filter: blur(10px);
     background: rgba(255, 255, 255, 0.1);
@@ -268,5 +280,32 @@
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
+  }
+  
+  @keyframes spinSlow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  
+  @keyframes techGlow {
+    0% { 
+      box-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
+      opacity: 0.6;
+    }
+    100% { 
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.8);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes circuit {
+    0%, 100% { 
+      transform: translateX(0) scale(1);
+      opacity: 0.5;
+    }
+    50% { 
+      transform: translateX(10px) scale(1.1);
+      opacity: 0.8;
+    }
   }
 }
