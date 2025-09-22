@@ -54,17 +54,17 @@ function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) {
   };
 
   return (
-    <div className="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 max-w-md mx-auto">
+    <div className="relative bg-white/95 backdrop-blur-md border border-gray-200 rounded-2xl p-6 max-w-md mx-auto creative-shadow">
       <div className="text-center">
         <div className="flex justify-center mb-3">
           {[...Array(5)].map((_, i) => (
             <Star key={i} className="h-4 w-4 text-yellow-400 fill-current" />
           ))}
         </div>
-        <blockquote className="text-white/90 italic mb-4 min-h-[60px] flex items-center justify-center">
+        <blockquote className="text-gray-800 italic mb-4 min-h-[60px] flex items-center justify-center">
           "{testimonials[currentIndex].quote}"
         </blockquote>
-        <div className="text-white/70 text-sm">
+        <div className="text-eduverse-gray text-sm">
           <div className="font-medium">{testimonials[currentIndex].author}</div>
           <div className="text-xs">{testimonials[currentIndex].role}</div>
         </div>
@@ -75,7 +75,7 @@ function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) {
           variant="ghost" 
           size="sm" 
           onClick={prevTestimonial}
-          className="text-white/60 hover:text-white hover:bg-white/10"
+          className="text-eduverse-blue hover:text-eduverse-gold hover:bg-blue-50"
           data-testid="button-prev-testimonial"
         >
           <ChevronLeft className="h-4 w-4" />
@@ -87,7 +87,7 @@ function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) {
           variant="ghost" 
           size="sm" 
           onClick={nextTestimonial}
-          className="text-white/60 hover:text-white hover:bg-white/10"
+          className="text-eduverse-blue hover:text-eduverse-gold hover:bg-blue-50"
           data-testid="button-next-testimonial"
         >
           <ChevronRight className="h-4 w-4" />
@@ -99,7 +99,7 @@ function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) {
           <button
             key={index}
             className={`w-2 h-2 rounded-full transition-colors ${
-              index === currentIndex ? 'bg-white' : 'bg-white/30'
+              index === currentIndex ? 'bg-eduverse-blue' : 'bg-gray-300'
             }`}
             onClick={() => setCurrentIndex(index)}
             data-testid={`testimonial-dot-${index}`}
@@ -250,21 +250,21 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-eduverse-light via-white to-blue-50 relative overflow-hidden">
       <FloatingParticles />
       
       <div className="relative z-10 min-h-screen flex flex-col">
         {/* Header */}
         <div className="text-center pt-12 pb-8">
           <div className="inline-block mb-4">
-            <div className="text-6xl font-bold text-white relative">
-              <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-pulse-glow">
+            <div className="text-6xl font-bold relative">
+              <span className="bg-gradient-to-r from-eduverse-blue to-eduverse-gold bg-clip-text text-transparent animate-pulse-glow" style={{backgroundImage: 'linear-gradient(to right, #1e40af, #D4AF37)'}}>
                 EDUVERSE
               </span>
-              <div className="absolute inset-0 blur-sm bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent opacity-50 animate-pulse"></div>
+              <div className="absolute inset-0 blur-sm bg-gradient-to-r from-eduverse-blue to-eduverse-gold bg-clip-text text-transparent opacity-50 animate-pulse" style={{backgroundImage: 'linear-gradient(to right, #1e40af, #D4AF37)'}}></div>
             </div>
           </div>
-          <p className="text-xl text-white/80 font-light tracking-wide">
+          <p className="text-xl text-eduverse-gray font-light tracking-wide">
             One Universe for All Education
           </p>
         </div>
@@ -274,7 +274,7 @@ export default function Login() {
           <div className="lg:w-1/2 max-w-md w-full">
             {/* Role Selection */}
             <div className="mb-8">
-              <h3 className="text-2xl font-semibold text-white mb-6 text-center">Choose Your Role</h3>
+              <h3 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Choose Your Role</h3>
               <div className="grid grid-cols-1 gap-4">
                 {(Object.keys(roleData) as UserRole[]).filter(role => role !== null).map((role) => {
                   const data = roleData[role!];
@@ -285,20 +285,20 @@ export default function Login() {
                       onClick={() => setSelectedRole(role)}
                       className={`p-4 rounded-xl border-2 transition-all duration-300 ${
                         selectedRole === role
-                          ? `border-white bg-gradient-to-r ${data.color} shadow-lg scale-105`
-                          : 'border-white/30 bg-white/10 hover:border-white/50 hover:bg-white/20'
+                          ? `border-eduverse-blue bg-gradient-to-r ${data.color} shadow-lg scale-105`
+                          : 'border-gray-200 bg-white hover:border-eduverse-blue hover:bg-blue-50'
                       }`}
                       data-testid={`button-role-${role}`}
                     >
                       <div className="flex items-center gap-4">
                         <div className={`p-3 rounded-lg ${
-                          selectedRole === role ? 'bg-white/20' : 'bg-white/10'
+                          selectedRole === role ? 'bg-white/20' : 'bg-blue-50'
                         }`}>
-                          <IconComponent className="h-6 w-6 text-white" />
+                          <IconComponent className={`h-6 w-6 ${selectedRole === role ? 'text-white' : 'text-eduverse-blue'}`} />
                         </div>
                         <div className="text-left">
-                          <div className="text-white font-semibold capitalize">{role}</div>
-                          <div className="text-white/70 text-sm">{data.benefits}</div>
+                          <div className={`font-semibold capitalize ${selectedRole === role ? 'text-white' : 'text-gray-800'}`}>{role}</div>
+                          <div className={`text-sm ${selectedRole === role ? 'text-white/70' : 'text-eduverse-gray'}`}>{data.benefits}</div>
                         </div>
                       </div>
                     </button>
@@ -309,39 +309,39 @@ export default function Login() {
 
             {/* Login Box */}
             {selectedRole && (
-              <Card className="bg-white/10 backdrop-blur-md border border-white/20 shadow-2xl">
+              <Card className="bg-white/95 backdrop-blur-md border border-gray-200 shadow-2xl">
                 <CardContent className="p-6">
                   <form onSubmit={handleLogin} className="space-y-4">
                     <div className="text-center mb-4">
-                      <h4 className="text-lg font-semibold text-white capitalize">
+                      <h4 className="text-lg font-semibold text-gray-800 capitalize">
                         {selectedRole} Login
                       </h4>
-                      <p className="text-white/70 text-sm mt-1">
+                      <p className="text-eduverse-gray text-sm mt-1">
                         {roleData[selectedRole].hint}
                       </p>
                     </div>
 
                     <div>
-                      <Label htmlFor="email" className="text-white/90">Email or Username</Label>
+                      <Label htmlFor="email" className="text-gray-700">Email or Username</Label>
                       <Input
                         id="email"
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="bg-white/20 border-white/30 text-white placeholder:text-white/50 focus:border-white/50"
+                        className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-eduverse-blue"
                         placeholder={`Enter your ${selectedRole} email`}
                         data-testid="input-email"
                       />
                     </div>
 
                     <div>
-                      <Label htmlFor="password" className="text-white/90">Password</Label>
+                      <Label htmlFor="password" className="text-gray-700">Password</Label>
                       <Input
                         id="password"
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="bg-white/20 border-white/30 text-white placeholder:text-white/50 focus:border-white/50"
+                        className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-eduverse-blue"
                         placeholder="Enter your password"
                         data-testid="input-password"
                       />
@@ -355,12 +355,12 @@ export default function Login() {
                           onCheckedChange={setRememberMe}
                           data-testid="switch-remember-me"
                         />
-                        <Label htmlFor="remember" className="text-white/90 text-sm">
+                        <Label htmlFor="remember" className="text-gray-700 text-sm">
                           Remember Me
                         </Label>
                       </div>
                       <Link href="/forgot-password">
-                        <Button variant="link" className="text-white/70 hover:text-white p-0 h-auto">
+                        <Button variant="link" className="text-eduverse-blue hover:text-eduverse-gold p-0 h-auto">
                           Forgot Password?
                         </Button>
                       </Link>
@@ -383,42 +383,42 @@ export default function Login() {
           <div className="lg:w-1/2 max-w-lg w-full space-y-8">
             {/* Preview Features */}
             <div>
-              <h3 className="text-2xl font-semibold text-white mb-6 text-center">
+              <h3 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
                 Platform Features
               </h3>
               <div className="space-y-4">
-                <Card className="bg-white/10 backdrop-blur-md border border-white/20 p-4">
+                <Card className="bg-white/95 backdrop-blur-md border border-gray-200 p-4 creative-shadow">
                   <div className="flex items-center gap-4">
-                    <div className="p-3 bg-blue-500/20 rounded-lg">
-                      <Users className="h-6 w-6 text-blue-300" />
+                    <div className="p-3 bg-blue-50 rounded-lg">
+                      <Users className="h-6 w-6 text-eduverse-blue" />
                     </div>
                     <div>
-                      <h4 className="text-white font-semibold">For Students</h4>
-                      <p className="text-white/70 text-sm">Track progress, join group chats, explore AI quizzes.</p>
+                      <h4 className="text-gray-800 font-semibold">For Students</h4>
+                      <p className="text-eduverse-gray text-sm">Track progress, join group chats, explore AI quizzes.</p>
                     </div>
                   </div>
                 </Card>
 
-                <Card className="bg-white/10 backdrop-blur-md border border-white/20 p-4">
+                <Card className="bg-white/95 backdrop-blur-md border border-gray-200 p-4 creative-shadow">
                   <div className="flex items-center gap-4">
-                    <div className="p-3 bg-green-500/20 rounded-lg">
-                      <ChartBar className="h-6 w-6 text-green-300" />
+                    <div className="p-3 bg-green-50 rounded-lg">
+                      <ChartBar className="h-6 w-6 text-green-600" />
                     </div>
                     <div>
-                      <h4 className="text-white font-semibold">For Teachers</h4>
-                      <p className="text-white/70 text-sm">Create groups, manage lessons & attendance, use AI grading assistant.</p>
+                      <h4 className="text-gray-800 font-semibold">For Teachers</h4>
+                      <p className="text-eduverse-gray text-sm">Create groups, manage lessons & attendance, use AI grading assistant.</p>
                     </div>
                   </div>
                 </Card>
 
-                <Card className="bg-white/10 backdrop-blur-md border border-white/20 p-4">
+                <Card className="bg-white/95 backdrop-blur-md border border-gray-200 p-4 creative-shadow">
                   <div className="flex items-center gap-4">
-                    <div className="p-3 bg-purple-500/20 rounded-lg">
-                      <Settings className="h-6 w-6 text-purple-300" />
+                    <div className="p-3 bg-purple-50 rounded-lg">
+                      <Settings className="h-6 w-6 text-purple-600" />
                     </div>
                     <div>
-                      <h4 className="text-white font-semibold">For Administrators</h4>
-                      <p className="text-white/70 text-sm">Manage user access, monitor analytics, keep the system secure.</p>
+                      <h4 className="text-gray-800 font-semibold">For Administrators</h4>
+                      <p className="text-eduverse-gray text-sm">Manage user access, monitor analytics, keep the system secure.</p>
                     </div>
                   </div>
                 </Card>
@@ -427,7 +427,7 @@ export default function Login() {
 
             {/* Community Feedback Carousel */}
             <div>
-              <h3 className="text-xl font-semibold text-white mb-4 text-center">
+              <h3 className="text-xl font-semibold text-gray-800 mb-4 text-center">
                 What Our Community Says
               </h3>
               <TestimonialCarousel testimonials={testimonials} />
@@ -440,18 +440,18 @@ export default function Login() {
           <div className="container mx-auto px-6">
             <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
               {/* Links */}
-              <div className="flex gap-6 text-white/70 text-sm">
-                <Link href="/about" className="hover:text-white transition-colors">About</Link>
-                <Link href="/contact" className="hover:text-white transition-colors">Support</Link>
-                <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
-                <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
+              <div className="flex gap-6 text-eduverse-gray text-sm">
+                <Link href="/about" className="hover:text-eduverse-blue transition-colors">About</Link>
+                <Link href="/contact" className="hover:text-eduverse-blue transition-colors">Support</Link>
+                <Link href="/terms" className="hover:text-eduverse-blue transition-colors">Terms</Link>
+                <Link href="/privacy" className="hover:text-eduverse-blue transition-colors">Privacy</Link>
               </div>
 
               {/* Language Selector */}
               <div className="flex items-center gap-3">
-                <Globe className="h-4 w-4 text-white/70" />
+                <Globe className="h-4 w-4 text-eduverse-gray" />
                 <Select value={language} onValueChange={setLanguage}>
-                  <SelectTrigger className="w-24 bg-white/10 border-white/30 text-white">
+                  <SelectTrigger className="w-24 bg-white border-gray-300 text-gray-800">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -464,7 +464,7 @@ export default function Login() {
 
               {/* Motivational Quote */}
               <div className="text-center lg:text-right">
-                <p className="text-white/80 italic text-sm max-w-xs">
+                <p className="text-gray-700 italic text-sm max-w-xs">
                   "{motivationalQuotes[currentQuote]}"
                 </p>
               </div>
