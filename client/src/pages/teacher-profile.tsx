@@ -122,6 +122,8 @@ export default function TeacherProfile() {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [show2FAModal, setShow2FAModal] = useState(false);
+  const [verify2FACode, setVerify2FACode] = useState("");
   const { toast } = useToast();
 
   // Mock profile data
@@ -294,6 +296,22 @@ export default function TeacherProfile() {
     a.download = 'teacher-profile-data.json';
     a.click();
     URL.revokeObjectURL(url);
+  };
+
+  const handle2FASetup = () => {
+    setShow2FAModal(true);
+  };
+
+  const handle2FAVerification = () => {
+    if (verify2FACode.length !== 6) {
+      toast({ title: "Error", description: "Please enter a 6-digit verification code", variant: "destructive" });
+      return;
+    }
+    
+    // Mock verification
+    toast({ title: "Success", description: "Two-Factor Authentication has been enabled!" });
+    setShow2FAModal(false);
+    setVerify2FACode("");
   };
 
   return (
@@ -770,7 +788,12 @@ export default function TeacherProfile() {
                         Add an extra layer of security to your account
                       </p>
                     </div>
-                    <Button variant="outline" size="sm" data-testid="button-setup-2fa">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={handle2FASetup}
+                      data-testid="button-setup-2fa"
+                    >
                       <Key className="h-4 w-4 mr-2" />
                       Setup
                     </Button>
@@ -1233,6 +1256,86 @@ export default function TeacherProfile() {
             </Card>
           </TabsContent>
         </Tabs>
+        
+        {/* Two-Factor Authentication Setup Modal */}
+        <Dialog open={show2FAModal} onOpenChange={setShow2FAModal}>
+          <DialogContent className="sm:max-w-md" data-testid="modal-2fa">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Shield className="h-5 w-5 text-blue-600" />
+                Setup Two-Factor Authentication
+              </DialogTitle>
+              <DialogDescription>
+                Scan the QR code below with your authenticator app, then enter the verification code.
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="space-y-6">
+              {/* QR Code Section */}
+              <div className="flex flex-col items-center space-y-4">
+                <div className="bg-white p-4 rounded-lg border">
+                  {/* Mock QR Code - In real app, this would be generated with the actual secret */}
+                  <div 
+                    className="w-48 h-48 bg-gray-100 dark:bg-gray-800 rounded border-2 border-dashed border-gray-300 flex items-center justify-center"
+                    data-testid="qr-code"
+                  >
+                    <div className="text-center">
+                      <div className="text-4xl mb-2">📱</div>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">QR Code</p>
+                      <p className="text-xs text-gray-500">Scan with authenticator app</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="text-center">
+                  <p className="text-sm font-medium text-gray-900 dark:text-white mb-1">
+                    Can't scan the code?
+                  </p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 font-mono bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
+                    JBSWY3DPEHPK3PXP
+                  </p>
+                </div>
+              </div>
+              
+              {/* Verification Section */}
+              <div className="space-y-3">
+                <Label htmlFor="verification-code">Verification Code</Label>
+                <Input
+                  id="verification-code"
+                  type="text"
+                  placeholder="Enter 6-digit code"
+                  value={verify2FACode}
+                  onChange={(e) => setVerify2FACode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  className="text-center text-lg tracking-widest"
+                  data-testid="input-2fa-code"
+                />
+                <p className="text-xs text-gray-600 dark:text-gray-400">
+                  Enter the 6-digit code from your authenticator app
+                </p>
+              </div>
+              
+              {/* Action Buttons */}
+              <div className="flex gap-3">
+                <Button 
+                  variant="outline" 
+                  className="flex-1"
+                  onClick={() => setShow2FAModal(false)}
+                  data-testid="button-cancel-2fa"
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  className="flex-1"
+                  onClick={handle2FAVerification}
+                  disabled={verify2FACode.length !== 6}
+                  data-testid="button-verify-2fa"
+                >
+                  Verify & Enable
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
