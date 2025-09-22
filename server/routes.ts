@@ -111,12 +111,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Group management endpoints
-  app.post("/api/groups", async (req, res) => {
+  app.post("/api/groups", async (req: AuthenticatedRequest, res) => {
     try {
-      const validatedData = insertGroupSchema.parse(req.body);
+      console.log("Creating group with data:", JSON.stringify(req.body, null, 2));
+      console.log("Authenticated user ID:", req.userId);
+      const validatedData = insertGroupSchema.parse({
+        ...req.body,
+        createdBy: req.userId  // Use authenticated user ID
+      });
+      console.log("Validated data:", JSON.stringify(validatedData, null, 2));
       const group = await storage.createGroup(validatedData);
+      console.log("Created group:", JSON.stringify(group, null, 2));
       res.json(group);
     } catch (error) {
+      console.log("Group creation error:", error);
       res.status(400).json({ message: "Invalid group data", error: error instanceof Error ? error.message : "Unknown error" });
     }
   });

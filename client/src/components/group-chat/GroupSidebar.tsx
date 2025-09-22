@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Search, Users, Plus, Settings, LogOut, MessageCircle } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { CreateGroupModal } from './CreateGroupModal';
 import type { Group, User } from '@shared/schema';
 
 interface GroupSidebarProps {
@@ -19,6 +20,7 @@ interface GroupSidebarProps {
 
 export function GroupSidebar({ user, selectedGroup, onGroupSelect, onlineUsers, onLogout }: GroupSidebarProps) {
   const [searchTerm, setSearchTerm] = useState('');
+  const [showCreateModal, setShowCreateModal] = useState(false);
   const { getAuthHeaders } = useAuth();
 
   // Fetch user's groups
@@ -179,6 +181,7 @@ export function GroupSidebar({ user, selectedGroup, onGroupSelect, onlineUsers, 
               variant="outline" 
               className="w-full" 
               size="sm"
+              onClick={() => setShowCreateModal(true)}
               data-testid="button-create-group"
             >
               <Plus className="h-4 w-4 mr-2" />
@@ -187,6 +190,12 @@ export function GroupSidebar({ user, selectedGroup, onGroupSelect, onlineUsers, 
           </div>
         </>
       )}
+
+      {/* Create Group Modal */}
+      <CreateGroupModal
+        open={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+      />
     </div>
   );
 }

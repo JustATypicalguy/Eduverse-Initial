@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { MessageBubble } from './MessageBubble';
 import { TypingIndicator } from './TypingIndicator';
+import { PollModal } from './PollModal';
 import type { Group, User, GroupMessage } from '@shared/schema';
 
 interface ChatAreaProps {
@@ -40,6 +41,7 @@ export function ChatArea({
 }: ChatAreaProps) {
   const [messageText, setMessageText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [showPollModal, setShowPollModal] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout>();
 
@@ -96,6 +98,39 @@ export function ChatArea({
   const canRaiseHand = user?.role === 'student';
   const canCreatePoll = user?.role === 'teacher' || user?.role === 'admin';
 
+  const handleRaiseHand = async () => {
+    if (!user || !group) return;
+    
+    try {
+      const response = await fetch('/api/raise-hand', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('eduverse_token')}`
+        },
+        body: JSON.stringify({
+          groupId: group.id,
+          userId: user.id
+        })
+      });
+      
+      if (response.ok) {
+        // Show success feedback
+        onSendMessage('🙋‍♂️ has raised their hand', 'raise_hand');
+      }
+    } catch (error) {
+      console.error('Error raising hand:', error);
+    }
+  };
+
+  const handleCreatePoll = (pollData: any) => {
+    onSendMessage(
+      `📊 Poll: ${pollData.question}`,
+      'poll',
+      pollData
+    );
+  };
+
   return (
     <div className="h-full flex flex-col">
       {/* Chat Header */}
@@ -124,6 +159,7 @@ export function ChatArea({
               <Button
                 variant="outline"
                 size="sm"
+                onClick={handleRaiseHand}
                 className="text-orange-600 border-orange-200 hover:bg-orange-50"
                 data-testid="button-raise-hand"
               >
@@ -136,6 +172,7 @@ export function ChatArea({
               <Button
                 variant="outline"
                 size="sm"
+                onClick={() => setShowPollModal(true)}
                 className="text-blue-600 border-blue-200 hover:bg-blue-50"
                 data-testid="button-create-poll"
               >
@@ -230,6 +267,17 @@ export function ChatArea({
           </p>
         )}
       </div>
+
+      {/* Poll Modal */}
+      {showPollModal && (
+        <PollModal
+          open={showPollModal}
+          onClose={() => setShowPollModal(false)}
+          group={group}
+          user={user}
+          onSendPoll={handleCreatePoll}
+        />
+      )}
     </div>
   );
 }
