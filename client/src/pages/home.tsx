@@ -59,12 +59,6 @@ export default function Home() {
                 />
                 
                 <img 
-                  src="https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=150" 
-                  alt="Science laboratory equipment" 
-                  className="absolute -bottom-4 -left-8 w-28 h-20 rounded-xl creative-shadow animate-bounce-in hover:scale-110 transition-transform" 
-                />
-                
-                <img 
                   src="https://images.unsplash.com/photo-1581726690015-c9861ba24d8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150" 
                   alt="Art and creativity" 
                   className="absolute top-16 -left-12 w-24 h-24 rounded-full object-cover creative-shadow animate-pulse-slow hover:scale-110 transition-transform" 
