@@ -58,11 +58,6 @@ export default function Home() {
                   className="absolute -top-8 -right-8 w-32 h-24 rounded-2xl creative-shadow animate-float hover:scale-110 transition-transform" 
                 />
                 
-                <img 
-                  src="https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150" 
-                  alt="Science laboratory and chemistry education" 
-                  className="absolute top-16 -left-12 w-24 h-24 rounded-full object-cover creative-shadow animate-pulse-slow hover:scale-110 transition-transform" 
-                />
               </div>
               <Card className="absolute -bottom-6 -left-6 border-gray-100 glass-effect animate-bounce-in">
                 <CardContent className="p-6">
@@ -83,11 +78,6 @@ export default function Home() {
           {/* Stats Section with Moving Images */}
           <div className="mt-20 relative">
             {/* Animated Background Images */}
-            <img 
-              src="https://images.unsplash.com/photo-1581726690015-c9861ba24d8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150" 
-              alt="Art class and creative education" 
-              className="absolute top-0 left-10 w-24 h-24 rounded-full object-cover animate-pulse-slow opacity-30 hover:opacity-60 transition-opacity" 
-            />
             <img 
               src="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150" 
               alt="Open books and library learning" 
@@ -140,11 +130,6 @@ export default function Home() {
           src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150" 
           alt="University graduation and education achievement" 
           className="absolute top-1/4 left-8 w-20 h-20 rounded-full object-cover animate-float opacity-40 hover:opacity-70 transition-opacity" 
-        />
-        <img 
-          src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150" 
-          alt="Mathematics education and problem solving" 
-          className="absolute bottom-1/4 right-12 w-24 h-24 rounded-full object-cover animate-pulse-slow opacity-40 hover:opacity-70 transition-opacity" 
         />
         <img 
           src="https://images.unsplash.com/photo-1509062522246-3755977927d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150" 
@@ -226,24 +211,9 @@ export default function Home() {
           className="absolute top-16 left-1/4 w-28 h-28 rounded-2xl object-cover animate-slide-up opacity-50 hover:opacity-80 transition-all creative-shadow" 
         />
         <img 
-          src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150" 
-          alt="Collaborative learning and group study" 
-          className="absolute bottom-20 left-16 w-32 h-24 rounded-2xl object-cover animate-bounce-in opacity-50 hover:opacity-80 transition-all creative-shadow" 
-        />
-        <img 
           src="https://images.unsplash.com/photo-1564694202779-bc908c327862?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150" 
           alt="Digital learning and technology education" 
           className="absolute top-1/3 right-20 w-26 h-26 rounded-full object-cover animate-float opacity-50 hover:opacity-80 transition-all creative-shadow" 
-        />
-        <img 
-          src="https://images.unsplash.com/photo-1544717297-fa95b6ee9643?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150" 
-          alt="Books and academic literature" 
-          className="absolute bottom-1/3 right-1/4 w-30 h-22 rounded-xl object-cover animate-pulse-slow opacity-50 hover:opacity-80 transition-all creative-shadow" 
-        />
-        <img 
-          src="https://images.unsplash.com/photo-1596495577886-d920f1fb7238?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=120" 
-          alt="Science laboratory experiments and STEM education" 
-          className="absolute top-2/3 left-8 w-24 h-24 rounded-full object-cover animate-float opacity-45 hover:opacity-75 transition-all creative-shadow" 
         />
         <img 
           src="https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=120" 
