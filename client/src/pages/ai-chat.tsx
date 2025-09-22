@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import { Bot, User, Send, Info } from "lucide-react";
+import { Bot, User, Send, Info, Sparkles, Brain, Target, Lightbulb, Globe, Heart } from "lucide-react";
 
 interface ChatMessage {
   id: string;
@@ -13,12 +13,57 @@ interface ChatMessage {
   response: string;
   isUser: boolean;
   timestamp: Date;
+  buddyType?: string;
+  demoMode?: boolean;
 }
+
+interface StudyBuddy {
+  id: string;
+  name: string;
+  personality: string;
+  description: string;
+  icon: any;
+  color: string;
+  welcomeMessage: string;
+}
+
+const studyBuddies: StudyBuddy[] = [
+  {
+    id: "funny",
+    name: "Alex the Fun Learner",
+    personality: "funny",
+    description: "Makes learning fun with jokes, memes, and entertaining explanations!",
+    icon: Sparkles,
+    color: "from-yellow-500 to-orange-500",
+    welcomeMessage: "Hey there, superstar! 🌟 I'm Alex, your fun-loving study buddy! Ready to turn boring lessons into exciting adventures? Let's make learning so fun, you'll forget you're even studying! What awesome topic should we dive into today? 🚀"
+  },
+  {
+    id: "serious",
+    name: "Dr. Focus",
+    personality: "serious",
+    description: "Structured, detailed, and methodical approach to deep learning.",
+    icon: Brain,
+    color: "from-blue-600 to-indigo-600",
+    welcomeMessage: "Greetings, student. I am Dr. Focus, your dedicated academic companion. I am here to provide you with comprehensive, structured learning experiences. Together, we will master complex concepts through systematic analysis and methodical practice. What subject shall we explore with scholarly precision today?"
+  },
+  {
+    id: "motivational",
+    name: "Coach Inspire",
+    personality: "motivational",
+    description: "Your personal cheerleader who keeps you motivated and confident!",
+    icon: Target,
+    color: "from-green-500 to-emerald-500",
+    welcomeMessage: "Hey champion! 💪 I'm Coach Inspire, and I believe in YOU! Every great achiever started exactly where you are right now. You've got incredible potential, and I'm here to help you unlock it! Remember: You don't have to be perfect, you just have to start! What goal are we crushing today? 🏆"
+  }
+];
 
 export default function AiChat() {
   const { toast } = useToast();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState("");
+  const [selectedBuddy, setSelectedBuddy] = useState<StudyBuddy | null>(null);
+  const [chatMode, setChatMode] = useState<'buddy' | 'simulation' | 'debate' | 'creative'>('buddy');
+  const [isDemoMode, setIsDemoMode] = useState<boolean>(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -30,20 +75,49 @@ export default function AiChat() {
   }, [messages]);
 
   useEffect(() => {
-    // Add welcome message
-    const welcomeMessage: ChatMessage = {
-      id: "welcome",
-      message: "",
-      response: "Hello! 👋 I'm EduVerse AI, your comprehensive educational assistant! I'm here to support your learning journey in every way possible.\n\nI can help you with:\n\n📚 **Academic Subjects**: Math, Science, Languages, History, Arts, and more\n🎯 **Study Support**: Learning strategies, exam prep, note-taking techniques\n🎓 **Educational Guidance**: Course selection, university prep, career planning\n💡 **Homework Help**: Concept explanations, problem-solving, research assistance\n🌟 **Personal Growth**: Building confidence, managing study stress, goal setting\n\nWhether you're struggling with a specific topic or looking to excel further, I'm here to make learning engaging and accessible for you. What would you like to explore today?",
-      isUser: false,
-      timestamp: new Date(),
+    if (selectedBuddy) {
+      const welcomeMessage: ChatMessage = {
+        id: "welcome",
+        message: "",
+        response: selectedBuddy.welcomeMessage,
+        isUser: false,
+        timestamp: new Date(),
+        buddyType: selectedBuddy.id,
+      };
+      setMessages([welcomeMessage]);
+    }
+  }, [selectedBuddy]);
+
+  // Check for demo mode on component mount
+  useEffect(() => {
+    const checkDemoMode = async () => {
+      try {
+        const response = await apiRequest("POST", "/api/chat", { 
+          message: "demo check", 
+          buddyType: "general", 
+          chatMode: "buddy" 
+        });
+        const data = await response.json();
+        if (data.demoMode !== undefined) {
+          setIsDemoMode(data.demoMode);
+        }
+      } catch (error) {
+        // If there's an error, assume demo mode for better UX
+        setIsDemoMode(true);
+      }
     };
-    setMessages([welcomeMessage]);
+    
+    checkDemoMode();
   }, []);
 
   const chatMutation = useMutation({
     mutationFn: async (message: string) => {
-      const response = await apiRequest("POST", "/api/chat", { message });
+      const chatData = {
+        message,
+        buddyType: selectedBuddy?.personality || 'general',
+        chatMode: chatMode
+      };
+      const response = await apiRequest("POST", "/api/chat", chatData);
       return response.json();
     },
     onSuccess: (data) => {
@@ -53,8 +127,13 @@ export default function AiChat() {
         response: data.response,
         isUser: false,
         timestamp: new Date(),
+        buddyType: selectedBuddy?.id,
+        demoMode: data.demoMode
       };
       setMessages(prev => [...prev, newMessage]);
+      if (data.demoMode !== undefined) {
+        setIsDemoMode(data.demoMode);
+      }
     },
     onError: (error) => {
       toast({
@@ -89,6 +168,39 @@ export default function AiChat() {
     setInputMessage(question);
   };
 
+  const getBuddyQuestions = (personality: string): string[] => {
+    switch (personality) {
+      case 'funny':
+        return [
+          "Tell me a math joke! 😂",
+          "Make chemistry fun to learn!",
+          "What's the weirdest fact about space?",
+          "Turn history into a fun story!"
+        ];
+      case 'serious':
+        return [
+          "Explain quantum mechanics principles",
+          "Analyze literary themes in Shakespeare",
+          "Discuss economic theory fundamentals",
+          "Review advanced calculus concepts"
+        ];
+      case 'motivational':
+        return [
+          "How can I improve my study habits?",
+          "Build my confidence in public speaking",
+          "Overcome my fear of math!",
+          "Set achievable academic goals"
+        ];
+      default:
+        return [
+          "Help me with my homework",
+          "Explain this concept",
+          "Study tips please",
+          "How do I prepare for exams?"
+        ];
+    }
+  };
+
   const suggestedQuestions = [
     "Help me understand quadratic equations",
     "What are effective study techniques?",
@@ -113,35 +225,142 @@ export default function AiChat() {
             <div className="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-6">
               <Bot className="text-white" size={48} />
             </div>
-            <h1 className="text-4xl font-bold mb-4">Ask EduVerse AI</h1>
+            <h1 className="text-4xl font-bold mb-4">🤖 EduVerse AI Study Buddy</h1>
             <p className="text-xl text-blue-100 max-w-3xl mx-auto">
-              Your comprehensive educational companion! I'm here to help with homework, 
-              explain concepts, provide study strategies, and support your learning journey 
-              across all subjects and academic levels.
+              Meet your new AI study companion! Choose your perfect learning buddy with a unique personality 
+              that matches your style. They'll help with homework, explain concepts, and support your 
+              educational journey with personalized interactions.
             </p>
           </div>
           
-          <div className="max-w-4xl mx-auto">
-            {/* Chat Interface */}
-            <Card className="overflow-hidden shadow-2xl">
-              {/* Chat Header */}
-              <div className="bg-eduverse-light p-6 border-b">
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-eduverse-blue rounded-full flex items-center justify-center">
-                    <Bot className="text-white" size={24} />
+          {!selectedBuddy && (
+            <div className="max-w-6xl mx-auto">
+              {/* Demo Mode Banner for Selection Screen */}
+              {isDemoMode && (
+                <div className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white p-4 rounded-lg mb-8 text-center shadow-lg">
+                  <div className="flex items-center justify-center space-x-2">
+                    <Sparkles className="text-white" size={20} />
+                    <span className="font-bold text-lg">🎭 Demo Mode Active!</span>
+                    <Sparkles className="text-white" size={20} />
                   </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-800">EduVerse AI Assistant</h3>
-                    <p className="text-eduverse-gray">Your friendly educational companion - ready to help with any learning challenge!</p>
+                  <p className="mt-2 text-sm">
+                    Experience the Study Buddy personalities with simulated responses! 
+                    Each buddy has a unique style to make learning engaging and fun.
+                  </p>
+                </div>
+              )}
+              <h2 className="text-3xl font-bold text-center mb-8">Choose Your Study Buddy!</h2>
+              <div className="grid md:grid-cols-3 gap-8">
+                {studyBuddies.map((buddy) => {
+                  const IconComponent = buddy.icon;
+                  return (
+                    <Card 
+                      key={buddy.id}
+                      className="hover:scale-105 transition-all duration-300 cursor-pointer bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/20"
+                      onClick={() => setSelectedBuddy(buddy)}
+                      data-testid={`buddy-card-${buddy.id}`}
+                    >
+                      <CardContent className="p-8 text-center">
+                        <div className={`w-20 h-20 bg-gradient-to-r ${buddy.color} rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce-in`}>
+                          <IconComponent className="text-white" size={36} />
+                        </div>
+                        <h3 className="text-2xl font-bold mb-4">{buddy.name}</h3>
+                        <p className="text-blue-100 mb-6 leading-relaxed">{buddy.description}</p>
+                        <Button 
+                          className="bg-white text-eduverse-blue hover:bg-blue-50 font-semibold"
+                          data-testid={`button-select-${buddy.id}`}
+                        >
+                          Choose {buddy.name.split(' ')[0]} ✨
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+              
+              {/* Feature Modes */}
+              <div className="mt-16">
+                <h3 className="text-2xl font-bold text-center mb-8">🚀 Advanced AI Features Coming Soon!</h3>
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
+                    <CardContent className="p-6 text-center">
+                      <Lightbulb className="mx-auto mb-4 text-yellow-400" size={32} />
+                      <h4 className="font-bold mb-2">🧪 Interactive Simulations</h4>
+                      <p className="text-sm text-blue-100">Visual demos for science & math</p>
+                    </CardContent>
+                  </Card>
+                  <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
+                    <CardContent className="p-6 text-center">
+                      <Target className="mx-auto mb-4 text-red-400" size={32} />
+                      <h4 className="font-bold mb-2">🎯 AI Debate Mode</h4>
+                      <p className="text-sm text-blue-100">Practice critical thinking</p>
+                    </CardContent>
+                  </Card>
+                  <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
+                    <CardContent className="p-6 text-center">
+                      <Globe className="mx-auto mb-4 text-green-400" size={32} />
+                      <h4 className="font-bold mb-2">🌍 Global Classroom</h4>
+                      <p className="text-sm text-blue-100">Connect with students worldwide</p>
+                    </CardContent>
+                  </Card>
+                  <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
+                    <CardContent className="p-6 text-center">
+                      <Heart className="mx-auto mb-4 text-pink-400" size={32} />
+                      <h4 className="font-bold mb-2">❤️ Emotion-Aware AI</h4>
+                      <p className="text-sm text-blue-100">Adapts to your mood & needs</p>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {selectedBuddy && (
+            <div className="max-w-4xl mx-auto">
+              {/* Chat Interface */}
+              <Card className="overflow-hidden shadow-2xl">
+                {/* Demo Mode Banner */}
+                {isDemoMode && (
+                  <div className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white p-3 text-center">
+                    <div className="flex items-center justify-center space-x-2">
+                      <Sparkles className="text-white" size={16} />
+                      <span className="font-semibold">🎭 Demo Mode Active!</span>
+                      <span className="text-sm">Responses are simulated to showcase Study Buddy personalities</span>
+                    </div>
                   </div>
-                  <div className="ml-auto">
-                    <div className="flex items-center space-x-2 text-sm text-green-600">
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                      <span>Online</span>
+                )}
+                
+                {/* Chat Header */}
+                <div className="bg-eduverse-light p-6 border-b">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                      <div className={`w-12 h-12 bg-gradient-to-r ${selectedBuddy.color} rounded-full flex items-center justify-center`}>
+                        <selectedBuddy.icon className="text-white" size={24} />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-bold text-gray-800">
+                          {selectedBuddy.name}
+                          {isDemoMode && <span className="ml-2 text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">Demo</span>}
+                        </h3>
+                        <p className="text-eduverse-gray">{selectedBuddy.description}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-4">
+                      <div className="flex items-center space-x-2 text-sm text-green-600">
+                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                        <span>{isDemoMode ? 'Demo Ready!' : 'Online & Ready!'}</span>
+                      </div>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => setSelectedBuddy(null)}
+                        data-testid="button-change-buddy"
+                      >
+                        Change Buddy
+                      </Button>
                     </div>
                   </div>
                 </div>
-              </div>
               
               {/* Chat Messages */}
               <div className="h-96 overflow-y-auto p-6 space-y-4" id="chat-messages">
@@ -158,8 +377,8 @@ export default function AiChat() {
                       </div>
                     ) : (
                       <div className="flex items-start space-x-3">
-                        <div className="w-8 h-8 bg-eduverse-blue rounded-full flex items-center justify-center flex-shrink-0">
-                          <Bot className="text-white" size={16} />
+                        <div className={`w-8 h-8 bg-gradient-to-r ${selectedBuddy.color} rounded-full flex items-center justify-center flex-shrink-0`}>
+                          <selectedBuddy.icon className="text-white" size={16} />
                         </div>
                         <div className="bg-eduverse-light rounded-lg p-4 max-w-md">
                           <p className="text-gray-800 whitespace-pre-wrap">{msg.response}</p>
@@ -171,11 +390,15 @@ export default function AiChat() {
                 
                 {chatMutation.isPending && (
                   <div className="flex items-start space-x-3">
-                    <div className="w-8 h-8 bg-eduverse-blue rounded-full flex items-center justify-center flex-shrink-0">
-                      <Bot className="text-white" size={16} />
+                    <div className={`w-8 h-8 bg-gradient-to-r ${selectedBuddy.color} rounded-full flex items-center justify-center flex-shrink-0 animate-pulse`}>
+                      <selectedBuddy.icon className="text-white" size={16} />
                     </div>
                     <div className="bg-eduverse-light rounded-lg p-4 max-w-md">
-                      <p className="text-gray-800">Thinking...</p>
+                      <p className="text-gray-800">
+                        {selectedBuddy.personality === 'funny' ? '🤔 Thinking of something awesome...' :
+                         selectedBuddy.personality === 'serious' ? 'Analyzing your question thoroughly...' :
+                         '💪 Working on the perfect answer for you!'}
+                      </p>
                     </div>
                   </div>
                 )}
@@ -189,7 +412,9 @@ export default function AiChat() {
                   <div className="flex-1">
                     <Input
                       type="text"
-                      placeholder="Ask me anything educational - homework help, study tips, concept explanations, and more!"
+                      placeholder={selectedBuddy.personality === 'funny' ? "Ask me anything! Let's make learning fun! 🎉" :
+                                   selectedBuddy.personality === 'serious' ? "Present your academic inquiry for thorough analysis." :
+                                   "What challenge are we conquering today? 💪"}
                       value={inputMessage}
                       onChange={(e) => setInputMessage(e.target.value)}
                       disabled={chatMutation.isPending}
@@ -199,7 +424,7 @@ export default function AiChat() {
                   </div>
                   <Button 
                     type="submit" 
-                    className="bg-eduverse-blue text-white hover:bg-eduverse-dark flex items-center space-x-2"
+                    className={`bg-gradient-to-r ${selectedBuddy.color} text-white hover:opacity-90 flex items-center space-x-2 transition-all`}
                     disabled={chatMutation.isPending || !inputMessage.trim()}
                     data-testid="button-send-message"
                   >
@@ -208,17 +433,21 @@ export default function AiChat() {
                   </Button>
                 </form>
                 
-                {/* Suggested Questions */}
+                {/* Buddy-Specific Suggested Questions */}
                 <div className="mt-4">
-                  <p className="text-sm text-gray-500 mb-2">💡 Try asking me about:</p>
+                  <p className="text-sm text-gray-500 mb-2">
+                    {selectedBuddy.personality === 'funny' ? '🎈 Fun questions to try:' :
+                     selectedBuddy.personality === 'serious' ? '📋 Recommended academic inquiries:' :
+                     '🎯 Let\'s tackle these together:'}
+                  </p>
                   <div className="flex flex-wrap gap-2 max-h-20 overflow-y-auto">
-                    {suggestedQuestions.map((question, index) => (
+                    {getBuddyQuestions(selectedBuddy.personality).map((question, index) => (
                       <Button
                         key={index}
                         variant="outline"
                         size="sm"
                         onClick={() => handleSuggestedQuestion(question)}
-                        className="text-xs hover:bg-eduverse-blue hover:text-white transition-colors"
+                        className={`text-xs hover:bg-gradient-to-r hover:${selectedBuddy.color} hover:text-white transition-colors`}
                         data-testid={`button-suggested-question-${index}`}
                       >
                         {question}
@@ -228,14 +457,15 @@ export default function AiChat() {
                 </div>
               </div>
             </Card>
-            
-            {/* AI Disclaimer */}
-            <div className="mt-8 text-center">
-              <p className="text-blue-100 text-sm flex items-center justify-center">
-                <Info className="mr-2" size={16} />
-                EduVerse AI focuses on educational support and learning assistance. For admissions, enrollment, and school administration, please contact our admissions team.
-              </p>
             </div>
+          )}
+            
+          {/* AI Disclaimer */}
+          <div className="mt-8 text-center">
+            <p className="text-blue-100 text-sm flex items-center justify-center">
+              <Info className="mr-2" size={16} />
+              EduVerse AI focuses on educational support and learning assistance. For admissions, enrollment, and school administration, please contact our admissions team.
+            </p>
           </div>
         </div>
       </section>

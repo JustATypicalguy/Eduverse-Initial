@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertApplicationSchema, insertContactSchema, insertChatMessageSchema } from "@shared/schema";
-import { isEducationalQuestion, answerEducationalQuestion } from "./services/openai";
+import { isEducationalQuestion, answerEducationalQuestion, isDemoMode } from "./services/openai";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Applications endpoints
@@ -60,16 +60,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Chat endpoints
   app.post("/api/chat", async (req, res) => {
     try {
-      const { message } = req.body;
+      const { message, buddyType = 'general', chatMode = 'buddy' } = req.body;
       
       if (!message || typeof message !== 'string') {
         return res.status(400).json({ message: "Message is required and must be a string" });
       }
 
-      // Answer any question - no educational filtering
-      const response = await answerEducationalQuestion(message);
+      // Generate personality-based response
+      const response = await answerEducationalQuestion(message, buddyType, chatMode);
 
-      // Store the chat message
+      // Store the chat message with buddy info
       const chatMessage = await storage.createChatMessage({
         message,
         response,
@@ -79,7 +79,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ 
         message: chatMessage.message, 
         response: chatMessage.response,
-        isEducational: true 
+        isEducational: true,
+        buddyType,
+        chatMode,
+        demoMode: isDemoMode
       });
     } catch (error) {
       console.error("Chat error:", error);
