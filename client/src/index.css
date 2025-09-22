@@ -212,6 +212,31 @@
     animation: circuit 5s ease-in-out infinite;
   }
   
+  /* Login page specific animations */
+  .animate-float-delayed {
+    animation: float 6s ease-in-out infinite 3s;
+  }
+  
+  .animate-twinkle {
+    animation: twinkle 2s ease-in-out infinite;
+  }
+  
+  .animate-pulse-glow {
+    animation: pulseGlow 3s ease-in-out infinite;
+  }
+  
+  .animate-bounce-gentle {
+    animation: bounceGentle 2s ease-in-out infinite;
+  }
+  
+  .animate-delay-1000 {
+    animation-delay: 1s;
+  }
+  
+  .animate-delay-2000 {
+    animation-delay: 2s;
+  }
+  
   .glass-effect {
     backdrop-filter: blur(10px);
     background: rgba(255, 255, 255, 0.1);
@@ -306,6 +331,37 @@
     50% { 
       transform: translateX(10px) scale(1.1);
       opacity: 0.8;
+    }
+  }
+  
+  @keyframes twinkle {
+    0%, 100% { 
+      opacity: 0.3;
+      transform: scale(1);
+    }
+    50% { 
+      opacity: 1;
+      transform: scale(1.2);
+    }
+  }
+  
+  @keyframes pulseGlow {
+    0%, 100% { 
+      text-shadow: 0 0 10px rgba(147, 197, 253, 0.5);
+      opacity: 0.8;
+    }
+    50% { 
+      text-shadow: 0 0 30px rgba(147, 197, 253, 1), 0 0 40px rgba(147, 197, 253, 0.8);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes bounceGentle {
+    0%, 100% { 
+      transform: translateY(0);
+    }
+    50% { 
+      transform: translateY(-5px);
     }
   }
 }

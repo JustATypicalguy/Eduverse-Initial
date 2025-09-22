@@ -25,6 +25,7 @@ import TeacherContent from "@/pages/teacher-content";
 import TeacherAnalytics from "@/pages/teacher-analytics";
 import TeacherCommunication from "@/pages/teacher-communication";
 import TeacherProfile from "@/pages/teacher-profile";
+import Login from "@/pages/login";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -34,6 +35,7 @@ function Router() {
       <main className="flex-1">
         <Switch>
           <Route path="/" component={Home} />
+          <Route path="/login" component={Login} />
           <Route path="/about" component={About} />
           <Route path="/programs" component={Programs} />
           <Route path="/subjects" component={Subjects} />
