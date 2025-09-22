@@ -128,11 +128,6 @@ export default function Home() {
           {/* Additional Moving Images */}
           <div className="mt-12 relative">
             <img 
-              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=150" 
-              alt="Teacher explaining lesson on blackboard" 
-              className="absolute left-1/4 w-32 h-24 rounded-2xl creative-shadow animate-slide-up hover:scale-105 transition-transform opacity-70" 
-            />
-            <img 
               src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=150" 
               alt="Students working together in classroom" 
               className="absolute right-1/4 w-36 h-28 rounded-2xl creative-shadow animate-bounce-in hover:scale-105 transition-transform opacity-70" 
