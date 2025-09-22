@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { Baby, Users, GraduationCap, Check } from "lucide-react";
+import highSchoolImage from "@assets/stock_images/high_school_students_fab51db8.jpg";
 
 export default function Programs() {
   return (
@@ -99,8 +100,8 @@ export default function Programs() {
             {/* High School Program */}
             <Card className="overflow-hidden hover:shadow-xl transition-shadow">
               <img 
-                src="https://images.unsplash.com/photo-1523050854058-8df90110c9d1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=300" 
-                alt="High school students in graduation ceremony" 
+                src={highSchoolImage} 
+                alt="High school students in classroom learning environment" 
                 className="w-full h-48 object-cover" 
               />
               <CardContent className="p-8">
