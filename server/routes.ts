@@ -8,7 +8,8 @@ import {
   insertApplicationSchema, insertContactSchema, insertChatMessageSchema, 
   insertGroupSchema, insertGroupMemberSchema, insertUserSchema,
   insertGroupMessageSchema, insertMessageReactionSchema, insertGroupPollSchema,
-  insertPollVoteSchema, insertRaiseHandRequestSchema, insertFileAttachmentSchema
+  insertPollVoteSchema, insertRaiseHandRequestSchema, insertFileAttachmentSchema,
+  insertClassSchema, insertClassEnrollmentSchema, insertAssignmentSchema
 } from "@shared/schema";
 import { isEducationalQuestion, answerEducationalQuestion, isDemoMode } from "./services/openai";
 import { GroupChatWebSocketService } from "./websocket";
@@ -567,6 +568,118 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(attachments);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch attachments", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  // === CLASS MANAGEMENT ENDPOINTS ===
+  
+  // Get classes for a teacher
+  app.get("/api/classes", async (req: AuthenticatedRequest, res) => {
+    try {
+      // For now, return mock data since storage methods aren't implemented yet
+      const mockClasses = [
+        {
+          id: "1",
+          name: "Algebra I",
+          description: "Introduction to algebraic concepts and problem solving",
+          subject: "Mathematics",
+          gradeLevel: "Grade 9",
+          teacherId: req.userId,
+          classCode: "ALG001",
+          schedule: { days: ["Monday", "Wednesday", "Friday"], time: "9:00 AM", room: "Room 101" },
+          isActive: true,
+          maxStudents: 30,
+          enrolledStudents: 28,
+          createdAt: "2024-01-15T00:00:00Z"
+        },
+        {
+          id: "2", 
+          name: "Biology 101",
+          description: "Basic principles of biology and life sciences",
+          subject: "Science",
+          gradeLevel: "Grade 10",
+          teacherId: req.userId,
+          classCode: "BIO101",
+          schedule: { days: ["Tuesday", "Thursday"], time: "11:30 AM", room: "Lab 203" },
+          isActive: true,
+          maxStudents: 25,
+          enrolledStudents: 23,
+          createdAt: "2024-01-20T00:00:00Z"
+        }
+      ];
+      
+      res.json(mockClasses);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch classes", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  // Create a new class
+  app.post("/api/classes", async (req: AuthenticatedRequest, res) => {
+    try {
+      const validatedData = insertClassSchema.parse({
+        ...req.body,
+        teacherId: req.userId,
+        classCode: Math.random().toString(36).substring(2, 8).toUpperCase()
+      });
+      
+      // For now, return mock data since storage method isn't implemented yet
+      const mockClass = {
+        id: Math.random().toString(36).substring(2, 15),
+        ...validatedData,
+        enrolledStudents: 0,
+        createdAt: new Date().toISOString()
+      };
+      
+      res.json(mockClass);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid class data", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  // Get specific class
+  app.get("/api/classes/:id", async (req: AuthenticatedRequest, res) => {
+    try {
+      // For now, return mock data
+      const mockClass = {
+        id: req.params.id,
+        name: "Sample Class",
+        description: "A sample class for testing",
+        subject: "Mathematics",
+        gradeLevel: "Grade 9",
+        teacherId: req.userId,
+        classCode: "SAMPLE001",
+        schedule: {},
+        isActive: true,
+        maxStudents: 30,
+        enrolledStudents: 15,
+        createdAt: new Date().toISOString()
+      };
+      
+      res.json(mockClass);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch class", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  // Update class
+  app.put("/api/classes/:id", async (req: AuthenticatedRequest, res) => {
+    try {
+      const validatedData = insertClassSchema.parse(req.body);
+      
+      // For now, return mock updated data
+      const mockUpdatedClass = {
+        id: req.params.id,
+        ...validatedData,
+        teacherId: req.userId,
+        enrolledStudents: 15,
+        createdAt: "2024-01-15T00:00:00Z",
+        updatedAt: new Date().toISOString()
+      };
+      
+      res.json(mockUpdatedClass);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid class data", error: error instanceof Error ? error.message : "Unknown error" });
     }
   });
 
