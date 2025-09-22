@@ -386,6 +386,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Initialize WebSocket service
   const wsService = new GroupChatWebSocketService(httpServer);
 
+  // Initialize demo data
+  initializeDemoData();
+
   // Auth endpoints (no auth required)
   app.post("/api/auth/login", async (req, res) => {
     try {
@@ -483,4 +486,180 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   return httpServer;
+}
+
+// Initialize demo data for testing
+async function initializeDemoData() {
+  try {
+    // Create demo users
+    const demoUsers = [
+      {
+        username: 'demo_student',
+        email: 'student@eduverse.com',
+        fullName: 'Alex Student',
+        role: 'student'
+      },
+      {
+        username: 'demo_teacher',
+        email: 'teacher@eduverse.com', 
+        fullName: 'Dr. Sarah Wilson',
+        role: 'teacher'
+      },
+      {
+        username: 'demo_admin',
+        email: 'admin@eduverse.com',
+        fullName: 'Admin User',
+        role: 'admin'
+      },
+      {
+        username: 'john_student',
+        email: 'john@eduverse.com',
+        fullName: 'John Smith',
+        role: 'student'
+      },
+      {
+        username: 'emily_student',
+        email: 'emily@eduverse.com',
+        fullName: 'Emily Johnson',
+        role: 'student'
+      }
+    ];
+
+    const createdUsers: any[] = [];
+    for (const userData of demoUsers) {
+      try {
+        const existingUser = await storage.getUserByUsername(userData.username);
+        if (!existingUser) {
+          const user = await storage.createUser(userData);
+          createdUsers.push(user);
+          console.log(`Created demo user: ${user.fullName} (${user.role})`);
+        } else {
+          createdUsers.push(existingUser);
+        }
+      } catch (error) {
+        console.log(`User ${userData.username} might already exist`);
+      }
+    }
+
+    // Create demo groups
+    const demoGroups = [
+      {
+        name: 'Biology Study Group',
+        description: 'Discuss biology concepts, share notes, and help each other',
+        type: 'class',
+        icon: '🧬',
+        createdBy: createdUsers.find(u => u.role === 'teacher')?.id || createdUsers[1]?.id
+      },
+      {
+        name: 'Math Problem Solving',
+        description: 'Work together on challenging math problems',
+        type: 'class', 
+        icon: '📐',
+        createdBy: createdUsers.find(u => u.role === 'teacher')?.id || createdUsers[1]?.id
+      },
+      {
+        name: 'Science Fair Project',
+        description: 'Collaborate on science fair projects',
+        type: 'project',
+        icon: '🔬',
+        createdBy: createdUsers.find(u => u.role === 'teacher')?.id || createdUsers[1]?.id
+      },
+      {
+        name: 'School Announcements',
+        description: 'Important school updates and announcements',
+        type: 'announcement',
+        icon: '📢',
+        createdBy: createdUsers.find(u => u.role === 'admin')?.id || createdUsers[2]?.id
+      }
+    ];
+
+    const createdGroups: any[] = [];
+    for (const groupData of demoGroups) {
+      try {
+        const group = await storage.createGroup(groupData);
+        createdGroups.push(group);
+        console.log(`Created demo group: ${group.name}`);
+      } catch (error) {
+        console.log(`Error creating group ${groupData.name}:`, error);
+      }
+    }
+
+    // Add users to groups
+    if (createdUsers.length > 0 && createdGroups.length > 0) {
+      for (const group of createdGroups) {
+        // Add teacher/admin as admin of all groups
+        const teacher = createdUsers.find(u => u.role === 'teacher');
+        if (teacher) {
+          try {
+            await storage.addGroupMember({
+              groupId: group.id,
+              userId: teacher.id,
+              role: 'admin'
+            });
+          } catch (error) {
+            console.log(`Error adding teacher to group:`, error);
+          }
+        }
+
+        // Add students as members
+        const students = createdUsers.filter(u => u.role === 'student');
+        for (const student of students) {
+          try {
+            await storage.addGroupMember({
+              groupId: group.id,
+              userId: student.id,
+              role: 'member'
+            });
+          } catch (error) {
+            console.log(`Error adding student to group:`, error);
+          }
+        }
+      }
+    }
+
+    // Add some demo messages
+    if (createdGroups.length > 0 && createdUsers.length > 0) {
+      const biologyGroup = createdGroups.find(g => g.name.includes('Biology'));
+      const teacher = createdUsers.find(u => u.role === 'teacher');
+      const students = createdUsers.filter(u => u.role === 'student');
+
+      if (biologyGroup && teacher && students.length > 0) {
+        try {
+          // Teacher welcome message
+          await storage.createGroupMessage({
+            groupId: biologyGroup.id,
+            userId: teacher.id,
+            content: 'Welcome to our Biology Study Group! 🧬 Feel free to ask questions, share interesting discoveries, and help each other understand complex concepts. Let\'s make learning biology fun and collaborative!',
+            messageType: 'text'
+          });
+
+          // Student question
+          await storage.createGroupMessage({
+            groupId: biologyGroup.id,
+            userId: students[0].id,
+            content: 'Hi everyone! Can someone help me understand photosynthesis? I\'m having trouble with the light-dependent reactions. 🌱',
+            messageType: 'text'
+          });
+
+          // Another student\'s response
+          if (students[1]) {
+            await storage.createGroupMessage({
+              groupId: biologyGroup.id,
+              userId: students[1].id,
+              content: 'Sure! The light-dependent reactions happen in the thylakoids. Chlorophyll absorbs light energy, which splits water molecules (H2O) and produces ATP and NADPH. Think of it as the \"photo\" part of photosynthesis! ☀️',
+              messageType: 'text'
+            });
+          }
+
+          console.log('Created demo messages');
+        } catch (error) {
+          console.log('Error creating demo messages:', error);
+        }
+      }
+    }
+
+    console.log('Demo data initialization complete!');
+  } catch (error) {
+    console.log('Error initializing demo data:', error);
+  }
 }
