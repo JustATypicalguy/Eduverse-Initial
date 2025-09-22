@@ -17,6 +17,7 @@ import ARLearning from "@/pages/ar-learning";
 import EmotionalLearning from "@/pages/emotional-learning";
 import Avatars from "@/pages/avatars";
 import LMSStructure from "@/pages/lms-structure";
+import TeacherDashboard from "@/pages/teacher-dashboard";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -37,6 +38,7 @@ function Router() {
           <Route path="/emotional-learning" component={EmotionalLearning} />
           <Route path="/avatars" component={Avatars} />
           <Route path="/lms-structure" component={LMSStructure} />
+          <Route path="/teacher" component={TeacherDashboard} />
           <Route component={NotFound} />
         </Switch>
       </main>
