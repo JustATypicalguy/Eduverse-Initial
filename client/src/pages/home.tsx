@@ -125,19 +125,6 @@ export default function Home() {
             </Card>
           </div>
           
-          {/* Additional Moving Images */}
-          <div className="mt-12 relative">
-            <img 
-              src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=150" 
-              alt="Students working together in classroom" 
-              className="absolute right-1/4 w-36 h-28 rounded-2xl creative-shadow animate-bounce-in hover:scale-105 transition-transform opacity-70" 
-            />
-            <img 
-              src="https://images.unsplash.com/photo-1596495577886-d920f1fb7238?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150" 
-              alt="Science experiment" 
-              className="absolute left-1/2 transform -translate-x-1/2 w-28 h-28 rounded-full object-cover animate-float opacity-60 hover:opacity-90 transition-all" 
-            />
-          </div>
         </div>
         </div>
       </section>
