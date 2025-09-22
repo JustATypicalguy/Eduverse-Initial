@@ -51,13 +51,6 @@ export default function Home() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-blue-600/20 to-transparent rounded-3xl"></div>
                 
-                {/* Floating Educational Images */}
-                <img 
-                  src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=150" 
-                  alt="Students studying with books and notebooks" 
-                  className="absolute -top-8 -right-8 w-32 h-24 rounded-2xl creative-shadow animate-float hover:scale-110 transition-transform" 
-                />
-                
               </div>
               <Card className="absolute -bottom-6 -left-6 border-gray-100 glass-effect animate-bounce-in">
                 <CardContent className="p-6">
