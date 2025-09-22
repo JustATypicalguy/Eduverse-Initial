@@ -13,7 +13,11 @@ import {
   type FileAttachment, type InsertFileAttachment,
   applications, contacts, chatMessages, users, groups, groupMembers, 
   groupMessages, messageReactions, groupPolls, pollVotes, 
-  raiseHandRequests, fileAttachments
+  raiseHandRequests, fileAttachments,
+  // Teacher portal tables
+  classes, classEnrollments, assignments, assignmentSubmissions, 
+  quizzes, quizAttempts, contentLibrary, contentBookmarks, 
+  attendance, teacherProfiles, announcements
 } from "@shared/schema";
 import { eq, and, inArray, asc, sql } from "drizzle-orm";
 import { db } from "./db";

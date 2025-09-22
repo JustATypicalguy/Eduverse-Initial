@@ -233,3 +233,261 @@ export type RaiseHandRequest = typeof raiseHandRequests.$inferSelect;
 export type InsertRaiseHandRequest = z.infer<typeof insertRaiseHandRequestSchema>;
 export type FileAttachment = typeof fileAttachments.$inferSelect;
 export type InsertFileAttachment = z.infer<typeof insertFileAttachmentSchema>;
+
+// === TEACHER PORTAL TABLES ===
+
+// Classes/Courses table - for teacher class management
+export const classes = pgTable("classes", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  description: text("description"),
+  subject: text("subject").notNull(), // e.g., "Mathematics", "Science", "English"
+  gradeLevel: text("grade_level").notNull(), // e.g., "Grade 9", "High School"
+  teacherId: varchar("teacher_id").notNull(), // FK to users table
+  classCode: text("class_code").notNull().unique(), // Unique code students use to join
+  schedule: json("schedule").default({}), // JSON for class timing/schedule
+  isActive: boolean("is_active").default(true),
+  maxStudents: integer("max_students").default(30),
+  settings: json("settings").default({}), // Class-specific settings
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Class enrollments - which students are in which classes
+export const classEnrollments = pgTable("class_enrollments", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  classId: varchar("class_id").notNull(),
+  studentId: varchar("student_id").notNull(),
+  enrolledAt: timestamp("enrolled_at").defaultNow().notNull(),
+  status: text("status").notNull().default("active"), // active, completed, dropped
+});
+
+// Assignments table
+export const assignments = pgTable("assignments", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  classId: varchar("class_id").notNull(),
+  teacherId: varchar("teacher_id").notNull(),
+  title: text("title").notNull(),
+  description: text("description"),
+  instructions: text("instructions"),
+  dueDate: timestamp("due_date"),
+  maxScore: integer("max_score").default(100),
+  assignmentType: text("assignment_type").notNull().default("homework"), // homework, project, essay
+  attachments: json("attachments").default([]), // Array of file references
+  isPublished: boolean("is_published").default(false),
+  allowLateSubmission: boolean("allow_late_submission").default(true),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Student assignment submissions
+export const assignmentSubmissions = pgTable("assignment_submissions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  assignmentId: varchar("assignment_id").notNull(),
+  studentId: varchar("student_id").notNull(),
+  content: text("content"), // Student's written response
+  attachments: json("attachments").default([]), // Array of submitted files
+  submittedAt: timestamp("submitted_at").defaultNow().notNull(),
+  grade: integer("grade"), // Score received
+  feedback: text("feedback"), // Teacher feedback
+  isLate: boolean("is_late").default(false),
+  gradedAt: timestamp("graded_at"),
+  gradedBy: varchar("graded_by"), // Teacher who graded
+});
+
+// Quizzes and Exams
+export const quizzes = pgTable("quizzes", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  classId: varchar("class_id").notNull(),
+  teacherId: varchar("teacher_id").notNull(),
+  title: text("title").notNull(),
+  description: text("description"),
+  questions: json("questions").notNull(), // Array of question objects
+  maxScore: integer("max_score").notNull(),
+  duration: integer("duration"), // Duration in minutes
+  isPublished: boolean("is_published").default(false),
+  allowRetake: boolean("allow_retake").default(false),
+  randomizeQuestions: boolean("randomize_questions").default(false),
+  showCorrectAnswers: boolean("show_correct_answers").default(true),
+  availableFrom: timestamp("available_from"),
+  availableUntil: timestamp("available_until"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Quiz attempts by students
+export const quizAttempts = pgTable("quiz_attempts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  quizId: varchar("quiz_id").notNull(),
+  studentId: varchar("student_id").notNull(),
+  answers: json("answers").notNull(), // Student's answers
+  score: integer("score"),
+  maxScore: integer("max_score").notNull(),
+  startedAt: timestamp("started_at").defaultNow().notNull(),
+  submittedAt: timestamp("submitted_at"),
+  timeSpent: integer("time_spent"), // Time in seconds
+  isCompleted: boolean("is_completed").default(false),
+});
+
+// Content Library - for teaching materials
+export const contentLibrary = pgTable("content_library", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  description: text("description"),
+  contentType: text("content_type").notNull(), // pdf, video, slides, document, image
+  fileUrl: text("file_url").notNull(),
+  fileName: text("file_name").notNull(),
+  fileSize: integer("file_size"),
+  subject: text("subject"), // Subject category
+  gradeLevel: text("grade_level"), // Target grade level
+  tags: json("tags").default([]), // Array of tags for searching
+  uploadedBy: varchar("uploaded_by").notNull(), // Teacher who uploaded
+  isPublic: boolean("is_public").default(false), // Shareable with other teachers
+  downloads: integer("downloads").default(0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Bookmarks for content library
+export const contentBookmarks = pgTable("content_bookmarks", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  contentId: varchar("content_id").notNull(),
+  userId: varchar("user_id").notNull(), // Teacher who bookmarked
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Attendance tracking
+export const attendance = pgTable("attendance", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  classId: varchar("class_id").notNull(),
+  studentId: varchar("student_id").notNull(),
+  date: timestamp("date").notNull(),
+  status: text("status").notNull().default("present"), // present, absent, late, excused
+  notes: text("notes"),
+  recordedBy: varchar("recorded_by").notNull(), // Teacher who recorded
+  recordedAt: timestamp("recorded_at").defaultNow().notNull(),
+});
+
+// Teacher profiles extension (additional info beyond users table)
+export const teacherProfiles = pgTable("teacher_profiles", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().unique(), // FK to users table
+  bio: text("bio"),
+  specialization: text("specialization"), // Subject specialization
+  education: text("education"), // Educational background
+  experience: integer("experience"), // Years of experience
+  contactInfo: json("contact_info").default({}), // Additional contact details
+  teachingPreferences: json("teaching_preferences").default({}), // Language, style, etc
+  isVerified: boolean("is_verified").default(false),
+  profileImageUrl: text("profile_image_url"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Announcements (teacher to class/group)
+export const announcements = pgTable("announcements", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  content: text("content").notNull(),
+  authorId: varchar("author_id").notNull(), // Teacher who posted
+  targetType: text("target_type").notNull(), // 'class', 'group', 'all'
+  targetId: varchar("target_id"), // Class ID or Group ID if specific
+  priority: text("priority").notNull().default("normal"), // low, normal, high, urgent
+  isPublished: boolean("is_published").default(true),
+  publishAt: timestamp("publish_at").defaultNow(),
+  expiresAt: timestamp("expires_at"),
+  attachments: json("attachments").default([]),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// === INSERT SCHEMAS FOR TEACHER PORTAL ===
+
+export const insertClassSchema = createInsertSchema(classes).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertClassEnrollmentSchema = createInsertSchema(classEnrollments).omit({
+  id: true,
+  enrolledAt: true,
+});
+
+export const insertAssignmentSchema = createInsertSchema(assignments).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertAssignmentSubmissionSchema = createInsertSchema(assignmentSubmissions).omit({
+  id: true,
+  submittedAt: true,
+  gradedAt: true,
+});
+
+export const insertQuizSchema = createInsertSchema(quizzes).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertQuizAttemptSchema = createInsertSchema(quizAttempts).omit({
+  id: true,
+  startedAt: true,
+  submittedAt: true,
+});
+
+export const insertContentLibrarySchema = createInsertSchema(contentLibrary).omit({
+  id: true,
+  createdAt: true,
+  downloads: true,
+});
+
+export const insertContentBookmarkSchema = createInsertSchema(contentBookmarks).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertAttendanceSchema = createInsertSchema(attendance).omit({
+  id: true,
+  recordedAt: true,
+});
+
+export const insertTeacherProfileSchema = createInsertSchema(teacherProfiles).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertAnnouncementSchema = createInsertSchema(announcements).omit({
+  id: true,
+  createdAt: true,
+});
+
+// === TYPE DEFINITIONS FOR TEACHER PORTAL ===
+
+export type Class = typeof classes.$inferSelect;
+export type InsertClass = z.infer<typeof insertClassSchema>;
+
+export type ClassEnrollment = typeof classEnrollments.$inferSelect;
+export type InsertClassEnrollment = z.infer<typeof insertClassEnrollmentSchema>;
+
+export type Assignment = typeof assignments.$inferSelect;
+export type InsertAssignment = z.infer<typeof insertAssignmentSchema>;
+
+export type AssignmentSubmission = typeof assignmentSubmissions.$inferSelect;
+export type InsertAssignmentSubmission = z.infer<typeof insertAssignmentSubmissionSchema>;
+
+export type Quiz = typeof quizzes.$inferSelect;
+export type InsertQuiz = z.infer<typeof insertQuizSchema>;
+
+export type QuizAttempt = typeof quizAttempts.$inferSelect;
+export type InsertQuizAttempt = z.infer<typeof insertQuizAttemptSchema>;
+
+export type ContentLibraryItem = typeof contentLibrary.$inferSelect;
+export type InsertContentLibraryItem = z.infer<typeof insertContentLibrarySchema>;
+
+export type ContentBookmark = typeof contentBookmarks.$inferSelect;
+export type InsertContentBookmark = z.infer<typeof insertContentBookmarkSchema>;
+
+export type Attendance = typeof attendance.$inferSelect;
+export type InsertAttendance = z.infer<typeof insertAttendanceSchema>;
+
+export type TeacherProfile = typeof teacherProfiles.$inferSelect;
+export type InsertTeacherProfile = z.infer<typeof insertTeacherProfileSchema>;
+
+export type Announcement = typeof announcements.$inferSelect;
+export type InsertAnnouncement = z.infer<typeof insertAnnouncementSchema>;
