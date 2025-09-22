@@ -9,7 +9,8 @@ import {
   type MessageReaction, type InsertMessageReaction,
   type GroupPoll, type InsertGroupPoll,
   type PollVote, type InsertPollVote,
-  type RaiseHandRequest, type InsertRaiseHandRequest
+  type RaiseHandRequest, type InsertRaiseHandRequest,
+  type FileAttachment, type InsertFileAttachment
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -71,6 +72,14 @@ export interface IStorage {
   createRaiseHandRequest(request: InsertRaiseHandRequest): Promise<RaiseHandRequest>;
   resolveRaiseHandRequest(id: string, resolvedBy: string): Promise<boolean>;
   getActiveRaiseHandRequests(groupId: string): Promise<RaiseHandRequest[]>;
+  
+  // File Attachments
+  createFileAttachment(attachment: InsertFileAttachment): Promise<FileAttachment>;
+  getFileAttachment(id: string): Promise<FileAttachment | undefined>;
+  getMessageAttachments(messageId: string): Promise<FileAttachment[]>;
+  incrementDownloadCount(id: string): Promise<boolean>;
+  updateScanStatus(id: string, status: string): Promise<boolean>;
+  deleteFileAttachment(id: string): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -85,6 +94,7 @@ export class MemStorage implements IStorage {
   private groupPolls: Map<string, GroupPoll>;
   private pollVotes: Map<string, PollVote>;
   private raiseHandRequests: Map<string, RaiseHandRequest>;
+  private fileAttachments: Map<string, FileAttachment>;
 
   constructor() {
     this.applications = new Map();
@@ -98,6 +108,7 @@ export class MemStorage implements IStorage {
     this.groupPolls = new Map();
     this.pollVotes = new Map();
     this.raiseHandRequests = new Map();
+    this.fileAttachments = new Map();
   }
 
   // Applications
@@ -422,6 +433,63 @@ export class MemStorage implements IStorage {
       }
     }
     return activeRequests.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+  }
+
+  // File Attachments
+  async createFileAttachment(insertAttachment: InsertFileAttachment): Promise<FileAttachment> {
+    const id = randomUUID();
+    const attachment: FileAttachment = {
+      ...insertAttachment,
+      id,
+      downloadCount: 0,
+      createdAt: new Date(),
+    };
+    this.fileAttachments.set(id, attachment);
+    return attachment;
+  }
+
+  async getFileAttachment(id: string): Promise<FileAttachment | undefined> {
+    return this.fileAttachments.get(id);
+  }
+
+  async getMessageAttachments(messageId: string): Promise<FileAttachment[]> {
+    const attachments: FileAttachment[] = [];
+    for (const attachment of this.fileAttachments.values()) {
+      if (attachment.messageId === messageId) {
+        attachments.push(attachment);
+      }
+    }
+    return attachments.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+  }
+
+  async incrementDownloadCount(id: string): Promise<boolean> {
+    const attachment = this.fileAttachments.get(id);
+    if (attachment) {
+      const updatedAttachment: FileAttachment = {
+        ...attachment,
+        downloadCount: attachment.downloadCount + 1,
+      };
+      this.fileAttachments.set(id, updatedAttachment);
+      return true;
+    }
+    return false;
+  }
+
+  async updateScanStatus(id: string, status: string): Promise<boolean> {
+    const attachment = this.fileAttachments.get(id);
+    if (attachment) {
+      const updatedAttachment: FileAttachment = {
+        ...attachment,
+        scanStatus: status,
+      };
+      this.fileAttachments.set(id, updatedAttachment);
+      return true;
+    }
+    return false;
+  }
+
+  async deleteFileAttachment(id: string): Promise<boolean> {
+    return this.fileAttachments.delete(id);
   }
 }
 

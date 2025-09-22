@@ -150,6 +150,22 @@ export const raiseHandRequests = pgTable("raise_hand_requests", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+// File attachments table
+export const fileAttachments = pgTable("file_attachments", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  messageId: varchar("message_id").notNull(),
+  fileName: text("file_name").notNull(),
+  originalName: text("original_name").notNull(),
+  fileSize: integer("file_size").notNull(), // Size in bytes
+  mimeType: text("mime_type").notNull(),
+  fileUrl: text("file_url").notNull(), // Path or URL to the file
+  thumbnail: text("thumbnail"), // Thumbnail URL for images/videos
+  uploadedBy: varchar("uploaded_by").notNull(),
+  scanStatus: text("scan_status").notNull().default("pending"), // 'pending', 'safe', 'blocked'
+  downloadCount: integer("download_count").default(0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // Insert schemas for group chat system
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
@@ -193,6 +209,12 @@ export const insertRaiseHandRequestSchema = createInsertSchema(raiseHandRequests
   resolvedAt: true,
 });
 
+export const insertFileAttachmentSchema = createInsertSchema(fileAttachments).omit({
+  id: true,
+  createdAt: true,
+  downloadCount: true,
+});
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type Group = typeof groups.$inferSelect;
@@ -209,3 +231,5 @@ export type PollVote = typeof pollVotes.$inferSelect;
 export type InsertPollVote = z.infer<typeof insertPollVoteSchema>;
 export type RaiseHandRequest = typeof raiseHandRequests.$inferSelect;
 export type InsertRaiseHandRequest = z.infer<typeof insertRaiseHandRequestSchema>;
+export type FileAttachment = typeof fileAttachments.$inferSelect;
+export type InsertFileAttachment = z.infer<typeof insertFileAttachmentSchema>;

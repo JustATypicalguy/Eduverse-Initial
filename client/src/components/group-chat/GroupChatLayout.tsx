@@ -50,7 +50,7 @@ export function GroupChatLayout() {
   };
 
   return (
-    <div className="h-screen bg-gray-100 flex">
+    <div className="mx-4 mb-4 h-full bg-white rounded-lg shadow-lg overflow-hidden flex">
       {/* Sidebar */}
       <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
         <GroupSidebar
@@ -74,7 +74,7 @@ export function GroupChatLayout() {
             isConnected={isConnected}
           />
         ) : (
-          <div className="flex-1 flex items-center justify-center bg-gray-50">
+          <div className="flex-1 flex items-center justify-center bg-white">
             <div className="text-center">
               <div className="text-6xl mb-4">💬</div>
               <h2 className="text-2xl font-semibold text-gray-600 mb-2">

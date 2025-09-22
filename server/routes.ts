@@ -1,11 +1,14 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
 import { storage } from "./storage";
 import { 
   insertApplicationSchema, insertContactSchema, insertChatMessageSchema, 
   insertGroupSchema, insertGroupMemberSchema, insertUserSchema,
   insertGroupMessageSchema, insertMessageReactionSchema, insertGroupPollSchema,
-  insertPollVoteSchema, insertRaiseHandRequestSchema
+  insertPollVoteSchema, insertRaiseHandRequestSchema, insertFileAttachmentSchema
 } from "@shared/schema";
 import { isEducationalQuestion, answerEducationalQuestion, isDemoMode } from "./services/openai";
 import { GroupChatWebSocketService } from "./websocket";
@@ -386,6 +389,184 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     } catch (error) {
       res.status(500).json({ message: "Failed to remove member", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  // File upload configuration
+  const uploadDir = path.join(process.cwd(), 'uploads');
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
+
+  const upload = multer({
+    storage: multer.diskStorage({
+      destination: (req, file, cb) => {
+        cb(null, uploadDir);
+      },
+      filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+      }
+    }),
+    limits: {
+      fileSize: 50 * 1024 * 1024, // 50MB limit
+      files: 5 // Max 5 files per upload
+    },
+    fileFilter: (req, file, cb) => {
+      // Allow common file types (images, documents, videos)
+      const allowedMimes = [
+        'image/jpeg', 'image/png', 'image/gif', 'image/webp',
+        'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+        'text/plain', 'text/csv',
+        'video/mp4', 'video/mpeg', 'video/quicktime', 'video/x-msvideo',
+        'audio/mpeg', 'audio/wav', 'audio/ogg'
+      ];
+      
+      if (allowedMimes.includes(file.mimetype)) {
+        cb(null, true);
+      } else {
+        cb(new Error('File type not allowed'));
+      }
+    }
+  });
+
+  // Apply authentication to file routes
+  app.use("/api/files", authMiddleware);
+
+  // File upload endpoint
+  app.post("/api/files/upload", upload.array('files', 5), async (req: AuthenticatedRequest, res) => {
+    try {
+      if (!req.files || !Array.isArray(req.files) || req.files.length === 0) {
+        return res.status(400).json({ message: "No files uploaded" });
+      }
+
+      const { messageId } = req.body;
+      if (!messageId) {
+        return res.status(400).json({ message: "Message ID is required" });
+      }
+
+      const attachments = [];
+      
+      for (const file of req.files) {
+        const validatedData = insertFileAttachmentSchema.parse({
+          messageId,
+          fileName: file.filename,
+          originalName: file.originalname,
+          fileSize: file.size,
+          mimeType: file.mimetype,
+          fileUrl: `/uploads/${file.filename}`,
+          uploadedBy: req.userId!,
+          scanStatus: 'safe' // In production, implement virus scanning
+        });
+
+        const attachment = await storage.createFileAttachment(validatedData);
+        attachments.push(attachment);
+      }
+
+      // Broadcast file upload to group via WebSocket
+      if (wsService) {
+        const message = await storage.getGroupMessage(messageId);
+        if (message) {
+          wsService.broadcastToGroup(message.groupId, {
+            type: 'file_uploaded',
+            messageId,
+            attachments,
+            userId: req.userId!
+          });
+        }
+      }
+
+      res.json({ attachments });
+    } catch (error) {
+      console.error('File upload error:', error);
+      res.status(400).json({ message: "File upload failed", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  // File download endpoint
+  app.get("/api/files/:id/download", async (req: AuthenticatedRequest, res) => {
+    try {
+      const attachment = await storage.getFileAttachment(req.params.id);
+      if (!attachment) {
+        return res.status(404).json({ message: "File not found" });
+      }
+
+      // Check if user has access to the message/group
+      const message = await storage.getGroupMessage(attachment.messageId);
+      if (!message) {
+        return res.status(404).json({ message: "Message not found" });
+      }
+
+      const isMember = await storage.isGroupMember(req.userId!, message.groupId);
+      if (!isMember) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+
+      const filePath = path.join(uploadDir, path.basename(attachment.fileUrl));
+      if (!fs.existsSync(filePath)) {
+        return res.status(404).json({ message: "File not found on disk" });
+      }
+
+      // Increment download count
+      await storage.incrementDownloadCount(req.params.id);
+
+      // Set appropriate headers
+      res.setHeader('Content-Disposition', `attachment; filename="${attachment.originalName}"`);
+      res.setHeader('Content-Type', attachment.mimeType);
+      
+      // Stream the file
+      const fileStream = fs.createReadStream(filePath);
+      fileStream.pipe(res);
+    } catch (error) {
+      console.error('File download error:', error);
+      res.status(500).json({ message: "File download failed", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  // Get file info endpoint
+  app.get("/api/files/:id", async (req: AuthenticatedRequest, res) => {
+    try {
+      const attachment = await storage.getFileAttachment(req.params.id);
+      if (!attachment) {
+        return res.status(404).json({ message: "File not found" });
+      }
+
+      // Check if user has access to the message/group
+      const message = await storage.getGroupMessage(attachment.messageId);
+      if (!message) {
+        return res.status(404).json({ message: "Message not found" });
+      }
+
+      const isMember = await storage.isGroupMember(req.userId!, message.groupId);
+      if (!isMember) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+
+      res.json(attachment);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch file info", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  // Get message attachments endpoint
+  app.get("/api/messages/:messageId/attachments", async (req: AuthenticatedRequest, res) => {
+    try {
+      const message = await storage.getGroupMessage(req.params.messageId);
+      if (!message) {
+        return res.status(404).json({ message: "Message not found" });
+      }
+
+      const isMember = await storage.isGroupMember(req.userId!, message.groupId);
+      if (!isMember) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+
+      const attachments = await storage.getMessageAttachments(req.params.messageId);
+      res.json(attachments);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch attachments", error: error instanceof Error ? error.message : "Unknown error" });
     }
   });
 

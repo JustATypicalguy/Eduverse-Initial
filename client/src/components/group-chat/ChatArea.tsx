@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { Progress } from '@/components/ui/progress';
 import { 
   Send, 
   Paperclip, 
@@ -15,7 +16,12 @@ import {
   Hand,
   BarChart3,
   Wifi,
-  WifiOff
+  WifiOff,
+  X,
+  FileText,
+  Image,
+  Video as VideoIcon,
+  Music
 } from 'lucide-react';
 import { MessageBubble } from './MessageBubble';
 import { TypingIndicator } from './TypingIndicator';
@@ -42,8 +48,12 @@ export function ChatArea({
   const [messageText, setMessageText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [showPollModal, setShowPollModal] = useState(false);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
+  const [isUploading, setIsUploading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout>();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -83,6 +93,91 @@ export function ChatArea({
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
+    }
+  };
+
+  const handleFileSelect = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const files = Array.from(e.target.files);
+      setSelectedFiles(prev => [...prev, ...files].slice(0, 5)); // Max 5 files
+    }
+  };
+
+  const handleRemoveFile = (index: number) => {
+    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const getFileIcon = (type: string) => {
+    if (type.startsWith('image/')) return <Image className="h-4 w-4" />;
+    if (type.startsWith('video/')) return <VideoIcon className="h-4 w-4" />;
+    if (type.startsWith('audio/')) return <Music className="h-4 w-4" />;
+    return <FileText className="h-4 w-4" />;
+  };
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
+  const handleUploadFiles = async () => {
+    if (!user || selectedFiles.length === 0) return;
+
+    setIsUploading(true);
+    setUploadProgress(0);
+
+    try {
+      // First create a placeholder message
+      const messageContent = selectedFiles.length === 1 
+        ? `📎 ${selectedFiles[0].name}` 
+        : `📎 ${selectedFiles.length} files`;
+      
+      // Send message to get message ID
+      onSendMessage(messageContent, 'file');
+
+      // Create form data for file upload
+      const formData = new FormData();
+      selectedFiles.forEach(file => {
+        formData.append('files', file);
+      });
+
+      // For now, we'll use a placeholder messageId - in real implementation,
+      // we'd get the messageId from the onSendMessage response
+      const messageId = 'temp-' + Date.now();
+      formData.append('messageId', messageId);
+
+      // Upload files (simulated progress for now)
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += 10;
+        setUploadProgress(progress);
+        if (progress >= 100) {
+          clearInterval(interval);
+          setIsUploading(false);
+          setSelectedFiles([]);
+          setUploadProgress(0);
+        }
+      }, 100);
+
+      // TODO: Implement actual file upload to backend
+      // const response = await fetch('/api/files/upload', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Authorization': `Bearer ${localStorage.getItem('eduverse_token')}`
+      //   },
+      //   body: formData
+      // });
+
+    } catch (error) {
+      console.error('File upload error:', error);
+      setIsUploading(false);
+      setUploadProgress(0);
     }
   };
 
@@ -228,10 +323,95 @@ export function ChatArea({
 
       {/* Message Input */}
       <div className="bg-white border-t border-gray-200 p-4">
+        {/* File Preview Area */}
+        {selectedFiles.length > 0 && (
+          <div className="mb-4 p-3 bg-gray-50 rounded-lg border">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium text-gray-700">
+                {selectedFiles.length} file{selectedFiles.length > 1 ? 's' : ''} selected
+              </span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSelectedFiles([])}
+                className="h-6 w-6 p-0"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            
+            <div className="space-y-2">
+              {selectedFiles.map((file, index) => (
+                <div key={index} className="flex items-center gap-3 p-2 bg-white rounded border">
+                  {getFileIcon(file.type)}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-900 truncate">{file.name}</p>
+                    <p className="text-xs text-gray-500">{formatFileSize(file.size)}</p>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleRemoveFile(index)}
+                    className="h-6 w-6 p-0"
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+            
+            {isUploading && (
+              <div className="mt-3">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs text-gray-600">Uploading...</span>
+                  <span className="text-xs text-gray-600">{uploadProgress}%</span>
+                </div>
+                <Progress value={uploadProgress} className="h-2" />
+              </div>
+            )}
+            
+            <div className="flex gap-2 mt-3">
+              <Button
+                onClick={handleUploadFiles}
+                disabled={isUploading || !isConnected}
+                className="bg-eduverse-blue hover:bg-eduverse-dark"
+                size="sm"
+                data-testid="button-upload-files"
+              >
+                {isUploading ? 'Uploading...' : 'Send Files'}
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleFileSelect}
+                disabled={selectedFiles.length >= 5}
+              >
+                Add More
+              </Button>
+            </div>
+          </div>
+        )}
+        
         <div className="flex items-end gap-3">
-          <Button variant="ghost" size="sm" className="mb-2">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="mb-2"
+            onClick={handleFileSelect}
+            disabled={!isConnected}
+            data-testid="button-attach-file"
+          >
             <Paperclip className="h-4 w-4" />
           </Button>
+          
+          <input
+            ref={fileInputRef}
+            type="file"
+            multiple
+            accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt,.csv,.xls,.xlsx,.ppt,.pptx"
+            onChange={handleFileChange}
+            className="hidden"
+          />
           
           <div className="flex-1">
             <Input
@@ -245,13 +425,19 @@ export function ChatArea({
             />
           </div>
           
-          <Button variant="ghost" size="sm" className="mb-2">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="mb-2"
+            disabled={!isConnected}
+            title="Emoji (coming soon)"
+          >
             <Smile className="h-4 w-4" />
           </Button>
           
           <Button
             onClick={handleSendMessage}
-            disabled={!messageText.trim() || !isConnected}
+            disabled={(!messageText.trim() && selectedFiles.length === 0) || !isConnected || isUploading}
             className="bg-eduverse-blue hover:bg-eduverse-dark mb-2"
             size="sm"
             data-testid="button-send"
