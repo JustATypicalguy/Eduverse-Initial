@@ -1,9 +1,15 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertApplicationSchema, insertContactSchema, insertChatMessageSchema, insertGroupSchema, insertGroupMemberSchema, insertUserSchema } from "@shared/schema";
+import { 
+  insertApplicationSchema, insertContactSchema, insertChatMessageSchema, 
+  insertGroupSchema, insertGroupMemberSchema, insertUserSchema,
+  insertGroupMessageSchema, insertMessageReactionSchema, insertGroupPollSchema,
+  insertPollVoteSchema, insertRaiseHandRequestSchema
+} from "@shared/schema";
 import { isEducationalQuestion, answerEducationalQuestion, isDemoMode } from "./services/openai";
 import { GroupChatWebSocketService } from "./websocket";
+import { authMiddleware, requireRole, generateToken, type AuthenticatedRequest } from "./middleware/auth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Applications endpoints
@@ -196,10 +202,285 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Message reactions endpoints
+  app.post("/api/messages/:messageId/reactions", async (req, res) => {
+    try {
+      const validatedData = insertMessageReactionSchema.parse({
+        ...req.body,
+        messageId: req.params.messageId
+      });
+      const reaction = await storage.addMessageReaction(validatedData);
+      res.json(reaction);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid reaction data", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  app.delete("/api/messages/:messageId/reactions", async (req, res) => {
+    try {
+      const { userId, emoji } = req.query;
+      if (!userId || !emoji) {
+        return res.status(400).json({ message: "userId and emoji are required" });
+      }
+      const success = await storage.removeMessageReaction(req.params.messageId, userId as string, emoji as string);
+      if (success) {
+        res.json({ success: true });
+      } else {
+        res.status(404).json({ message: "Reaction not found" });
+      }
+    } catch (error) {
+      res.status(500).json({ message: "Failed to remove reaction", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  app.get("/api/messages/:messageId/reactions", async (req, res) => {
+    try {
+      const reactions = await storage.getMessageReactions(req.params.messageId);
+      res.json(reactions);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch reactions", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  // Group polls endpoints
+  app.post("/api/groups/:groupId/polls", async (req, res) => {
+    try {
+      const validatedData = insertGroupPollSchema.parse({
+        ...req.body,
+        groupId: req.params.groupId
+      });
+      const poll = await storage.createGroupPoll(validatedData);
+      res.json(poll);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid poll data", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  app.get("/api/groups/:groupId/polls", async (req, res) => {
+    try {
+      const polls = await storage.getGroupPolls(req.params.groupId);
+      res.json(polls);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch polls", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  app.get("/api/polls/:pollId", async (req, res) => {
+    try {
+      const poll = await storage.getGroupPoll(req.params.pollId);
+      if (!poll) {
+        return res.status(404).json({ message: "Poll not found" });
+      }
+      res.json(poll);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch poll", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  // Poll voting endpoints
+  app.post("/api/polls/:pollId/votes", async (req, res) => {
+    try {
+      const validatedData = insertPollVoteSchema.parse({
+        ...req.body,
+        pollId: req.params.pollId
+      });
+      const vote = await storage.addPollVote(validatedData);
+      res.json(vote);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid vote data", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  app.delete("/api/polls/:pollId/votes/:userId", async (req, res) => {
+    try {
+      const success = await storage.removePollVote(req.params.pollId, req.params.userId);
+      if (success) {
+        res.json({ success: true });
+      } else {
+        res.status(404).json({ message: "Vote not found" });
+      }
+    } catch (error) {
+      res.status(500).json({ message: "Failed to remove vote", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  app.get("/api/polls/:pollId/votes", async (req, res) => {
+    try {
+      const votes = await storage.getPollVotes(req.params.pollId);
+      res.json(votes);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch votes", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  // Raise hand requests endpoints
+  app.post("/api/groups/:groupId/raise-hand", async (req, res) => {
+    try {
+      const validatedData = insertRaiseHandRequestSchema.parse({
+        ...req.body,
+        groupId: req.params.groupId
+      });
+      const request = await storage.createRaiseHandRequest(validatedData);
+      res.json(request);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid raise hand request", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  app.get("/api/groups/:groupId/raise-hand", async (req, res) => {
+    try {
+      const requests = await storage.getActiveRaiseHandRequests(req.params.groupId);
+      res.json(requests);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch raise hand requests", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  app.patch("/api/raise-hand/:requestId/resolve", async (req, res) => {
+    try {
+      const { resolvedBy } = req.body;
+      if (!resolvedBy) {
+        return res.status(400).json({ message: "resolvedBy is required" });
+      }
+      const success = await storage.resolveRaiseHandRequest(req.params.requestId, resolvedBy);
+      if (success) {
+        res.json({ success: true });
+      } else {
+        res.status(404).json({ message: "Raise hand request not found" });
+      }
+    } catch (error) {
+      res.status(500).json({ message: "Failed to resolve request", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  // Group message management endpoints
+  app.post("/api/groups/:groupId/messages", async (req, res) => {
+    try {
+      const validatedData = insertGroupMessageSchema.parse({
+        ...req.body,
+        groupId: req.params.groupId
+      });
+      const message = await storage.createGroupMessage(validatedData);
+      res.json(message);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid message data", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  // Remove group member endpoint
+  app.delete("/api/groups/:groupId/members/:userId", async (req, res) => {
+    try {
+      const success = await storage.removeGroupMember(req.params.groupId, req.params.userId);
+      if (success) {
+        res.json({ success: true });
+      } else {
+        res.status(404).json({ message: "Member not found" });
+      }
+    } catch (error) {
+      res.status(500).json({ message: "Failed to remove member", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
   const httpServer = createServer(app);
   
   // Initialize WebSocket service
   const wsService = new GroupChatWebSocketService(httpServer);
+
+  // Auth endpoints (no auth required)
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      const user = await storage.getUserByUsername(username);
+      
+      if (!user) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+      
+      // Simple password check (in production, use proper hashing)
+      // For now, just generate token with user info
+      const token = generateToken(user.id, user.role);
+      
+      res.json({ 
+        token, 
+        user: { id: user.id, username: user.username, role: user.role, fullName: user.fullName }
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Login failed", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  // Apply auth middleware to all protected routes
+  app.use("/api/groups", authMiddleware);
+  app.use("/api/users", authMiddleware);
+  app.use("/api/messages", authMiddleware);
+  app.use("/api/polls", authMiddleware);
+  app.use("/api/raise-hand", authMiddleware);
+
+  // Update message reaction endpoints to broadcast via WebSocket
+  app.post("/api/messages/:messageId/reactions", async (req: AuthenticatedRequest, res) => {
+    try {
+      const validatedData = insertMessageReactionSchema.parse({
+        ...req.body,
+        messageId: req.params.messageId,
+        userId: req.userId  // Use authenticated user ID
+      });
+      const reaction = await storage.addMessageReaction(validatedData);
+      
+      // Get message to find group for broadcasting
+      const message = await storage.getGroupMessage(req.params.messageId);
+      if (message) {
+        wsService.broadcastToGroupExternal(message.groupId, 'message_reaction', {
+          messageId: req.params.messageId,
+          userId: req.userId,
+          emoji: validatedData.emoji,
+          action: 'add',
+          timestamp: new Date().toISOString()
+        });
+      }
+      
+      res.json(reaction);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid reaction data", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  // Update poll creation to broadcast via WebSocket
+  app.post("/api/groups/:groupId/polls", requireRole(['teacher', 'admin']), async (req: AuthenticatedRequest, res) => {
+    try {
+      const validatedData = insertGroupPollSchema.parse({
+        ...req.body,
+        groupId: req.params.groupId,
+        createdBy: req.userId
+      });
+      const poll = await storage.createGroupPoll(validatedData);
+      
+      // Broadcast new poll to group members
+      wsService.broadcastToGroupExternal(req.params.groupId, 'new_poll', poll);
+      
+      res.json(poll);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid poll data", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  // Update raise hand to broadcast via WebSocket
+  app.post("/api/groups/:groupId/raise-hand", async (req: AuthenticatedRequest, res) => {
+    try {
+      const validatedData = insertRaiseHandRequestSchema.parse({
+        ...req.body,
+        groupId: req.params.groupId,
+        userId: req.userId
+      });
+      const request = await storage.createRaiseHandRequest(validatedData);
+      
+      // Broadcast raise hand request to group members
+      wsService.broadcastToGroupExternal(req.params.groupId, 'raise_hand_request', request);
+      
+      res.json(request);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid raise hand request", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
   
   return httpServer;
 }

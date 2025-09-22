@@ -16,7 +16,7 @@ interface WSMessage {
 
 class GroupChatWebSocketService {
   private wss: WebSocketServer;
-  private clients: Map<string, WebSocketClient> = new Map();
+  private clients: Map<string, Set<WebSocketClient>> = new Map(); // Support multiple connections per user
   private groupClients: Map<string, Set<string>> = new Map();
 
   constructor(server: Server) {
@@ -114,8 +114,11 @@ class GroupChatWebSocketService {
         ws.groupIds.push(groupId);
       }
 
-      // Add to client maps
-      this.clients.set(userId, ws);
+      // Add to client maps (support multiple connections per user)
+      if (!this.clients.has(userId)) {
+        this.clients.set(userId, new Set());
+      }
+      this.clients.get(userId)!.add(ws);
       if (!this.groupClients.has(groupId)) {
         this.groupClients.set(groupId, new Set());
       }
@@ -267,25 +270,34 @@ class GroupChatWebSocketService {
     const userId = ws.userId;
     
     if (userId) {
-      // Remove from all groups
-      if (ws.groupIds) {
-        ws.groupIds.forEach(groupId => {
-          if (this.groupClients.has(groupId)) {
-            this.groupClients.get(groupId)!.delete(userId);
-          }
+      // Remove this specific connection
+      const userConnections = this.clients.get(userId);
+      if (userConnections) {
+        userConnections.delete(ws);
+        if (userConnections.size === 0) {
+          // Last connection for this user
+          this.clients.delete(userId);
           
-          // Notify group members
-          this.broadcastToGroup(groupId, 'user_disconnected', { 
-            groupId, 
-            userId, 
-            timestamp: new Date().toISOString() 
-          }, [userId]);
-        });
+          // Remove from all groups and notify
+          if (ws.groupIds) {
+            ws.groupIds.forEach(groupId => {
+              if (this.groupClients.has(groupId)) {
+                this.groupClients.get(groupId)!.delete(userId);
+              }
+              
+              // Notify group members
+              this.broadcastToGroup(groupId, 'user_disconnected', { 
+                groupId, 
+                userId, 
+                timestamp: new Date().toISOString() 
+              }, [userId]);
+            });
+          }
+          console.log(`User ${userId} disconnected (all connections)`);
+        } else {
+          console.log(`User ${userId} disconnected (${userConnections.size} connections remaining)`);
+        }
       }
-
-      // Remove from clients map
-      this.clients.delete(userId);
-      console.log(`User ${userId} disconnected`);
     }
   }
 
@@ -295,9 +307,13 @@ class GroupChatWebSocketService {
 
     groupMembers.forEach(userId => {
       if (!excludeUsers.includes(userId)) {
-        const client = this.clients.get(userId);
-        if (client && client.readyState === WebSocket.OPEN) {
-          this.sendMessage(client, type, data);
+        const userConnections = this.clients.get(userId);
+        if (userConnections) {
+          userConnections.forEach(client => {
+            if (client.readyState === WebSocket.OPEN) {
+              this.sendMessage(client, type, data);
+            }
+          });
         }
       }
     });
@@ -343,6 +359,11 @@ class GroupChatWebSocketService {
   public getGroupMembers(groupId: string): string[] {
     const members = this.groupClients.get(groupId);
     return members ? Array.from(members) : [];
+  }
+
+  public getUserConnectionCount(userId: string): number {
+    const connections = this.clients.get(userId);
+    return connections ? connections.size : 0;
   }
 }
 

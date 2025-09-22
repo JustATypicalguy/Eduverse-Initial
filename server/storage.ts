@@ -272,6 +272,11 @@ export class MemStorage implements IStorage {
       id,
       createdAt: new Date(),
       editedAt: null,
+      isDeleted: false,  // Fix: Initialize isDeleted to false
+      isPinned: insertMessage.isPinned ?? false,
+      messageType: insertMessage.messageType ?? 'text',
+      replyToId: insertMessage.replyToId ?? null,
+      metadata: insertMessage.metadata ?? {},
     };
     this.groupMessages.set(id, message);
     return message;
