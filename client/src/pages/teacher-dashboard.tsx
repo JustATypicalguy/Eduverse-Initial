@@ -3,6 +3,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { PermissionGuard, ProtectedElement, RoleGuard } from "@/components/PermissionGuard";
+import { useCurrentUser, useHasPermission } from "@/hooks/usePermissions";
 import { 
   Calendar, 
   Users, 
@@ -12,7 +15,13 @@ import {
   BookOpen,
   Clock,
   TrendingUp,
-  Plus
+  Plus,
+  Shield,
+  Settings,
+  Crown,
+  BarChart3,
+  UserPlus,
+  GraduationCap
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -41,6 +50,11 @@ interface UpcomingClass {
 }
 
 export default function TeacherDashboard() {
+  const { data: user } = useCurrentUser();
+  const canManageTeachers = useHasPermission('admin', 'manage_teachers');
+  const canViewDepartmentAnalytics = useHasPermission('admin', 'view_department_analytics');
+  const canCreateContent = useHasPermission('content', 'create');
+
   // Mock data for now - this will be replaced with real API calls
   const mockStats: DashboardStats = {
     totalClasses: 5,
@@ -104,12 +118,59 @@ export default function TeacherDashboard() {
       <div className="container mx-auto p-6">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            Teacher Dashboard
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Welcome back! Here's what's happening with your classes today.
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                Teacher Dashboard
+              </h1>
+              <p className="text-gray-600 dark:text-gray-400">
+                Welcome back! Here's what's happening with your classes today.
+              </p>
+            </div>
+            
+            {user && (
+              <div className="flex items-center gap-4">
+                {/* User Profile */}
+                <div className="flex items-center gap-3 bg-white dark:bg-gray-800 rounded-lg p-3 shadow-sm border">
+                  <Avatar className="h-10 w-10">
+                    <AvatarFallback>
+                      {user.name.split(' ').map(n => n[0]).join('')}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="font-semibold text-gray-900 dark:text-white text-sm">
+                      {user.name}
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="secondary" className="text-xs">
+                        {user.role.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                      </Badge>
+                      <span className="text-xs text-gray-600 dark:text-gray-400">
+                        {user.department}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Role-based Quick Access */}
+                <div className="flex items-center gap-2">
+                  <ProtectedElement resource="profile" action="read">
+                    <Link href="/teacher/profile">
+                      <Button variant="outline" size="sm" data-testid="button-profile">
+                        <Settings className="h-4 w-4" />
+                      </Button>
+                    </Link>
+                  </ProtectedElement>
+                  
+                  <RoleGuard allowedRoles={['department_head', 'senior_teacher']}>
+                    <Button variant="outline" size="sm" data-testid="button-admin-tools">
+                      <Crown className="h-4 w-4" />
+                    </Button>
+                  </RoleGuard>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Stats Cards */}
@@ -287,37 +348,142 @@ export default function TeacherDashboard() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <Link href="/teacher/classes/new">
-                  <Button variant="outline" className="w-full h-20 flex flex-col gap-2" data-testid="button-create-class">
-                    <BookOpen className="h-6 w-6" />
-                    <span className="text-sm">Create Class</span>
-                  </Button>
-                </Link>
+                {/* Basic Teacher Actions */}
+                <ProtectedElement resource="classes" action="create">
+                  <Link href="/teacher/classes">
+                    <Button variant="outline" className="w-full h-20 flex flex-col gap-2" data-testid="button-manage-classes">
+                      <BookOpen className="h-6 w-6" />
+                      <span className="text-sm">Manage Classes</span>
+                    </Button>
+                  </Link>
+                </ProtectedElement>
                 
-                <Link href="/teacher/assignments/new">
-                  <Button variant="outline" className="w-full h-20 flex flex-col gap-2" data-testid="button-create-assignment">
-                    <FileText className="h-6 w-6" />
-                    <span className="text-sm">New Assignment</span>
-                  </Button>
-                </Link>
+                <ProtectedElement resource="assessments" action="create">
+                  <Link href="/teacher/assessments">
+                    <Button variant="outline" className="w-full h-20 flex flex-col gap-2" data-testid="button-create-assignment">
+                      <FileText className="h-6 w-6" />
+                      <span className="text-sm">Assessments</span>
+                    </Button>
+                  </Link>
+                </ProtectedElement>
                 
-                <Link href="/teacher/content">
-                  <Button variant="outline" className="w-full h-20 flex flex-col gap-2" data-testid="button-content-library">
-                    <BookOpen className="h-6 w-6" />
-                    <span className="text-sm">Content Library</span>
-                  </Button>
-                </Link>
+                <ProtectedElement resource="content" action="read">
+                  <Link href="/teacher/content">
+                    <Button variant="outline" className="w-full h-20 flex flex-col gap-2" data-testid="button-content-library">
+                      <BookOpen className="h-6 w-6" />
+                      <span className="text-sm">Content Library</span>
+                    </Button>
+                  </Link>
+                </ProtectedElement>
                 
-                <Link href="/teacher/analytics">
-                  <Button variant="outline" className="w-full h-20 flex flex-col gap-2" data-testid="button-analytics">
-                    <TrendingUp className="h-6 w-6" />
-                    <span className="text-sm">Analytics</span>
+                <ProtectedElement resource="analytics" action="view_class_performance">
+                  <Link href="/teacher/analytics">
+                    <Button variant="outline" className="w-full h-20 flex flex-col gap-2" data-testid="button-analytics">
+                      <BarChart3 className="h-6 w-6" />
+                      <span className="text-sm">Analytics</span>
+                    </Button>
+                  </Link>
+                </ProtectedElement>
+                
+                <ProtectedElement resource="students" action="read">
+                  <Link href="/teacher/students">
+                    <Button variant="outline" className="w-full h-20 flex flex-col gap-2" data-testid="button-manage-students">
+                      <Users className="h-6 w-6" />
+                      <span className="text-sm">Students</span>
+                    </Button>
+                  </Link>
+                </ProtectedElement>
+                
+                <ProtectedElement resource="communication" action="send_messages">
+                  <Link href="/teacher/communication">
+                    <Button variant="outline" className="w-full h-20 flex flex-col gap-2" data-testid="button-communication">
+                      <MessageSquare className="h-6 w-6" />
+                      <span className="text-sm">Communication</span>
+                    </Button>
+                  </Link>
+                </ProtectedElement>
+                
+                {/* Administrative Actions for Senior Teachers */}
+                <RoleGuard allowedRoles={['department_head', 'senior_teacher']}>
+                  <Button variant="outline" className="w-full h-20 flex flex-col gap-2" data-testid="button-department-analytics">
+                    <Crown className="h-6 w-6 text-yellow-600" />
+                    <span className="text-sm">Department Analytics</span>
                   </Button>
-                </Link>
+                </RoleGuard>
+                
+                <RoleGuard allowedRoles={['department_head']}>
+                  <Button variant="outline" className="w-full h-20 flex flex-col gap-2" data-testid="button-manage-teachers">
+                    <UserPlus className="h-6 w-6 text-blue-600" />
+                    <span className="text-sm">Manage Teachers</span>
+                  </Button>
+                </RoleGuard>
               </div>
             </CardContent>
           </Card>
         </div>
+        
+        {/* Administrative Panel for Senior Teachers and Department Heads */}
+        <RoleGuard allowedRoles={['department_head', 'senior_teacher']}>
+          <div className="mt-8">
+            <Card data-testid="card-admin-panel">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Shield className="h-5 w-5 text-blue-600" />
+                  Administrative Tools
+                </CardTitle>
+                <CardDescription>Advanced tools for {user?.role === 'department_head' ? 'department heads' : 'senior teachers'}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <ProtectedElement resource="admin" action="view_department_analytics">
+                    <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                      <div className="flex items-center gap-3 mb-2">
+                        <BarChart3 className="h-5 w-5 text-blue-600" />
+                        <h4 className="font-semibold text-blue-900 dark:text-blue-100">Department Analytics</h4>
+                      </div>
+                      <p className="text-sm text-blue-700 dark:text-blue-300 mb-3">
+                        View department-wide performance metrics and reports
+                      </p>
+                      <Button size="sm" variant="outline" className="border-blue-300 text-blue-700 hover:bg-blue-100">
+                        View Reports
+                      </Button>
+                    </div>
+                  </ProtectedElement>
+                  
+                  <RoleGuard allowedRoles={['department_head']}>
+                    <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                      <div className="flex items-center gap-3 mb-2">
+                        <UserPlus className="h-5 w-5 text-green-600" />
+                        <h4 className="font-semibold text-green-900 dark:text-green-100">Teacher Management</h4>
+                      </div>
+                      <p className="text-sm text-green-700 dark:text-green-300 mb-3">
+                        Manage teacher roles, permissions, and assignments
+                      </p>
+                      <Button size="sm" variant="outline" className="border-green-300 text-green-700 hover:bg-green-100">
+                        Manage Roles
+                      </Button>
+                    </div>
+                  </RoleGuard>
+                  
+                  <ProtectedElement resource="admin" action="approve_content">
+                    <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200 dark:border-purple-800">
+                      <div className="flex items-center gap-3 mb-2">
+                        <BookOpen className="h-5 w-5 text-purple-600" />
+                        <h4 className="font-semibold text-purple-900 dark:text-purple-100">Content Approval</h4>
+                      </div>
+                      <p className="text-sm text-purple-700 dark:text-purple-300 mb-3">
+                        Review and approve shared content from teachers
+                      </p>
+                      <Button size="sm" variant="outline" className="border-purple-300 text-purple-700 hover:bg-purple-100">
+                        Review Content
+                      </Button>
+                    </div>
+                  </ProtectedElement>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </RoleGuard>
       </div>
     </div>
   );
