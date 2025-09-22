@@ -1,8 +1,9 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertApplicationSchema, insertContactSchema, insertChatMessageSchema } from "@shared/schema";
+import { insertApplicationSchema, insertContactSchema, insertChatMessageSchema, insertGroupSchema, insertGroupMemberSchema, insertUserSchema } from "@shared/schema";
 import { isEducationalQuestion, answerEducationalQuestion, isDemoMode } from "./services/openai";
+import { GroupChatWebSocketService } from "./websocket";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Applications endpoints
@@ -103,6 +104,102 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Group management endpoints
+  app.post("/api/groups", async (req, res) => {
+    try {
+      const validatedData = insertGroupSchema.parse(req.body);
+      const group = await storage.createGroup(validatedData);
+      res.json(group);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid group data", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  app.get("/api/groups", async (req, res) => {
+    try {
+      const groups = await storage.getGroups();
+      res.json(groups);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch groups", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  app.get("/api/groups/:id", async (req, res) => {
+    try {
+      const group = await storage.getGroup(req.params.id);
+      if (!group) {
+        return res.status(404).json({ message: "Group not found" });
+      }
+      res.json(group);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch group", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  app.get("/api/groups/:id/messages", async (req, res) => {
+    try {
+      const messages = await storage.getGroupMessages(req.params.id);
+      res.json(messages);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch messages", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  app.get("/api/groups/:id/members", async (req, res) => {
+    try {
+      const members = await storage.getGroupMembers(req.params.id);
+      res.json(members);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch group members", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  app.post("/api/groups/:id/members", async (req, res) => {
+    try {
+      const validatedData = insertGroupMemberSchema.parse({
+        ...req.body,
+        groupId: req.params.id
+      });
+      const member = await storage.addGroupMember(validatedData);
+      res.json(member);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid member data", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  // User management endpoints
+  app.post("/api/users", async (req, res) => {
+    try {
+      const validatedData = insertUserSchema.parse(req.body);
+      const user = await storage.createUser(validatedData);
+      res.json(user);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid user data", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  app.get("/api/users", async (req, res) => {
+    try {
+      const users = await storage.getUsers();
+      res.json(users);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch users", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  app.get("/api/users/:id/groups", async (req, res) => {
+    try {
+      const groups = await storage.getUserGroups(req.params.id);
+      res.json(groups);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch user groups", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
   const httpServer = createServer(app);
+  
+  // Initialize WebSocket service
+  const wsService = new GroupChatWebSocketService(httpServer);
+  
   return httpServer;
 }
