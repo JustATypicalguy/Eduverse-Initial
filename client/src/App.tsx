@@ -20,6 +20,7 @@ import LMSStructure from "@/pages/lms-structure";
 import TeacherDashboard from "@/pages/teacher-dashboard";
 import TeacherClasses from "@/pages/teacher-classes";
 import TeacherStudents from "@/pages/teacher-students";
+import TeacherAssessments from "@/pages/teacher-assessments";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -43,6 +44,7 @@ function Router() {
           <Route path="/teacher" component={TeacherDashboard} />
           <Route path="/teacher/classes" component={TeacherClasses} />
           <Route path="/teacher/students" component={TeacherStudents} />
+          <Route path="/teacher/assessments" component={TeacherAssessments} />
           <Route component={NotFound} />
         </Switch>
       </main>
