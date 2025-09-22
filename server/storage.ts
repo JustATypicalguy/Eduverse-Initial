@@ -10,9 +10,13 @@ import {
   type GroupPoll, type InsertGroupPoll,
   type PollVote, type InsertPollVote,
   type RaiseHandRequest, type InsertRaiseHandRequest,
-  type FileAttachment, type InsertFileAttachment
+  type FileAttachment, type InsertFileAttachment,
+  applications, contacts, chatMessages, users, groups, groupMembers, 
+  groupMessages, messageReactions, groupPolls, pollVotes, 
+  raiseHandRequests, fileAttachments
 } from "@shared/schema";
-import { randomUUID } from "crypto";
+import { eq, and, inArray, asc, sql } from "drizzle-orm";
+import { db } from "./db";
 
 export interface IStorage {
   // Applications
@@ -82,415 +86,317 @@ export interface IStorage {
   deleteFileAttachment(id: string): Promise<boolean>;
 }
 
-export class MemStorage implements IStorage {
-  private applications: Map<string, Application>;
-  private contacts: Map<string, Contact>;
-  private chatMessages: Map<string, ChatMessage>;
-  private users: Map<string, User>;
-  private groups: Map<string, Group>;
-  private groupMembers: Map<string, GroupMember>;
-  private groupMessages: Map<string, GroupMessage>;
-  private messageReactions: Map<string, MessageReaction>;
-  private groupPolls: Map<string, GroupPoll>;
-  private pollVotes: Map<string, PollVote>;
-  private raiseHandRequests: Map<string, RaiseHandRequest>;
-  private fileAttachments: Map<string, FileAttachment>;
-
-  constructor() {
-    this.applications = new Map();
-    this.contacts = new Map();
-    this.chatMessages = new Map();
-    this.users = new Map();
-    this.groups = new Map();
-    this.groupMembers = new Map();
-    this.groupMessages = new Map();
-    this.messageReactions = new Map();
-    this.groupPolls = new Map();
-    this.pollVotes = new Map();
-    this.raiseHandRequests = new Map();
-    this.fileAttachments = new Map();
-  }
+export class DatabaseStorage implements IStorage {
 
   // Applications
   async createApplication(insertApplication: InsertApplication): Promise<Application> {
-    const id = randomUUID();
-    const application: Application = {
-      ...insertApplication,
-      id,
-      createdAt: new Date(),
-      additionalInfo: insertApplication.additionalInfo || null,
-    };
-    this.applications.set(id, application);
+    const [application] = await db
+      .insert(applications)
+      .values(insertApplication)
+      .returning();
     return application;
   }
 
   async getApplications(): Promise<Application[]> {
-    return Array.from(this.applications.values());
+    return await db.select().from(applications);
   }
 
   async getApplication(id: string): Promise<Application | undefined> {
-    return this.applications.get(id);
+    const [application] = await db.select().from(applications).where(eq(applications.id, id));
+    return application || undefined;
   }
 
   // Contacts
   async createContact(insertContact: InsertContact): Promise<Contact> {
-    const id = randomUUID();
-    const contact: Contact = {
-      ...insertContact,
-      id,
-      createdAt: new Date(),
-    };
-    this.contacts.set(id, contact);
+    const [contact] = await db
+      .insert(contacts)
+      .values(insertContact)
+      .returning();
     return contact;
   }
 
   async getContacts(): Promise<Contact[]> {
-    return Array.from(this.contacts.values());
+    return await db.select().from(contacts);
   }
 
   async getContact(id: string): Promise<Contact | undefined> {
-    return this.contacts.get(id);
+    const [contact] = await db.select().from(contacts).where(eq(contacts.id, id));
+    return contact || undefined;
   }
 
   // Chat Messages
   async createChatMessage(insertChatMessage: InsertChatMessage): Promise<ChatMessage> {
-    const id = randomUUID();
-    const chatMessage: ChatMessage = {
-      ...insertChatMessage,
-      id,
-      createdAt: new Date(),
-    };
-    this.chatMessages.set(id, chatMessage);
+    const [chatMessage] = await db
+      .insert(chatMessages)
+      .values(insertChatMessage)
+      .returning();
     return chatMessage;
   }
 
   async getChatMessages(): Promise<ChatMessage[]> {
-    return Array.from(this.chatMessages.values());
+    return await db.select().from(chatMessages);
   }
 
   async getChatMessage(id: string): Promise<ChatMessage | undefined> {
-    return this.chatMessages.get(id);
+    const [chatMessage] = await db.select().from(chatMessages).where(eq(chatMessages.id, id));
+    return chatMessage || undefined;
   }
 
   // Users
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = randomUUID();
-    const user: User = {
-      ...insertUser,
-      id,
-      createdAt: new Date(),
-    };
-    this.users.set(id, user);
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
     return user;
   }
 
   async getUsers(): Promise<User[]> {
-    return Array.from(this.users.values());
+    return await db.select().from(users);
   }
 
   async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    for (const user of this.users.values()) {
-      if (user.username === username) {
-        return user;
-      }
-    }
-    return undefined;
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
   }
 
   // Groups
   async createGroup(insertGroup: InsertGroup): Promise<Group> {
-    const id = randomUUID();
-    const group: Group = {
-      ...insertGroup,
-      id,
-      createdAt: new Date(),
-    };
-    this.groups.set(id, group);
+    const [group] = await db
+      .insert(groups)
+      .values(insertGroup)
+      .returning();
     return group;
   }
 
   async getGroups(): Promise<Group[]> {
-    return Array.from(this.groups.values());
+    return await db.select().from(groups);
   }
 
   async getGroup(id: string): Promise<Group | undefined> {
-    return this.groups.get(id);
+    const [group] = await db.select().from(groups).where(eq(groups.id, id));
+    return group || undefined;
   }
 
   async getUserGroups(userId: string): Promise<Group[]> {
-    const userGroups: Group[] = [];
-    for (const member of this.groupMembers.values()) {
-      if (member.userId === userId) {
-        const group = this.groups.get(member.groupId);
-        if (group) {
-          userGroups.push(group);
-        }
-      }
-    }
-    return userGroups;
+    const userGroupMembers = await db
+      .select()
+      .from(groupMembers)
+      .where(eq(groupMembers.userId, userId));
+
+    const groupIds = userGroupMembers.map(member => member.groupId);
+    if (groupIds.length === 0) return [];
+
+    return await db
+      .select()
+      .from(groups)
+      .where(inArray(groups.id, groupIds));
   }
 
   // Group Members
   async addGroupMember(insertMember: InsertGroupMember): Promise<GroupMember> {
-    const id = randomUUID();
-    const member: GroupMember = {
-      ...insertMember,
-      id,
-      joinedAt: new Date(),
-    };
-    this.groupMembers.set(id, member);
+    const [member] = await db
+      .insert(groupMembers)
+      .values(insertMember)
+      .returning();
     return member;
   }
 
   async removeGroupMember(groupId: string, userId: string): Promise<boolean> {
-    for (const [id, member] of this.groupMembers.entries()) {
-      if (member.groupId === groupId && member.userId === userId) {
-        this.groupMembers.delete(id);
-        return true;
-      }
-    }
-    return false;
+    const result = await db
+      .delete(groupMembers)
+      .where(and(eq(groupMembers.groupId, groupId), eq(groupMembers.userId, userId)));
+    return (result.rowCount ?? 0) > 0;
   }
 
   async getGroupMembers(groupId: string): Promise<GroupMember[]> {
-    const members: GroupMember[] = [];
-    for (const member of this.groupMembers.values()) {
-      if (member.groupId === groupId) {
-        members.push(member);
-      }
-    }
-    return members;
+    return await db
+      .select()
+      .from(groupMembers)
+      .where(eq(groupMembers.groupId, groupId));
   }
 
   async isGroupMember(userId: string, groupId: string): Promise<boolean> {
-    for (const member of this.groupMembers.values()) {
-      if (member.userId === userId && member.groupId === groupId) {
-        return true;
-      }
-    }
-    return false;
+    const [member] = await db
+      .select()
+      .from(groupMembers)
+      .where(and(eq(groupMembers.userId, userId), eq(groupMembers.groupId, groupId)));
+    return !!member;
   }
 
   // Group Messages
   async createGroupMessage(insertMessage: InsertGroupMessage): Promise<GroupMessage> {
-    const id = randomUUID();
-    const message: GroupMessage = {
-      ...insertMessage,
-      id,
-      createdAt: new Date(),
-      editedAt: null,
-      isDeleted: false,  // Fix: Initialize isDeleted to false
-      isPinned: insertMessage.isPinned ?? false,
-      messageType: insertMessage.messageType ?? 'text',
-      replyToId: insertMessage.replyToId ?? null,
-      metadata: insertMessage.metadata ?? {},
-    };
-    this.groupMessages.set(id, message);
+    const [message] = await db
+      .insert(groupMessages)
+      .values(insertMessage)
+      .returning();
     return message;
   }
 
   async getGroupMessages(groupId: string): Promise<GroupMessage[]> {
-    const messages: GroupMessage[] = [];
-    for (const message of this.groupMessages.values()) {
-      if (message.groupId === groupId && !message.isDeleted) {
-        messages.push(message);
-      }
-    }
-    return messages.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+    return await db
+      .select()
+      .from(groupMessages)
+      .where(and(eq(groupMessages.groupId, groupId), eq(groupMessages.isDeleted, false)))
+      .orderBy(asc(groupMessages.createdAt));
   }
 
   async getGroupMessage(id: string): Promise<GroupMessage | undefined> {
-    return this.groupMessages.get(id);
+    const [message] = await db.select().from(groupMessages).where(eq(groupMessages.id, id));
+    return message || undefined;
   }
 
   // Message Reactions
   async addMessageReaction(insertReaction: InsertMessageReaction): Promise<MessageReaction> {
-    const id = randomUUID();
-    const reaction: MessageReaction = {
-      ...insertReaction,
-      id,
-      createdAt: new Date(),
-    };
-    this.messageReactions.set(id, reaction);
+    const [reaction] = await db
+      .insert(messageReactions)
+      .values(insertReaction)
+      .returning();
     return reaction;
   }
 
   async removeMessageReaction(messageId: string, userId: string, emoji: string): Promise<boolean> {
-    for (const [id, reaction] of this.messageReactions.entries()) {
-      if (reaction.messageId === messageId && reaction.userId === userId && reaction.emoji === emoji) {
-        this.messageReactions.delete(id);
-        return true;
-      }
-    }
-    return false;
+    const result = await db
+      .delete(messageReactions)
+      .where(
+        and(
+          eq(messageReactions.messageId, messageId),
+          eq(messageReactions.userId, userId),
+          eq(messageReactions.emoji, emoji)
+        )
+      );
+    return (result.rowCount ?? 0) > 0;
   }
 
   async getMessageReactions(messageId: string): Promise<MessageReaction[]> {
-    const reactions: MessageReaction[] = [];
-    for (const reaction of this.messageReactions.values()) {
-      if (reaction.messageId === messageId) {
-        reactions.push(reaction);
-      }
-    }
-    return reactions;
+    return await db
+      .select()
+      .from(messageReactions)
+      .where(eq(messageReactions.messageId, messageId));
   }
 
   // Group Polls
   async createGroupPoll(insertPoll: InsertGroupPoll): Promise<GroupPoll> {
-    const id = randomUUID();
-    const poll: GroupPoll = {
-      ...insertPoll,
-      id,
-      createdAt: new Date(),
-    };
-    this.groupPolls.set(id, poll);
+    const [poll] = await db
+      .insert(groupPolls)
+      .values(insertPoll)
+      .returning();
     return poll;
   }
 
   async getGroupPoll(id: string): Promise<GroupPoll | undefined> {
-    return this.groupPolls.get(id);
+    const [poll] = await db.select().from(groupPolls).where(eq(groupPolls.id, id));
+    return poll || undefined;
   }
 
   async getGroupPolls(groupId: string): Promise<GroupPoll[]> {
-    const polls: GroupPoll[] = [];
-    for (const poll of this.groupPolls.values()) {
-      if (poll.groupId === groupId) {
-        polls.push(poll);
-      }
-    }
-    return polls;
+    return await db
+      .select()
+      .from(groupPolls)
+      .where(eq(groupPolls.groupId, groupId));
   }
 
   // Poll Votes
   async addPollVote(insertVote: InsertPollVote): Promise<PollVote> {
-    const id = randomUUID();
-    const vote: PollVote = {
-      ...insertVote,
-      id,
-      createdAt: new Date(),
-    };
-    this.pollVotes.set(id, vote);
+    const [vote] = await db
+      .insert(pollVotes)
+      .values(insertVote)
+      .returning();
     return vote;
   }
 
   async removePollVote(pollId: string, userId: string): Promise<boolean> {
-    for (const [id, vote] of this.pollVotes.entries()) {
-      if (vote.pollId === pollId && vote.userId === userId) {
-        this.pollVotes.delete(id);
-        return true;
-      }
-    }
-    return false;
+    const result = await db
+      .delete(pollVotes)
+      .where(and(eq(pollVotes.pollId, pollId), eq(pollVotes.userId, userId)));
+    return (result.rowCount ?? 0) > 0;
   }
 
   async getPollVotes(pollId: string): Promise<PollVote[]> {
-    const votes: PollVote[] = [];
-    for (const vote of this.pollVotes.values()) {
-      if (vote.pollId === pollId) {
-        votes.push(vote);
-      }
-    }
-    return votes;
+    return await db
+      .select()
+      .from(pollVotes)
+      .where(eq(pollVotes.pollId, pollId));
   }
 
   // Raise Hand Requests
   async createRaiseHandRequest(insertRequest: InsertRaiseHandRequest): Promise<RaiseHandRequest> {
-    const id = randomUUID();
-    const request: RaiseHandRequest = {
-      ...insertRequest,
-      id,
-      createdAt: new Date(),
-      resolvedAt: null,
-    };
-    this.raiseHandRequests.set(id, request);
+    const [request] = await db
+      .insert(raiseHandRequests)
+      .values(insertRequest)
+      .returning();
     return request;
   }
 
   async resolveRaiseHandRequest(id: string, resolvedBy: string): Promise<boolean> {
-    const request = this.raiseHandRequests.get(id);
-    if (request && request.isActive) {
-      const updatedRequest: RaiseHandRequest = {
-        ...request,
+    const result = await db
+      .update(raiseHandRequests)
+      .set({
         isActive: false,
         resolvedBy,
         resolvedAt: new Date(),
-      };
-      this.raiseHandRequests.set(id, updatedRequest);
-      return true;
-    }
-    return false;
+      })
+      .where(and(eq(raiseHandRequests.id, id), eq(raiseHandRequests.isActive, true)));
+    return (result.rowCount ?? 0) > 0;
   }
 
   async getActiveRaiseHandRequests(groupId: string): Promise<RaiseHandRequest[]> {
-    const activeRequests: RaiseHandRequest[] = [];
-    for (const request of this.raiseHandRequests.values()) {
-      if (request.groupId === groupId && request.isActive) {
-        activeRequests.push(request);
-      }
-    }
-    return activeRequests.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+    return await db
+      .select()
+      .from(raiseHandRequests)
+      .where(and(eq(raiseHandRequests.groupId, groupId), eq(raiseHandRequests.isActive, true)))
+      .orderBy(asc(raiseHandRequests.createdAt));
   }
 
   // File Attachments
   async createFileAttachment(insertAttachment: InsertFileAttachment): Promise<FileAttachment> {
-    const id = randomUUID();
-    const attachment: FileAttachment = {
-      ...insertAttachment,
-      id,
-      downloadCount: 0,
-      createdAt: new Date(),
-    };
-    this.fileAttachments.set(id, attachment);
+    const [attachment] = await db
+      .insert(fileAttachments)
+      .values(insertAttachment)
+      .returning();
     return attachment;
   }
 
   async getFileAttachment(id: string): Promise<FileAttachment | undefined> {
-    return this.fileAttachments.get(id);
+    const [attachment] = await db.select().from(fileAttachments).where(eq(fileAttachments.id, id));
+    return attachment || undefined;
   }
 
   async getMessageAttachments(messageId: string): Promise<FileAttachment[]> {
-    const attachments: FileAttachment[] = [];
-    for (const attachment of this.fileAttachments.values()) {
-      if (attachment.messageId === messageId) {
-        attachments.push(attachment);
-      }
-    }
-    return attachments.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+    return await db
+      .select()
+      .from(fileAttachments)
+      .where(eq(fileAttachments.messageId, messageId))
+      .orderBy(asc(fileAttachments.createdAt));
   }
 
   async incrementDownloadCount(id: string): Promise<boolean> {
-    const attachment = this.fileAttachments.get(id);
-    if (attachment) {
-      const updatedAttachment: FileAttachment = {
-        ...attachment,
-        downloadCount: attachment.downloadCount + 1,
-      };
-      this.fileAttachments.set(id, updatedAttachment);
-      return true;
-    }
-    return false;
+    const result = await db
+      .update(fileAttachments)
+      .set({ downloadCount: sql`${fileAttachments.downloadCount} + 1` })
+      .where(eq(fileAttachments.id, id));
+    return (result.rowCount ?? 0) > 0;
   }
 
   async updateScanStatus(id: string, status: string): Promise<boolean> {
-    const attachment = this.fileAttachments.get(id);
-    if (attachment) {
-      const updatedAttachment: FileAttachment = {
-        ...attachment,
-        scanStatus: status,
-      };
-      this.fileAttachments.set(id, updatedAttachment);
-      return true;
-    }
-    return false;
+    const result = await db
+      .update(fileAttachments)
+      .set({ scanStatus: status })
+      .where(eq(fileAttachments.id, id));
+    return (result.rowCount ?? 0) > 0;
   }
 
   async deleteFileAttachment(id: string): Promise<boolean> {
-    return this.fileAttachments.delete(id);
+    const result = await db
+      .delete(fileAttachments)
+      .where(eq(fileAttachments.id, id));
+    return (result.rowCount ?? 0) > 0;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
