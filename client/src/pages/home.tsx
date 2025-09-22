@@ -50,6 +50,25 @@ export default function Home() {
                   className="rounded-3xl creative-shadow w-full hover:scale-105 transition-transform duration-500" 
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-blue-600/20 to-transparent rounded-3xl"></div>
+                
+                {/* Floating Educational Images */}
+                <img 
+                  src="https://images.unsplash.com/photo-1564694202779-bc908c327862?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=150" 
+                  alt="Student working on laptop" 
+                  className="absolute -top-8 -right-8 w-32 h-24 rounded-2xl creative-shadow animate-float hover:scale-110 transition-transform" 
+                />
+                
+                <img 
+                  src="https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=150" 
+                  alt="Science laboratory equipment" 
+                  className="absolute -bottom-4 -left-8 w-28 h-20 rounded-xl creative-shadow animate-bounce-in hover:scale-110 transition-transform" 
+                />
+                
+                <img 
+                  src="https://images.unsplash.com/photo-1581726690015-c9861ba24d8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150" 
+                  alt="Art and creativity" 
+                  className="absolute top-16 -left-12 w-24 h-24 rounded-full object-cover creative-shadow animate-pulse-slow hover:scale-110 transition-transform" 
+                />
               </div>
               <Card className="absolute -bottom-6 -left-6 border-gray-100 glass-effect animate-bounce-in">
                 <CardContent className="p-6">
@@ -67,8 +86,21 @@ export default function Home() {
             </div>
           </div>
           
-          {/* Stats Section */}
-          <div className="mt-20 grid grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Stats Section with Moving Images */}
+          <div className="mt-20 relative">
+            {/* Animated Background Images */}
+            <img 
+              src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150" 
+              alt="Students collaborating" 
+              className="absolute top-0 left-10 w-24 h-24 rounded-full object-cover animate-pulse-slow opacity-30 hover:opacity-60 transition-opacity" 
+            />
+            <img 
+              src="https://images.unsplash.com/photo-1544717297-fa95b6ee9643?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150" 
+              alt="Books and learning" 
+              className="absolute top-20 right-16 w-20 h-20 rounded-full object-cover animate-float opacity-30 hover:opacity-60 transition-opacity" 
+            />
+            
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 relative z-10">
             <Card className="text-center creative-shadow hover:scale-105 transition-transform animate-bounce-in bg-gradient-to-br from-blue-50 to-blue-100">
               <CardContent className="p-6">
                 <div className="text-4xl mb-2">🌍</div>
@@ -98,14 +130,51 @@ export default function Home() {
               </CardContent>
             </Card>
           </div>
+          
+          {/* Additional Moving Images */}
+          <div className="mt-12 relative">
+            <img 
+              src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=150" 
+              alt="Student graduation" 
+              className="absolute left-1/4 w-32 h-24 rounded-2xl creative-shadow animate-slide-up hover:scale-105 transition-transform opacity-70" 
+            />
+            <img 
+              src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=150" 
+              alt="Modern classroom technology" 
+              className="absolute right-1/4 w-36 h-28 rounded-2xl creative-shadow animate-bounce-in hover:scale-105 transition-transform opacity-70" 
+            />
+            <img 
+              src="https://images.unsplash.com/photo-1596495577886-d920f1fb7238?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150" 
+              alt="Science experiment" 
+              className="absolute left-1/2 transform -translate-x-1/2 w-28 h-28 rounded-full object-cover animate-float opacity-60 hover:opacity-90 transition-all" 
+            />
+          </div>
+        </div>
         </div>
       </section>
 
       {/* Quick Overview Section */}
       <section className="py-20 bg-gradient-to-br from-white via-blue-50 to-purple-50 relative overflow-hidden">
-        {/* Background Elements */}
+        {/* Background Elements with Moving Images */}
         <div className="absolute top-10 right-10 w-32 h-32 bg-gradient-to-r from-blue-600 to-yellow-500 rounded-full opacity-10 animate-float" style={{background: 'linear-gradient(to right, #1e40af, #D4AF37)'}}></div>
         <div className="absolute bottom-20 left-20 w-24 h-24 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full opacity-10 animate-pulse-slow"></div>
+        
+        {/* Floating Educational Images */}
+        <img 
+          src="https://images.unsplash.com/photo-1581726690015-c9861ba24d8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150" 
+          alt="Art supplies and creativity" 
+          className="absolute top-1/4 left-8 w-20 h-20 rounded-full object-cover animate-float opacity-40 hover:opacity-70 transition-opacity" 
+        />
+        <img 
+          src="https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150" 
+          alt="Mathematical equations" 
+          className="absolute bottom-1/4 right-12 w-24 h-24 rounded-full object-cover animate-pulse-slow opacity-40 hover:opacity-70 transition-opacity" 
+        />
+        <img 
+          src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150" 
+          alt="Students studying together" 
+          className="absolute top-1/3 left-1/3 w-26 h-26 rounded-xl object-cover animate-bounce-in opacity-50 hover:opacity-80 transition-all" 
+        />
         
         <div className="container mx-auto px-6 relative">
           <div className="text-center mb-16 animate-fade-in">
@@ -170,9 +239,41 @@ export default function Home() {
 
       {/* Subjects Showcase Section */}
       <section className="py-20 bg-gradient-to-br from-gray-50 to-gray-100 relative overflow-hidden">
-        {/* Background Elements */}
+        {/* Background Elements with Moving Pictures */}
         <div className="absolute top-0 left-0 w-40 h-40 bg-gradient-to-r from-green-400 to-blue-500 rounded-full opacity-5 animate-float"></div>
         <div className="absolute bottom-0 right-0 w-32 h-32 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full opacity-5 animate-pulse-slow"></div>
+        
+        {/* Subject-Related Moving Images */}
+        <img 
+          src="https://images.unsplash.com/photo-1596495577886-d920f1fb7238?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150" 
+          alt="Science experiment" 
+          className="absolute top-16 left-1/4 w-28 h-28 rounded-2xl object-cover animate-slide-up opacity-50 hover:opacity-80 transition-all creative-shadow" 
+        />
+        <img 
+          src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150" 
+          alt="Students studying together" 
+          className="absolute bottom-20 left-16 w-32 h-24 rounded-2xl object-cover animate-bounce-in opacity-50 hover:opacity-80 transition-all creative-shadow" 
+        />
+        <img 
+          src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150" 
+          alt="Digital learning" 
+          className="absolute top-1/3 right-20 w-26 h-26 rounded-full object-cover animate-float opacity-50 hover:opacity-80 transition-all creative-shadow" 
+        />
+        <img 
+          src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150" 
+          alt="Hands-on learning" 
+          className="absolute bottom-1/3 right-1/4 w-30 h-22 rounded-xl object-cover animate-pulse-slow opacity-50 hover:opacity-80 transition-all creative-shadow" 
+        />
+        <img 
+          src="https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=120" 
+          alt="Math and calculations" 
+          className="absolute top-2/3 left-8 w-24 h-24 rounded-full object-cover animate-float opacity-45 hover:opacity-75 transition-all creative-shadow" 
+        />
+        <img 
+          src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=120" 
+          alt="Modern classroom" 
+          className="absolute top-1/4 right-1/3 w-22 h-22 rounded-xl object-cover animate-slide-up opacity-45 hover:opacity-75 transition-all creative-shadow" 
+        />
         
         <div className="container mx-auto px-6 relative">
           <div className="text-center mb-16 animate-fade-in">
