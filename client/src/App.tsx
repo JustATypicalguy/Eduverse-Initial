@@ -21,6 +21,7 @@ import TeacherDashboard from "@/pages/teacher-dashboard";
 import TeacherClasses from "@/pages/teacher-classes";
 import TeacherStudents from "@/pages/teacher-students";
 import TeacherAssessments from "@/pages/teacher-assessments";
+import TeacherContent from "@/pages/teacher-content";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -45,6 +46,7 @@ function Router() {
           <Route path="/teacher/classes" component={TeacherClasses} />
           <Route path="/teacher/students" component={TeacherStudents} />
           <Route path="/teacher/assessments" component={TeacherAssessments} />
+          <Route path="/teacher/content" component={TeacherContent} />
           <Route component={NotFound} />
         </Switch>
       </main>
