@@ -379,52 +379,8 @@ export default function Login() {
             )}
           </div>
 
-          {/* Right Side - Preview Features & Testimonials */}
-          <div className="lg:w-1/2 max-w-lg w-full space-y-8">
-            {/* Preview Features */}
-            <div>
-              <h3 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
-                Platform Features
-              </h3>
-              <div className="space-y-4">
-                <Card className="bg-white/95 backdrop-blur-md border border-gray-200 p-4 creative-shadow">
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 bg-blue-50 rounded-lg">
-                      <Users className="h-6 w-6 text-eduverse-blue" />
-                    </div>
-                    <div>
-                      <h4 className="text-gray-800 font-semibold">For Students</h4>
-                      <p className="text-eduverse-gray text-sm">Track progress, join group chats, explore AI quizzes.</p>
-                    </div>
-                  </div>
-                </Card>
-
-                <Card className="bg-white/95 backdrop-blur-md border border-gray-200 p-4 creative-shadow">
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 bg-green-50 rounded-lg">
-                      <ChartBar className="h-6 w-6 text-green-600" />
-                    </div>
-                    <div>
-                      <h4 className="text-gray-800 font-semibold">For Teachers</h4>
-                      <p className="text-eduverse-gray text-sm">Create groups, manage lessons & attendance, use AI grading assistant.</p>
-                    </div>
-                  </div>
-                </Card>
-
-                <Card className="bg-white/95 backdrop-blur-md border border-gray-200 p-4 creative-shadow">
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 bg-purple-50 rounded-lg">
-                      <Settings className="h-6 w-6 text-purple-600" />
-                    </div>
-                    <div>
-                      <h4 className="text-gray-800 font-semibold">For Administrators</h4>
-                      <p className="text-eduverse-gray text-sm">Manage user access, monitor analytics, keep the system secure.</p>
-                    </div>
-                  </div>
-                </Card>
-              </div>
-            </div>
-
+          {/* Right Side - Testimonials */}
+          <div className="lg:w-1/2 max-w-lg w-full">
             {/* Community Feedback Carousel */}
             <div>
               <h3 className="text-xl font-semibold text-gray-800 mb-4 text-center">
@@ -473,8 +429,6 @@ export default function Login() {
         </footer>
       </div>
 
-      {/* AI Assistant */}
-      <AIAssistant />
     </div>
   );
 }
