@@ -22,6 +22,7 @@ import TeacherClasses from "@/pages/teacher-classes";
 import TeacherStudents from "@/pages/teacher-students";
 import TeacherAssessments from "@/pages/teacher-assessments";
 import TeacherContent from "@/pages/teacher-content";
+import TeacherAnalytics from "@/pages/teacher-analytics";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -47,6 +48,7 @@ function Router() {
           <Route path="/teacher/students" component={TeacherStudents} />
           <Route path="/teacher/assessments" component={TeacherAssessments} />
           <Route path="/teacher/content" component={TeacherContent} />
+          <Route path="/teacher/analytics" component={TeacherAnalytics} />
           <Route component={NotFound} />
         </Switch>
       </main>
