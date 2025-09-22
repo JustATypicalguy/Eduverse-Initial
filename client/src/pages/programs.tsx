@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { Baby, Users, GraduationCap, Check } from "lucide-react";
-import highSchoolImage from "@assets/stock_images/high_school_students_fab51db8.jpg";
+import highSchoolImage from "@assets/stock_images/friendly_technology__a8b182a8.jpg";
 
 export default function Programs() {
   return (
@@ -101,7 +101,7 @@ export default function Programs() {
             <Card className="overflow-hidden hover:shadow-xl transition-shadow">
               <img 
                 src={highSchoolImage} 
-                alt="High school students in classroom learning environment" 
+                alt="Friendly high school students using technology and computers" 
                 className="w-full h-48 object-cover" 
               />
               <CardContent className="p-8">
