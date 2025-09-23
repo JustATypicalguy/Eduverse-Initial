@@ -4,7 +4,7 @@ import { Menu, X } from "lucide-react";
 import { Logo } from "./logo";
 
 const navigationItems = [
-  { name: "Home", href: "/" },
+  { name: "Home", href: "/home" },
   { name: "About", href: "/about" },
   { name: "Programs", href: "/programs" },
   { name: "Subjects", href: "/subjects" },
