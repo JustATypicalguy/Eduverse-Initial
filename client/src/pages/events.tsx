@@ -99,7 +99,7 @@ export default function Events() {
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
               🗓️ Events Calendar
             </h1>
-            <p className="text-xl text-eduverse-gray max-w-2xl mx-auto">
+            <p className="text-eduverse-gray max-w-2xl mx-auto mt-[75px] mb-[75px] text-[25px] font-bold">
               Discover upcoming events, workshops, and activities in our vibrant educational community.
             </p>
           </div>
@@ -156,7 +156,6 @@ export default function Events() {
           </div>
         </div>
       </header>
-
       {/* Main Content */}
       <main className="container mx-auto px-6 py-8">
         {view === "calendar" ? (
@@ -239,7 +238,7 @@ export default function Events() {
           </div>
         ) : (
           /* List View */
-          <div className="space-y-6">
+          (<div className="space-y-6">
             {filteredEvents?.length === 0 ? (
               <div className="text-center py-12">
                 <CalendarIcon className="h-16 w-16 text-gray-300 mx-auto mb-4" />
@@ -358,7 +357,7 @@ export default function Events() {
                 </Card>
               ))
             )}
-          </div>
+          </div>)
         )}
       </main>
     </div>
