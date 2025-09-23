@@ -53,9 +53,9 @@ export default function StaffDirectory() {
     return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
   };
 
-  const formatExpertise = (expertise: unknown) => {
+  const formatExpertise = (expertise: unknown): string[] => {
     if (Array.isArray(expertise)) {
-      return expertise;
+      return expertise as string[];
     }
     return [];
   };

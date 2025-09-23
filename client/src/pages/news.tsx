@@ -67,14 +67,77 @@ export default function News() {
     <div className="min-h-screen bg-gradient-to-br from-eduverse-light via-white to-gray-50">
       {/* Header */}
       <header className="bg-white shadow-sm border-b">
-        <div className="container mx-auto px-6 py-8">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              📰 EduVerse News & Updates
-            </h1>
-            <p className="text-xl max-w-2xl mx-auto ml-[152px] mr-[152px] mt-[77px] mb-[77px] bg-[#3b82f6] text-[#eab308]">
-              Stay informed about the latest happenings, achievements, and important updates from our educational community.
-            </p>
+        <div className="container mx-auto px-6 py-12">
+          {/* Creative Header Section */}
+          <div className="relative text-center mb-12">
+            {/* Background Decorative Elements */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+              <div className="absolute -top-10 -left-10 w-32 h-32 bg-gradient-to-br from-blue-200 to-purple-200 rounded-full opacity-50 animate-pulse"></div>
+              <div className="absolute -top-5 -right-10 w-24 h-24 bg-gradient-to-br from-pink-200 to-orange-200 rounded-full opacity-60 animate-bounce"></div>
+              <div className="absolute -bottom-5 left-1/4 w-20 h-20 bg-gradient-to-br from-green-200 to-blue-200 rounded-full opacity-40 animate-ping"></div>
+            </div>
+            
+            {/* Main Title */}
+            <div className="relative z-10 mb-8">
+              <div className="inline-flex items-center justify-center gap-4 mb-6">
+                <div className="p-4 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl shadow-lg transform rotate-3 hover:rotate-0 transition-transform duration-300">
+                  <span className="text-4xl">📰</span>
+                </div>
+                <h1 className="text-6xl font-black bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent animate-pulse">
+                  EduVerse News Hub
+                </h1>
+                <div className="p-4 bg-gradient-to-r from-pink-500 to-red-600 rounded-2xl shadow-lg transform -rotate-3 hover:rotate-0 transition-transform duration-300">
+                  <span className="text-4xl">✨</span>
+                </div>
+              </div>
+              
+              {/* Creative Subtitle */}
+              <div className="relative max-w-4xl mx-auto">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-100 via-purple-100 to-pink-100 rounded-3xl transform rotate-1 opacity-50"></div>
+                <div className="relative bg-white/90 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-purple-200">
+                  <p className="text-2xl font-medium text-gray-700 leading-relaxed mb-4">
+                    🚀 <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+                      Stay Connected
+                    </span> with the latest happenings, amazing achievements, and exciting updates from our vibrant educational community! 
+                  </p>
+                  
+                  {/* Fun Stats */}
+                  <div className="flex justify-center items-center gap-8 text-sm font-semibold">
+                    <div className="flex items-center gap-2 text-blue-600">
+                      <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
+                      <span>Breaking News</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-purple-600">
+                      <div className="w-3 h-3 bg-purple-500 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+                      <span>Student Achievements</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-pink-600">
+                      <div className="w-3 h-3 bg-pink-500 rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
+                      <span>Community Updates</span>
+                    </div>
+                  </div>
+                  
+                  {/* Animated Quote */}
+                  <div className="mt-6 p-4 bg-gradient-to-r from-yellow-100 to-orange-100 rounded-2xl border-l-4 border-yellow-500">
+                    <p className="text-lg italic text-gray-700 font-medium">
+                      💡 "Every story here celebrates the incredible journey of learning and growth at EduVerse!"
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Floating Action Elements */}
+            <div className="absolute top-1/2 left-8 transform -translate-y-1/2 hidden lg:block">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center animate-bounce shadow-lg">
+                <span className="text-white font-bold">📚</span>
+              </div>
+            </div>
+            <div className="absolute top-1/2 right-8 transform -translate-y-1/2 hidden lg:block">
+              <div className="w-12 h-12 bg-gradient-to-br from-pink-400 to-red-500 rounded-full flex items-center justify-center animate-bounce shadow-lg" style={{ animationDelay: '0.5s' }}>
+                <span className="text-white font-bold">🎓</span>
+              </div>
+            </div>
           </div>
 
           {/* Search and Filter */}
