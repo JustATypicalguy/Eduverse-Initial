@@ -27,6 +27,9 @@ import TeacherCommunication from "@/pages/teacher-communication";
 import TeacherProfile from "@/pages/teacher-profile";
 import PortalLanding from "@/pages/portal-landing";
 import Login from "@/pages/login";
+import News from "@/pages/news";
+import Events from "@/pages/events";
+import StaffDirectory from "@/pages/staff";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -57,6 +60,9 @@ function Router() {
           <Route path="/teacher/communication" component={TeacherCommunication} />
           <Route path="/teacher/profile" component={TeacherProfile} />
           <Route path="/portal" component={PortalLanding} />
+          <Route path="/news" component={News} />
+          <Route path="/events" component={Events} />
+          <Route path="/staff" component={StaffDirectory} />
           <Route component={NotFound} />
         </Switch>
       </main>

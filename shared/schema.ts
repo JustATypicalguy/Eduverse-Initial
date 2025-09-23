@@ -491,3 +491,169 @@ export type InsertTeacherProfile = z.infer<typeof insertTeacherProfileSchema>;
 
 export type Announcement = typeof announcements.$inferSelect;
 export type InsertAnnouncement = z.infer<typeof insertAnnouncementSchema>;
+
+// === NEWS & EVENTS SYSTEM ===
+
+// News articles table
+export const newsArticles = pgTable("news_articles", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  content: text("content").notNull(),
+  excerpt: text("excerpt"), // Short description for previews
+  authorId: varchar("author_id").notNull(), // User who created the article
+  category: text("category").notNull().default("general"), // general, academic, sports, achievements
+  tags: json("tags").default([]), // Array of tags for filtering
+  featuredImage: text("featured_image"), // URL to featured image
+  isPublished: boolean("is_published").default(false),
+  publishedAt: timestamp("published_at"),
+  slug: text("slug").notNull().unique(), // URL-friendly version of title
+  views: integer("views").default(0),
+  isPinned: boolean("is_pinned").default(false), // Pin important news to top
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Events table
+export const events = pgTable("events", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  description: text("description"),
+  location: text("location"), // Physical or virtual location
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date").notNull(),
+  category: text("category").notNull().default("school"), // school, academic, sports, social, holiday
+  eventType: text("event_type").notNull().default("general"), // general, meeting, workshop, competition, celebration
+  organizerId: varchar("organizer_id").notNull(), // User who organized the event
+  maxAttendees: integer("max_attendees"), // Capacity limit if applicable
+  registrationRequired: boolean("registration_required").default(false),
+  registrationDeadline: timestamp("registration_deadline"),
+  isPublished: boolean("is_published").default(false),
+  isFeatured: boolean("is_featured").default(false), // Highlight on homepage
+  tags: json("tags").default([]), // Array of tags
+  attachments: json("attachments").default([]), // Files, images, links
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Event registrations table
+export const eventRegistrations = pgTable("event_registrations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  eventId: varchar("event_id").notNull(),
+  userId: varchar("user_id").notNull(),
+  registeredAt: timestamp("registered_at").defaultNow().notNull(),
+  status: text("status").notNull().default("registered"), // registered, cancelled, attended, no_show
+  notes: text("notes"), // Additional information from registrant
+});
+
+// News article comments
+export const newsComments = pgTable("news_comments", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  articleId: varchar("article_id").notNull(),
+  userId: varchar("user_id").notNull(),
+  content: text("content").notNull(),
+  parentCommentId: varchar("parent_comment_id"), // For reply threads
+  isApproved: boolean("is_approved").default(false), // Moderation
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// === INSERT SCHEMAS FOR NEWS & EVENTS ===
+
+export const insertNewsArticleSchema = createInsertSchema(newsArticles).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  views: true,
+});
+
+export const insertEventSchema = createInsertSchema(events).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertEventRegistrationSchema = createInsertSchema(eventRegistrations).omit({
+  id: true,
+  registeredAt: true,
+});
+
+export const insertNewsCommentSchema = createInsertSchema(newsComments).omit({
+  id: true,
+  createdAt: true,
+});
+
+// === TYPE DEFINITIONS FOR NEWS & EVENTS ===
+
+export type NewsArticle = typeof newsArticles.$inferSelect;
+export type InsertNewsArticle = z.infer<typeof insertNewsArticleSchema>;
+
+export type Event = typeof events.$inferSelect;
+export type InsertEvent = z.infer<typeof insertEventSchema>;
+
+export type EventRegistration = typeof eventRegistrations.$inferSelect;
+export type InsertEventRegistration = z.infer<typeof insertEventRegistrationSchema>;
+
+export type NewsComment = typeof newsComments.$inferSelect;
+export type InsertNewsComment = z.infer<typeof insertNewsCommentSchema>;
+
+// === STAFF DIRECTORY SYSTEM ===
+
+// Staff profiles table
+export const staffProfiles = pgTable("staff_profiles", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  firstName: text("first_name").notNull(),
+  lastName: text("last_name").notNull(),
+  email: text("email").notNull().unique(),
+  phone: text("phone"),
+  title: text("title").notNull(), // Job title/position
+  department: text("department").notNull(), // Academic department or administrative area
+  bio: text("bio"), // Professional biography
+  expertise: json("expertise").default([]), // Array of specializations/subjects
+  education: json("education").default([]), // Array of educational qualifications
+  experience: text("experience"), // Years of experience or background
+  officeLocation: text("office_location"), // Room number or building
+  officeHours: json("office_hours").default({}), // Weekly schedule object
+  profileImage: text("profile_image"), // URL to profile photo
+  socialLinks: json("social_links").default({}), // Professional social media links
+  languages: json("languages").default([]), // Spoken languages
+  certifications: json("certifications").default([]), // Professional certifications
+  isActive: boolean("is_active").default(true),
+  displayOrder: integer("display_order").default(0), // For custom ordering
+  joinedDate: timestamp("joined_date"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Staff achievements table
+export const staffAchievements = pgTable("staff_achievements", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  staffId: varchar("staff_id").notNull(),
+  title: text("title").notNull(),
+  description: text("description"),
+  category: text("category").notNull().default("award"), // award, publication, certification, project
+  date: timestamp("date").notNull(),
+  organization: text("organization"), // Awarding organization
+  url: text("url"), // Link to more information
+  isPublic: boolean("is_public").default(true),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// === INSERT SCHEMAS FOR STAFF DIRECTORY ===
+
+export const insertStaffProfileSchema = createInsertSchema(staffProfiles).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertStaffAchievementSchema = createInsertSchema(staffAchievements).omit({
+  id: true,
+  createdAt: true,
+});
+
+// === TYPE DEFINITIONS FOR STAFF DIRECTORY ===
+
+export type StaffProfile = typeof staffProfiles.$inferSelect;
+export type InsertStaffProfile = z.infer<typeof insertStaffProfileSchema>;
+
+export type StaffAchievement = typeof staffAchievements.$inferSelect;
+export type InsertStaffAchievement = z.infer<typeof insertStaffAchievementSchema>;

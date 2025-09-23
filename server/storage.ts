@@ -11,9 +11,16 @@ import {
   type PollVote, type InsertPollVote,
   type RaiseHandRequest, type InsertRaiseHandRequest,
   type FileAttachment, type InsertFileAttachment,
+  type NewsArticle, type InsertNewsArticle,
+  type Event, type InsertEvent,
+  type EventRegistration, type InsertEventRegistration,
+  type NewsComment, type InsertNewsComment,
+  type StaffProfile, type InsertStaffProfile,
+  type StaffAchievement, type InsertStaffAchievement,
   applications, contacts, chatMessages, users, groups, groupMembers, 
   groupMessages, messageReactions, groupPolls, pollVotes, 
-  raiseHandRequests, fileAttachments,
+  raiseHandRequests, fileAttachments, newsArticles, events, 
+  eventRegistrations, newsComments, staffProfiles, staffAchievements,
   // Teacher portal tables
   classes, classEnrollments, assignments, assignmentSubmissions, 
   quizzes, quizAttempts, contentLibrary, contentBookmarks, 
@@ -88,6 +95,54 @@ export interface IStorage {
   incrementDownloadCount(id: string): Promise<boolean>;
   updateScanStatus(id: string, status: string): Promise<boolean>;
   deleteFileAttachment(id: string): Promise<boolean>;
+  
+  // News Articles
+  createNewsArticle(article: InsertNewsArticle): Promise<NewsArticle>;
+  getNewsArticles(): Promise<NewsArticle[]>;
+  getPublishedNewsArticles(): Promise<NewsArticle[]>;
+  getNewsArticle(id: string): Promise<NewsArticle | undefined>;
+  getNewsArticleBySlug(slug: string): Promise<NewsArticle | undefined>;
+  updateNewsArticle(id: string, updates: Partial<InsertNewsArticle>): Promise<NewsArticle | undefined>;
+  deleteNewsArticle(id: string): Promise<boolean>;
+  incrementNewsViews(id: string): Promise<boolean>;
+  
+  // Events
+  createEvent(event: InsertEvent): Promise<Event>;
+  getEvents(): Promise<Event[]>;
+  getPublishedEvents(): Promise<Event[]>;
+  getUpcomingEvents(): Promise<Event[]>;
+  getEvent(id: string): Promise<Event | undefined>;
+  updateEvent(id: string, updates: Partial<InsertEvent>): Promise<Event | undefined>;
+  deleteEvent(id: string): Promise<boolean>;
+  getEventsByDateRange(startDate: Date, endDate: Date): Promise<Event[]>;
+  
+  // Event Registrations
+  registerForEvent(registration: InsertEventRegistration): Promise<EventRegistration>;
+  getEventRegistrations(eventId: string): Promise<EventRegistration[]>;
+  getUserEventRegistrations(userId: string): Promise<EventRegistration[]>;
+  cancelEventRegistration(eventId: string, userId: string): Promise<boolean>;
+  
+  // News Comments
+  createNewsComment(comment: InsertNewsComment): Promise<NewsComment>;
+  getNewsComments(articleId: string): Promise<NewsComment[]>;
+  approveNewsComment(id: string): Promise<boolean>;
+  deleteNewsComment(id: string): Promise<boolean>;
+  
+  // Staff Profiles
+  createStaffProfile(profile: InsertStaffProfile): Promise<StaffProfile>;
+  getStaffProfiles(): Promise<StaffProfile[]>;
+  getActiveStaffProfiles(): Promise<StaffProfile[]>;
+  getStaffProfile(id: string): Promise<StaffProfile | undefined>;
+  getStaffByDepartment(department: string): Promise<StaffProfile[]>;
+  updateStaffProfile(id: string, updates: Partial<InsertStaffProfile>): Promise<StaffProfile | undefined>;
+  deleteStaffProfile(id: string): Promise<boolean>;
+  searchStaffProfiles(searchQuery: string): Promise<StaffProfile[]>;
+  
+  // Staff Achievements
+  createStaffAchievement(achievement: InsertStaffAchievement): Promise<StaffAchievement>;
+  getStaffAchievements(staffId: string): Promise<StaffAchievement[]>;
+  getPublicStaffAchievements(staffId: string): Promise<StaffAchievement[]>;
+  deleteStaffAchievement(id: string): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -399,6 +454,321 @@ export class DatabaseStorage implements IStorage {
     const result = await db
       .delete(fileAttachments)
       .where(eq(fileAttachments.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  // === NEWS ARTICLES METHODS ===
+
+  async createNewsArticle(insertArticle: InsertNewsArticle): Promise<NewsArticle> {
+    const [article] = await db
+      .insert(newsArticles)
+      .values(insertArticle)
+      .returning();
+    return article;
+  }
+
+  async getNewsArticles(): Promise<NewsArticle[]> {
+    return await db
+      .select()
+      .from(newsArticles)
+      .orderBy(asc(newsArticles.createdAt));
+  }
+
+  async getPublishedNewsArticles(): Promise<NewsArticle[]> {
+    return await db
+      .select()
+      .from(newsArticles)
+      .where(eq(newsArticles.isPublished, true))
+      .orderBy(asc(newsArticles.publishedAt));
+  }
+
+  async getNewsArticle(id: string): Promise<NewsArticle | undefined> {
+    const [article] = await db
+      .select()
+      .from(newsArticles)
+      .where(eq(newsArticles.id, id));
+    return article || undefined;
+  }
+
+  async getNewsArticleBySlug(slug: string): Promise<NewsArticle | undefined> {
+    const [article] = await db
+      .select()
+      .from(newsArticles)
+      .where(eq(newsArticles.slug, slug));
+    return article || undefined;
+  }
+
+  async updateNewsArticle(id: string, updates: Partial<InsertNewsArticle>): Promise<NewsArticle | undefined> {
+    const [article] = await db
+      .update(newsArticles)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(newsArticles.id, id))
+      .returning();
+    return article || undefined;
+  }
+
+  async deleteNewsArticle(id: string): Promise<boolean> {
+    const result = await db.delete(newsArticles).where(eq(newsArticles.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  async incrementNewsViews(id: string): Promise<boolean> {
+    const result = await db
+      .update(newsArticles)
+      .set({ views: sql`${newsArticles.views} + 1` })
+      .where(eq(newsArticles.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  // === EVENTS METHODS ===
+
+  async createEvent(insertEvent: InsertEvent): Promise<Event> {
+    const [event] = await db
+      .insert(events)
+      .values(insertEvent)
+      .returning();
+    return event;
+  }
+
+  async getEvents(): Promise<Event[]> {
+    return await db
+      .select()
+      .from(events)
+      .orderBy(asc(events.startDate));
+  }
+
+  async getPublishedEvents(): Promise<Event[]> {
+    return await db
+      .select()
+      .from(events)
+      .where(eq(events.isPublished, true))
+      .orderBy(asc(events.startDate));
+  }
+
+  async getUpcomingEvents(): Promise<Event[]> {
+    const now = new Date();
+    return await db
+      .select()
+      .from(events)
+      .where(and(
+        eq(events.isPublished, true),
+        sql`${events.startDate} >= ${now}`
+      ))
+      .orderBy(asc(events.startDate));
+  }
+
+  async getEvent(id: string): Promise<Event | undefined> {
+    const [event] = await db
+      .select()
+      .from(events)
+      .where(eq(events.id, id));
+    return event || undefined;
+  }
+
+  async updateEvent(id: string, updates: Partial<InsertEvent>): Promise<Event | undefined> {
+    const [event] = await db
+      .update(events)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(events.id, id))
+      .returning();
+    return event || undefined;
+  }
+
+  async deleteEvent(id: string): Promise<boolean> {
+    const result = await db.delete(events).where(eq(events.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  async getEventsByDateRange(startDate: Date, endDate: Date): Promise<Event[]> {
+    return await db
+      .select()
+      .from(events)
+      .where(and(
+        eq(events.isPublished, true),
+        sql`${events.startDate} >= ${startDate}`,
+        sql`${events.startDate} <= ${endDate}`
+      ))
+      .orderBy(asc(events.startDate));
+  }
+
+  // === EVENT REGISTRATIONS METHODS ===
+
+  async registerForEvent(insertRegistration: InsertEventRegistration): Promise<EventRegistration> {
+    const [registration] = await db
+      .insert(eventRegistrations)
+      .values(insertRegistration)
+      .returning();
+    return registration;
+  }
+
+  async getEventRegistrations(eventId: string): Promise<EventRegistration[]> {
+    return await db
+      .select()
+      .from(eventRegistrations)
+      .where(eq(eventRegistrations.eventId, eventId))
+      .orderBy(asc(eventRegistrations.registeredAt));
+  }
+
+  async getUserEventRegistrations(userId: string): Promise<EventRegistration[]> {
+    return await db
+      .select()
+      .from(eventRegistrations)
+      .where(eq(eventRegistrations.userId, userId))
+      .orderBy(asc(eventRegistrations.registeredAt));
+  }
+
+  async cancelEventRegistration(eventId: string, userId: string): Promise<boolean> {
+    const result = await db
+      .update(eventRegistrations)
+      .set({ status: 'cancelled' })
+      .where(and(
+        eq(eventRegistrations.eventId, eventId),
+        eq(eventRegistrations.userId, userId)
+      ));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  // === NEWS COMMENTS METHODS ===
+
+  async createNewsComment(insertComment: InsertNewsComment): Promise<NewsComment> {
+    const [comment] = await db
+      .insert(newsComments)
+      .values(insertComment)
+      .returning();
+    return comment;
+  }
+
+  async getNewsComments(articleId: string): Promise<NewsComment[]> {
+    return await db
+      .select()
+      .from(newsComments)
+      .where(and(
+        eq(newsComments.articleId, articleId),
+        eq(newsComments.isApproved, true)
+      ))
+      .orderBy(asc(newsComments.createdAt));
+  }
+
+  async approveNewsComment(id: string): Promise<boolean> {
+    const result = await db
+      .update(newsComments)
+      .set({ isApproved: true })
+      .where(eq(newsComments.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  async deleteNewsComment(id: string): Promise<boolean> {
+    const result = await db.delete(newsComments).where(eq(newsComments.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  // === STAFF DIRECTORY METHODS ===
+
+  async createStaffProfile(insertProfile: InsertStaffProfile): Promise<StaffProfile> {
+    const [profile] = await db
+      .insert(staffProfiles)
+      .values(insertProfile)
+      .returning();
+    return profile;
+  }
+
+  async getStaffProfiles(): Promise<StaffProfile[]> {
+    return await db
+      .select()
+      .from(staffProfiles)
+      .orderBy(asc(staffProfiles.displayOrder), asc(staffProfiles.lastName));
+  }
+
+  async getActiveStaffProfiles(): Promise<StaffProfile[]> {
+    return await db
+      .select()
+      .from(staffProfiles)
+      .where(eq(staffProfiles.isActive, true))
+      .orderBy(asc(staffProfiles.displayOrder), asc(staffProfiles.lastName));
+  }
+
+  async getStaffProfile(id: string): Promise<StaffProfile | undefined> {
+    const [profile] = await db
+      .select()
+      .from(staffProfiles)
+      .where(eq(staffProfiles.id, id));
+    return profile || undefined;
+  }
+
+  async getStaffByDepartment(department: string): Promise<StaffProfile[]> {
+    return await db
+      .select()
+      .from(staffProfiles)
+      .where(and(
+        eq(staffProfiles.department, department),
+        eq(staffProfiles.isActive, true)
+      ))
+      .orderBy(asc(staffProfiles.displayOrder), asc(staffProfiles.lastName));
+  }
+
+  async updateStaffProfile(id: string, updates: Partial<InsertStaffProfile>): Promise<StaffProfile | undefined> {
+    const [profile] = await db
+      .update(staffProfiles)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(staffProfiles.id, id))
+      .returning();
+    return profile || undefined;
+  }
+
+  async deleteStaffProfile(id: string): Promise<boolean> {
+    const result = await db.delete(staffProfiles).where(eq(staffProfiles.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  async searchStaffProfiles(searchQuery: string): Promise<StaffProfile[]> {
+    const searchTerm = `%${searchQuery.toLowerCase()}%`;
+    return await db
+      .select()
+      .from(staffProfiles)
+      .where(and(
+        eq(staffProfiles.isActive, true),
+        sql`(
+          LOWER(${staffProfiles.firstName}) LIKE ${searchTerm} OR
+          LOWER(${staffProfiles.lastName}) LIKE ${searchTerm} OR
+          LOWER(${staffProfiles.title}) LIKE ${searchTerm} OR
+          LOWER(${staffProfiles.department}) LIKE ${searchTerm} OR
+          LOWER(${staffProfiles.bio}) LIKE ${searchTerm}
+        )`
+      ))
+      .orderBy(asc(staffProfiles.displayOrder), asc(staffProfiles.lastName));
+  }
+
+  // === STAFF ACHIEVEMENTS METHODS ===
+
+  async createStaffAchievement(insertAchievement: InsertStaffAchievement): Promise<StaffAchievement> {
+    const [achievement] = await db
+      .insert(staffAchievements)
+      .values(insertAchievement)
+      .returning();
+    return achievement;
+  }
+
+  async getStaffAchievements(staffId: string): Promise<StaffAchievement[]> {
+    return await db
+      .select()
+      .from(staffAchievements)
+      .where(eq(staffAchievements.staffId, staffId))
+      .orderBy(asc(staffAchievements.date));
+  }
+
+  async getPublicStaffAchievements(staffId: string): Promise<StaffAchievement[]> {
+    return await db
+      .select()
+      .from(staffAchievements)
+      .where(and(
+        eq(staffAchievements.staffId, staffId),
+        eq(staffAchievements.isPublic, true)
+      ))
+      .orderBy(asc(staffAchievements.date));
+  }
+
+  async deleteStaffAchievement(id: string): Promise<boolean> {
+    const result = await db.delete(staffAchievements).where(eq(staffAchievements.id, id));
     return (result.rowCount ?? 0) > 0;
   }
 }

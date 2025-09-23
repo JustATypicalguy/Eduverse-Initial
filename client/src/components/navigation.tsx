@@ -8,6 +8,9 @@ const navigationItems = [
   { name: "About", href: "/about" },
   { name: "Programs", href: "/programs" },
   { name: "Subjects", href: "/subjects" },
+  { name: "News", href: "/news" },
+  { name: "Events", href: "/events" },
+  { name: "Staff", href: "/staff" },
   { name: "Admissions", href: "/admissions" },
   { name: "Contact", href: "/contact" },
 ];

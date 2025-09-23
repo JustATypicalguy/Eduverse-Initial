@@ -9,7 +9,9 @@ import {
   insertGroupSchema, insertGroupMemberSchema, insertUserSchema,
   insertGroupMessageSchema, insertMessageReactionSchema, insertGroupPollSchema,
   insertPollVoteSchema, insertRaiseHandRequestSchema, insertFileAttachmentSchema,
-  insertClassSchema, insertClassEnrollmentSchema, insertAssignmentSchema
+  insertClassSchema, insertClassEnrollmentSchema, insertAssignmentSchema,
+  insertNewsArticleSchema, insertEventSchema, insertEventRegistrationSchema,
+  insertNewsCommentSchema, insertStaffProfileSchema, insertStaffAchievementSchema
 } from "@shared/schema";
 import { isEducationalQuestion, answerEducationalQuestion, isDemoMode } from "./services/openai";
 import { GroupChatWebSocketService } from "./websocket";
@@ -803,6 +805,426 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(request);
     } catch (error) {
       res.status(400).json({ message: "Invalid raise hand request", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  // === NEWS & EVENTS API ENDPOINTS ===
+
+  // NEWS ARTICLES ROUTES
+  app.get("/api/news", async (req, res) => {
+    try {
+      const { published = 'true' } = req.query;
+      const articles = published === 'true' 
+        ? await storage.getPublishedNewsArticles()
+        : await storage.getNewsArticles();
+      res.json(articles);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch news articles", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  app.get("/api/news/:id", async (req, res) => {
+    try {
+      const article = await storage.getNewsArticle(req.params.id);
+      if (!article) {
+        return res.status(404).json({ message: "News article not found" });
+      }
+
+      // Increment view count for published articles
+      if (article.isPublished) {
+        await storage.incrementNewsViews(req.params.id);
+      }
+
+      res.json(article);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch news article", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  app.get("/api/news/slug/:slug", async (req, res) => {
+    try {
+      const article = await storage.getNewsArticleBySlug(req.params.slug);
+      if (!article) {
+        return res.status(404).json({ message: "News article not found" });
+      }
+
+      // Increment view count for published articles
+      if (article.isPublished) {
+        await storage.incrementNewsViews(article.id);
+      }
+
+      res.json(article);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch news article", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  // Protected news article routes
+  app.use("/api/admin/news", authMiddleware, requireRole(['admin', 'teacher']));
+
+  app.post("/api/admin/news", async (req: AuthenticatedRequest, res) => {
+    try {
+      const validatedData = insertNewsArticleSchema.parse({
+        ...req.body,
+        authorId: req.userId,
+        slug: req.body.title ? req.body.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') : ''
+      });
+      const article = await storage.createNewsArticle(validatedData);
+      res.json(article);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid news article data", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  app.put("/api/admin/news/:id", async (req: AuthenticatedRequest, res) => {
+    try {
+      const updates = insertNewsArticleSchema.partial().parse(req.body);
+      const article = await storage.updateNewsArticle(req.params.id, updates);
+      if (!article) {
+        return res.status(404).json({ message: "News article not found" });
+      }
+      res.json(article);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid news article data", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  app.delete("/api/admin/news/:id", async (req: AuthenticatedRequest, res) => {
+    try {
+      const success = await storage.deleteNewsArticle(req.params.id);
+      if (!success) {
+        return res.status(404).json({ message: "News article not found" });
+      }
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete news article", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  // EVENTS ROUTES
+  app.get("/api/events", async (req, res) => {
+    try {
+      const { upcoming = 'false', published = 'true', startDate, endDate } = req.query;
+      
+      if (startDate && endDate) {
+        const events = await storage.getEventsByDateRange(new Date(startDate as string), new Date(endDate as string));
+        res.json(events);
+      } else if (upcoming === 'true') {
+        const events = await storage.getUpcomingEvents();
+        res.json(events);
+      } else if (published === 'true') {
+        const events = await storage.getPublishedEvents();
+        res.json(events);
+      } else {
+        const events = await storage.getEvents();
+        res.json(events);
+      }
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch events", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  app.get("/api/events/:id", async (req, res) => {
+    try {
+      const event = await storage.getEvent(req.params.id);
+      if (!event) {
+        return res.status(404).json({ message: "Event not found" });
+      }
+      res.json(event);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch event", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  // Protected event routes
+  app.use("/api/admin/events", authMiddleware, requireRole(['admin', 'teacher']));
+
+  app.post("/api/admin/events", async (req: AuthenticatedRequest, res) => {
+    try {
+      const validatedData = insertEventSchema.parse({
+        ...req.body,
+        organizerId: req.userId
+      });
+      const event = await storage.createEvent(validatedData);
+      res.json(event);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid event data", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  app.put("/api/admin/events/:id", async (req: AuthenticatedRequest, res) => {
+    try {
+      const updates = insertEventSchema.partial().parse(req.body);
+      const event = await storage.updateEvent(req.params.id, updates);
+      if (!event) {
+        return res.status(404).json({ message: "Event not found" });
+      }
+      res.json(event);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid event data", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  app.delete("/api/admin/events/:id", async (req: AuthenticatedRequest, res) => {
+    try {
+      const success = await storage.deleteEvent(req.params.id);
+      if (!success) {
+        return res.status(404).json({ message: "Event not found" });
+      }
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete event", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  // EVENT REGISTRATION ROUTES
+  app.use("/api/events/:id/register", authMiddleware);
+
+  app.post("/api/events/:id/register", async (req: AuthenticatedRequest, res) => {
+    try {
+      const validatedData = insertEventRegistrationSchema.parse({
+        ...req.body,
+        eventId: req.params.id,
+        userId: req.userId
+      });
+      const registration = await storage.registerForEvent(validatedData);
+      res.json(registration);
+    } catch (error) {
+      res.status(400).json({ message: "Failed to register for event", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  app.delete("/api/events/:id/register", async (req: AuthenticatedRequest, res) => {
+    try {
+      const success = await storage.cancelEventRegistration(req.params.id, req.userId!);
+      if (!success) {
+        return res.status(404).json({ message: "Registration not found" });
+      }
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to cancel registration", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  app.get("/api/events/:id/registrations", authMiddleware, requireRole(['admin', 'teacher']), async (req, res) => {
+    try {
+      const registrations = await storage.getEventRegistrations(req.params.id);
+      res.json(registrations);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch registrations", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  app.get("/api/user/events", authMiddleware, async (req: AuthenticatedRequest, res) => {
+    try {
+      const registrations = await storage.getUserEventRegistrations(req.userId!);
+      res.json(registrations);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch user registrations", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  // NEWS COMMENTS ROUTES
+  app.get("/api/news/:id/comments", async (req, res) => {
+    try {
+      const comments = await storage.getNewsComments(req.params.id);
+      res.json(comments);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch comments", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  app.use("/api/news/:id/comments", authMiddleware);
+
+  app.post("/api/news/:id/comments", async (req: AuthenticatedRequest, res) => {
+    try {
+      const validatedData = insertNewsCommentSchema.parse({
+        ...req.body,
+        articleId: req.params.id,
+        userId: req.userId
+      });
+      const comment = await storage.createNewsComment(validatedData);
+      res.json(comment);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid comment data", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  app.put("/api/admin/comments/:id/approve", authMiddleware, requireRole(['admin', 'teacher']), async (req, res) => {
+    try {
+      const success = await storage.approveNewsComment(req.params.id);
+      if (!success) {
+        return res.status(404).json({ message: "Comment not found" });
+      }
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to approve comment", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  app.delete("/api/admin/comments/:id", authMiddleware, requireRole(['admin', 'teacher']), async (req, res) => {
+    try {
+      const success = await storage.deleteNewsComment(req.params.id);
+      if (!success) {
+        return res.status(404).json({ message: "Comment not found" });
+      }
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete comment", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  // === STAFF DIRECTORY ROUTES ===
+
+  // Public routes for viewing staff directory
+  app.get("/api/staff", async (req, res) => {
+    try {
+      const { search, department } = req.query;
+      
+      let profiles;
+      
+      if (search) {
+        profiles = await storage.searchStaffProfiles(search as string);
+      } else if (department) {
+        profiles = await storage.getStaffByDepartment(department as string);
+      } else {
+        profiles = await storage.getActiveStaffProfiles();
+      }
+      
+      res.json(profiles);
+    } catch (error) {
+      res.status(500).json({ 
+        message: "Failed to fetch staff profiles", 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      });
+    }
+  });
+
+  app.get("/api/staff/:id", async (req, res) => {
+    try {
+      const profile = await storage.getStaffProfile(req.params.id);
+      if (!profile) {
+        return res.status(404).json({ message: "Staff profile not found" });
+      }
+      res.json(profile);
+    } catch (error) {
+      res.status(500).json({ 
+        message: "Failed to fetch staff profile", 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      });
+    }
+  });
+
+  app.get("/api/staff/:id/achievements", async (req, res) => {
+    try {
+      const achievements = await storage.getPublicStaffAchievements(req.params.id);
+      res.json(achievements);
+    } catch (error) {
+      res.status(500).json({ 
+        message: "Failed to fetch staff achievements", 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      });
+    }
+  });
+
+  // Admin routes for managing staff directory
+  app.post("/api/admin/staff", authMiddleware, requireRole(['admin', 'teacher']), async (req: AuthenticatedRequest, res) => {
+    try {
+      const validatedData = insertStaffProfileSchema.parse(req.body);
+      const profile = await storage.createStaffProfile(validatedData);
+      res.json(profile);
+    } catch (error) {
+      res.status(400).json({ 
+        message: "Invalid staff profile data", 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      });
+    }
+  });
+
+  app.get("/api/admin/staff", authMiddleware, requireRole(['admin', 'teacher']), async (req, res) => {
+    try {
+      const profiles = await storage.getStaffProfiles(); // Include inactive ones for admin
+      res.json(profiles);
+    } catch (error) {
+      res.status(500).json({ 
+        message: "Failed to fetch staff profiles", 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      });
+    }
+  });
+
+  app.put("/api/admin/staff/:id", authMiddleware, requireRole(['admin', 'teacher']), async (req: AuthenticatedRequest, res) => {
+    try {
+      const updates = insertStaffProfileSchema.partial().parse(req.body);
+      const profile = await storage.updateStaffProfile(req.params.id, updates);
+      if (!profile) {
+        return res.status(404).json({ message: "Staff profile not found" });
+      }
+      res.json(profile);
+    } catch (error) {
+      res.status(400).json({ 
+        message: "Failed to update staff profile", 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      });
+    }
+  });
+
+  app.delete("/api/admin/staff/:id", authMiddleware, requireRole(['admin']), async (req, res) => {
+    try {
+      const success = await storage.deleteStaffProfile(req.params.id);
+      if (!success) {
+        return res.status(404).json({ message: "Staff profile not found" });
+      }
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ 
+        message: "Failed to delete staff profile", 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      });
+    }
+  });
+
+  // Staff achievements admin routes
+  app.post("/api/admin/staff/:id/achievements", authMiddleware, requireRole(['admin', 'teacher']), async (req: AuthenticatedRequest, res) => {
+    try {
+      const validatedData = insertStaffAchievementSchema.parse({
+        ...req.body,
+        staffId: req.params.id
+      });
+      const achievement = await storage.createStaffAchievement(validatedData);
+      res.json(achievement);
+    } catch (error) {
+      res.status(400).json({ 
+        message: "Invalid achievement data", 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      });
+    }
+  });
+
+  app.get("/api/admin/staff/:id/achievements", authMiddleware, requireRole(['admin', 'teacher']), async (req, res) => {
+    try {
+      const achievements = await storage.getStaffAchievements(req.params.id); // Include private ones for admin
+      res.json(achievements);
+    } catch (error) {
+      res.status(500).json({ 
+        message: "Failed to fetch staff achievements", 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      });
+    }
+  });
+
+  app.delete("/api/admin/achievements/:id", authMiddleware, requireRole(['admin', 'teacher']), async (req, res) => {
+    try {
+      const success = await storage.deleteStaffAchievement(req.params.id);
+      if (!success) {
+        return res.status(404).json({ message: "Achievement not found" });
+      }
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ 
+        message: "Failed to delete achievement", 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      });
     }
   });
   
