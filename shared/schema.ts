@@ -671,3 +671,6 @@ export type InsertStaffProfile = z.infer<typeof insertStaffProfileSchema>;
 
 export type StaffAchievement = typeof staffAchievements.$inferSelect;
 export type InsertStaffAchievement = z.infer<typeof insertStaffAchievementSchema>;
+
+// User role type definition for authentication and role-based access
+export type UserRole = 'student' | 'teacher' | 'admin' | 'parent';

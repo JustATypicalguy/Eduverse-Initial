@@ -364,4 +364,288 @@
       transform: translateY(-5px);
     }
   }
+  
+  /* Enhanced EduVerse Dashboard Animations */
+  @keyframes slideInRight {
+    from { opacity: 0; transform: translateX(30px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  
+  @keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-30px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  
+  @keyframes flipIn {
+    from { opacity: 0; transform: perspective(400px) rotateY(90deg); }
+    to { opacity: 1; transform: perspective(400px) rotateY(0deg); }
+  }
+  
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  
+  @keyframes wiggle {
+    0%, 7%, 100% { transform: rotate(0deg); }
+    15% { transform: rotate(-3deg); }
+    20% { transform: rotate(3deg); }
+    25% { transform: rotate(-3deg); }
+    30% { transform: rotate(3deg); }
+    35% { transform: rotate(-1deg); }
+    40% { transform: rotate(1deg); }
+    50%, 100% { transform: rotate(0deg); }
+  }
+  
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  
+  @keyframes heartbeat {
+    0%, 40%, 80%, 100% { transform: scale(1); }
+    20%, 60% { transform: scale(1.15); }
+  }
+  
+  .animate-slide-in-right {
+    animation: slideInRight 0.6s ease-out;
+  }
+  
+  .animate-slide-in-left {
+    animation: slideInLeft 0.6s ease-out;
+  }
+  
+  .animate-flip-in {
+    animation: flipIn 0.7s ease-out;
+  }
+  
+  .animate-scale-in {
+    animation: scaleIn 0.5s ease-out;
+  }
+  
+  .animate-wiggle {
+    animation: wiggle 1s ease-in-out;
+  }
+  
+  .animate-shimmer {
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+  
+  .animate-heartbeat {
+    animation: heartbeat 2s ease-in-out infinite;
+  }
+  
+  /* Staggered animation delays */
+  .animate-delay-100 { animation-delay: 0.1s; }
+  .animate-delay-200 { animation-delay: 0.2s; }
+  .animate-delay-300 { animation-delay: 0.3s; }
+  .animate-delay-400 { animation-delay: 0.4s; }
+  .animate-delay-500 { animation-delay: 0.5s; }
+  .animate-delay-600 { animation-delay: 0.6s; }
+  .animate-delay-700 { animation-delay: 0.7s; }
+  .animate-delay-800 { animation-delay: 0.8s; }
+  
+  /* Enhanced hover effects for dashboard components */
+  .hover-lift {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  }
+  
+  .hover-glow {
+    transition: all 0.3s ease;
+  }
+  
+  .hover-glow:hover {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+    transform: scale(1.02);
+  }
+  
+  .hover-tilt {
+    transition: transform 0.3s ease;
+  }
+  
+  .hover-tilt:hover {
+    transform: perspective(1000px) rotateX(5deg) rotateY(5deg);
+  }
+  
+  .hover-gradient {
+    background: linear-gradient(45deg, var(--eduverse-blue), var(--eduverse-gold));
+    background-size: 200% 200%;
+    transition: background-position 0.5s ease;
+  }
+  
+  .hover-gradient:hover {
+    background-position: 100% 100%;
+  }
+  
+  /* Mobile-first responsive design enhancements */
+  @media (max-width: 640px) {
+    .mobile-stack > * {
+      width: 100% !important;
+      margin-bottom: 0.75rem;
+    }
+    
+    .mobile-stack:last-child {
+      margin-bottom: 0;
+    }
+    
+    .mobile-text-sm {
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+    }
+    
+    .mobile-text-xs {
+      font-size: 0.75rem;
+      line-height: 1rem;
+    }
+    
+    .mobile-p-3 {
+      padding: 0.75rem;
+    }
+    
+    .mobile-p-4 {
+      padding: 1rem;
+    }
+    
+    .mobile-hidden {
+      display: none;
+    }
+    
+    .mobile-flex-col {
+      flex-direction: column;
+    }
+    
+    .mobile-space-y-2 > * + * {
+      margin-top: 0.5rem;
+    }
+    
+    .mobile-space-y-4 > * + * {
+      margin-top: 1rem;
+    }
+    
+    /* Dashboard specific mobile optimizations */
+    .mobile-dashboard-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    
+    .mobile-sidebar-compact {
+      width: 100%;
+      height: auto;
+      position: relative;
+    }
+    
+    .mobile-chart-height {
+      height: 250px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .tablet-grid-2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .tablet-hidden {
+      display: none;
+    }
+  }
+  
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .desktop-sm-grid-3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  /* Accessibility improvements */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-fade-in,
+    .animate-slide-up,
+    .animate-bounce-in,
+    .animate-float,
+    .animate-slide-in-right,
+    .animate-slide-in-left,
+    .animate-flip-in,
+    .animate-scale-in,
+    .animate-wiggle,
+    .animate-shimmer,
+    .animate-heartbeat {
+      animation: none;
+    }
+    
+    .hover-lift:hover,
+    .hover-glow:hover,
+    .hover-tilt:hover {
+      transform: none;
+    }
+  }
+  
+  /* Custom scrollbar for dashboard */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--eduverse-blue);
+    border-radius: 3px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--eduverse-dark);
+  }
+  
+  /* Loading states */
+  .skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+  
+  .dark .skeleton {
+    background: linear-gradient(90deg, #2a2a2a 25%, #3a3a3a 50%, #2a2a2a 75%);
+    background-size: 200% 100%;
+  }
+  
+  /* Interactive feedback */
+  .click-feedback {
+    transition: transform 0.1s ease;
+  }
+  
+  .click-feedback:active {
+    transform: scale(0.95);
+  }
+  
+  /* Achievement badge glow effect */
+  .achievement-glow {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .achievement-glow::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255, 215, 0, 0.3), transparent);
+    transform: rotate(45deg);
+    animation: achievementSweep 3s infinite;
+  }
+  
+  @keyframes achievementSweep {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+  }
 }

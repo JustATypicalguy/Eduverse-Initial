@@ -1,35 +1,20 @@
 import { useQuery } from "@tanstack/react-query";
 import { hasPermission, canAccessRoute, getRolePermissions, type Permission } from "@shared/permissions";
+import { useAuth } from "./useAuth";
 
-// Mock user data - in real app this would come from authentication context
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-  department: string;
-  isActive: boolean;
-}
-
-// Mock current user
-const mockCurrentUser: User = {
-  id: "1",
-  name: "Sarah Johnson",
-  email: "sarah.johnson@eduverse.edu",
-  role: "standard_teacher", // Can be: new_teacher, standard_teacher, senior_teacher, department_head, substitute_teacher
-  department: "Mathematics",
-  isActive: true
-};
-
-// Hook to get current user
+// Hook to get current user from authentication system
 export function useCurrentUser() {
+  const { user, isAuthenticated } = useAuth();
+  
   return useQuery({
-    queryKey: ['current-user'],
+    queryKey: ['current-user', user?.id],
     queryFn: async () => {
-      // In a real app, this would fetch from an API endpoint
-      // For now, return mock data
-      return mockCurrentUser;
+      if (!isAuthenticated || !user) {
+        throw new Error('Not authenticated');
+      }
+      return user;
     },
+    enabled: isAuthenticated && !!user,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }

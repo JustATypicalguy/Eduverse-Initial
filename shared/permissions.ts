@@ -1,4 +1,4 @@
-// Teacher-specific permissions and role-based access control
+// EduVerse role-based access control system for all user types
 
 export interface Permission {
   resource: string;
@@ -14,8 +14,19 @@ export interface Role {
   isActive: boolean;
 }
 
-// Define available permissions for teachers
-export const TEACHER_PERMISSIONS: Permission[] = [
+// Define available permissions for all user types
+export const ALL_PERMISSIONS: Permission[] = [
+  // Student-specific permissions
+  { resource: 'courses', action: 'view_enrolled', description: 'View enrolled courses' },
+  { resource: 'courses', action: 'enroll', description: 'Enroll in courses' },
+  { resource: 'assignments', action: 'view_own', description: 'View own assignments' },
+  { resource: 'assignments', action: 'submit', description: 'Submit assignments' },
+  { resource: 'grades', action: 'view_own', description: 'View own grades' },
+  { resource: 'schedule', action: 'view_own', description: 'View own schedule' },
+  { resource: 'groups', action: 'join', description: 'Join study groups' },
+  { resource: 'groups', action: 'participate', description: 'Participate in group chats' },
+  
+  // Teacher permissions
   // Class Management
   { resource: 'classes', action: 'create', description: 'Create new classes' },
   { resource: 'classes', action: 'read', description: 'View class information' },
@@ -73,10 +84,113 @@ export const TEACHER_PERMISSIONS: Permission[] = [
   { resource: 'admin', action: 'manage_teachers', description: 'Manage other teachers' },
   { resource: 'admin', action: 'view_department_analytics', description: 'View department-wide analytics' },
   { resource: 'admin', action: 'approve_content', description: 'Approve shared content' },
+  
+  // System Admin permissions
+  { resource: 'users', action: 'manage_all', description: 'Manage all users' },
+  { resource: 'users', action: 'create', description: 'Create new users' },
+  { resource: 'users', action: 'delete', description: 'Delete users' },
+  { resource: 'users', action: 'elevate_role', description: 'Change user roles' },
+  { resource: 'system', action: 'view_reports', description: 'View system reports' },
+  { resource: 'system', action: 'manage_settings', description: 'Manage system settings' },
+  { resource: 'system', action: 'moderate_content', description: 'Moderate platform content' },
+  { resource: 'system', action: 'view_financial', description: 'View financial reports' },
 ];
 
-// Define teacher roles with different permission levels
-export const TEACHER_ROLES: Role[] = [
+// Define all user roles with different permission levels
+export const USER_ROLES: Role[] = [
+  {
+    id: 'student',
+    name: 'Student',
+    description: 'Standard student permissions',
+    isActive: true,
+    permissions: [
+      // Course access
+      { resource: 'courses', action: 'view_enrolled', description: 'View enrolled courses' },
+      { resource: 'courses', action: 'enroll', description: 'Enroll in courses' },
+      
+      // Assignment management
+      { resource: 'assignments', action: 'view_own', description: 'View own assignments' },
+      { resource: 'assignments', action: 'submit', description: 'Submit assignments' },
+      
+      // Grade viewing
+      { resource: 'grades', action: 'view_own', description: 'View own grades' },
+      
+      // Schedule access
+      { resource: 'schedule', action: 'view_own', description: 'View own schedule' },
+      
+      // Group participation
+      { resource: 'groups', action: 'join', description: 'Join study groups' },
+      { resource: 'groups', action: 'participate', description: 'Participate in group chats' },
+      
+      // Basic communication
+      { resource: 'communication', action: 'send_messages', description: 'Send messages to teachers' },
+      
+      // Profile management
+      { resource: 'profile', action: 'read', description: 'View own profile' },
+      { resource: 'profile', action: 'update', description: 'Edit own profile' },
+      { resource: 'profile', action: 'change_password', description: 'Change password' },
+    ]
+  },
+  {
+    id: 'parent',
+    name: 'Parent',
+    description: 'Parent permissions to monitor child progress',
+    isActive: true,
+    permissions: [
+      // View child's information
+      { resource: 'students', action: 'view_child', description: 'View child information' },
+      { resource: 'grades', action: 'view_child', description: 'View child grades' },
+      { resource: 'schedule', action: 'view_child', description: 'View child schedule' },
+      { resource: 'assignments', action: 'view_child', description: 'View child assignments' },
+      
+      // Communication with teachers
+      { resource: 'communication', action: 'send_messages', description: 'Send messages to teachers' },
+      
+      // Profile management
+      { resource: 'profile', action: 'read', description: 'View own profile' },
+      { resource: 'profile', action: 'update', description: 'Edit own profile' },
+      { resource: 'profile', action: 'change_password', description: 'Change password' },
+    ]
+  },
+  {
+    id: 'admin',
+    name: 'System Administrator',
+    description: 'Full system administration permissions',
+    isActive: true,
+    permissions: [
+      // User management
+      { resource: 'users', action: 'manage_all', description: 'Manage all users' },
+      { resource: 'users', action: 'create', description: 'Create new users' },
+      { resource: 'users', action: 'delete', description: 'Delete users' },
+      { resource: 'users', action: 'elevate_role', description: 'Change user roles' },
+      
+      // System administration
+      { resource: 'system', action: 'view_reports', description: 'View system reports' },
+      { resource: 'system', action: 'manage_settings', description: 'Manage system settings' },
+      { resource: 'system', action: 'moderate_content', description: 'Moderate platform content' },
+      { resource: 'system', action: 'view_financial', description: 'View financial reports' },
+      
+      // Content management
+      { resource: 'content', action: 'create', description: 'Create content' },
+      { resource: 'content', action: 'read', description: 'Access all content' },
+      { resource: 'content', action: 'update', description: 'Edit any content' },
+      { resource: 'content', action: 'delete', description: 'Delete any content' },
+      { resource: 'content', action: 'approve', description: 'Approve content' },
+      
+      // Analytics and reporting
+      { resource: 'analytics', action: 'view_all', description: 'View all analytics' },
+      { resource: 'analytics', action: 'export_reports', description: 'Export system reports' },
+      
+      // Communication oversight
+      { resource: 'communication', action: 'moderate', description: 'Moderate communications' },
+      { resource: 'communication', action: 'send_announcements', description: 'Send system announcements' },
+      
+      // Profile management
+      { resource: 'profile', action: 'read', description: 'View own profile' },
+      { resource: 'profile', action: 'update', description: 'Edit own profile' },
+      { resource: 'profile', action: 'change_password', description: 'Change password' },
+    ]
+  },
   {
     id: 'new_teacher',
     name: 'New Teacher',
@@ -232,8 +346,15 @@ export const TEACHER_ROLES: Role[] = [
     description: 'Full administrative permissions for department heads',
     isActive: true,
     permissions: [
-      // All permissions
-      ...TEACHER_PERMISSIONS,
+      // All standard teacher permissions
+      ...USER_ROLES.find(r => r.id === 'standard_teacher')?.permissions || [],
+      
+      // Additional administrative permissions
+      { resource: 'admin', action: 'manage_teachers', description: 'Manage other teachers' },
+      { resource: 'admin', action: 'view_all_classes', description: 'View all department classes' },
+      { resource: 'admin', action: 'view_department_analytics', description: 'View department analytics' },
+      { resource: 'admin', action: 'approve_content', description: 'Approve shared content' },
+      { resource: 'admin', action: 'manage_departments', description: 'Manage department settings' },
     ]
   },
   {
@@ -265,23 +386,32 @@ export const TEACHER_ROLES: Role[] = [
 
 // Helper functions for permission checking
 export function hasPermission(userRole: string, resource: string, action: string): boolean {
-  const role = TEACHER_ROLES.find(r => r.id === userRole);
+  const role = USER_ROLES.find(r => r.id === userRole);
   if (!role || !role.isActive) return false;
   
   return role.permissions.some(p => p.resource === resource && p.action === action);
 }
 
 export function getRolePermissions(roleId: string): Permission[] {
-  const role = TEACHER_ROLES.find(r => r.id === roleId);
+  const role = USER_ROLES.find(r => r.id === roleId);
   return role?.permissions || [];
 }
 
 export function getAllPermissionsForResource(resource: string): Permission[] {
-  return TEACHER_PERMISSIONS.filter(p => p.resource === resource);
+  return ALL_PERMISSIONS.filter(p => p.resource === resource);
 }
 
 export function canAccessRoute(userRole: string, route: string): boolean {
   const routePermissions: Record<string, { resource: string; action: string }> = {
+    // Student dashboard routes
+    '/dashboard/student': { resource: 'courses', action: 'view_enrolled' },
+    '/dashboard/student/courses': { resource: 'courses', action: 'view_enrolled' },
+    '/dashboard/student/assignments': { resource: 'assignments', action: 'view_own' },
+    '/dashboard/student/grades': { resource: 'grades', action: 'view_own' },
+    '/dashboard/student/schedule': { resource: 'schedule', action: 'view_own' },
+    
+    // Teacher dashboard routes  
+    '/dashboard/teacher': { resource: 'classes', action: 'read' },
     '/teacher': { resource: 'profile', action: 'read' },
     '/teacher/classes': { resource: 'classes', action: 'read' },
     '/teacher/students': { resource: 'students', action: 'read' },
@@ -290,6 +420,17 @@ export function canAccessRoute(userRole: string, route: string): boolean {
     '/teacher/analytics': { resource: 'analytics', action: 'view_class_performance' },
     '/teacher/communication': { resource: 'communication', action: 'send_messages' },
     '/teacher/profile': { resource: 'profile', action: 'read' },
+    
+    // Admin dashboard routes
+    '/dashboard/admin': { resource: 'users', action: 'manage_all' },
+    '/dashboard/admin/users': { resource: 'users', action: 'manage_all' },
+    '/dashboard/admin/reports': { resource: 'system', action: 'view_reports' },
+    '/dashboard/admin/content': { resource: 'content', action: 'update' },
+    '/dashboard/admin/settings': { resource: 'system', action: 'manage_settings' },
+    
+    // Parent dashboard routes
+    '/dashboard/parent': { resource: 'students', action: 'view_child' },
+    '/dashboard/parent/children': { resource: 'students', action: 'view_child' },
   };
 
   const requiredPermission = routePermissions[route];
