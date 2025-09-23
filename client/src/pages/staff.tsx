@@ -83,11 +83,7 @@ export default function StaffDirectory() {
 
   return (
     <>
-      {/* SEO Meta Tags */}
-      <title>EduVerse Staff Directory - Meet Our Dedicated Team</title>
-      <meta name="description" content="Connect with EduVerse's dedicated educators and staff members. Find contact information, expertise, and office hours for teachers and administrators." />
-      
-      <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-sky-50 to-blue-50 py-12">
+    <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-sky-50 to-blue-50 py-12">
         <div className="container mx-auto px-4 max-w-7xl">
           {/* Cyan/Sky Theme Header */}
           <div className="bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-500 text-white py-12 mb-8 rounded-2xl shadow-lg" data-testid="staff-header">
@@ -103,13 +99,17 @@ export default function StaffDirectory() {
               </p>
             </div>
           </div>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Get to know the dedicated educators and professionals who make EduVerse a place of excellence, 
-            innovation, and inspiring learning experiences.
-          </p>
+          
+          <div className="text-center mt-8">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              Get to know the dedicated educators and professionals who make EduVerse a place of excellence, 
+              innovation, and inspiring learning experiences.
+            </p>
+          </div>
         </div>
 
-        {/* Search and Filter Controls */}
+        <div className="container mx-auto px-4 max-w-7xl">
+          {/* Search and Filter Controls */}
         <Card className="p-6 mb-8 bg-white/80 backdrop-blur-sm border-0 shadow-lg">
           <div className="flex flex-col lg:flex-row gap-6">
             {/* Search Input */}
@@ -393,6 +393,7 @@ export default function StaffDirectory() {
             )}
           </div>
         )}
+        </div>
       </div>
     </div>
     </>
