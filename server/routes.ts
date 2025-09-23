@@ -691,11 +691,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Initialize demo data
   initializeDemoData();
 
+  // Helper function to find user by username or email
+  async function findUserByUsernameOrEmail(identifier: string) {
+    // First try to find by username
+    let user = await storage.getUserByUsername(identifier);
+    
+    // If not found and identifier looks like an email, try to find by email
+    if (!user && identifier.includes('@')) {
+      // Get all users and find one with matching email (simple approach)
+      // In production, you'd want a proper getUserByEmail method
+      try {
+        const allUsers = await storage.getUsers();
+        user = allUsers.find(u => u.email === identifier);
+      } catch (error) {
+        console.log('Error searching users by email:', error);
+      }
+    }
+    
+    return user;
+  }
+
   // Auth endpoints (no auth required)
   app.post("/api/auth/login", async (req, res) => {
     try {
       const { username, password } = req.body;
-      const user = await storage.getUserByUsername(username);
+      const user = await findUserByUsernameOrEmail(username);
       
       if (!user) {
         return res.status(401).json({ message: "Invalid credentials" });

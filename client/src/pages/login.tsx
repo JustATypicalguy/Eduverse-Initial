@@ -244,11 +244,11 @@ export default function Login() {
       case 'senior_teacher':
       case 'department_head':
       case 'substitute_teacher':
-        setLocation('/teacher-dashboard'); // Teacher dashboard for managing groups and lessons
+        setLocation('/teacher'); // Teacher dashboard for managing groups and lessons
         break;
       case 'administrator':
       case 'admin':
-        setLocation('/teacher-dashboard'); // Admin access with full permissions to all groups
+        setLocation('/teacher'); // Admin access with full permissions to all groups
         break;
       default:
         setLocation('/lms-structure'); // Default fallback to student view
