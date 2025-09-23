@@ -28,9 +28,7 @@ export default function Events() {
   // Event registration mutation
   const registerMutation = useMutation({
     mutationFn: async (eventId: string) => {
-      return apiRequest(`/api/events/${eventId}/register`, {
-        method: 'POST',
-      });
+      return apiRequest('POST', `/api/events/${eventId}/register`);
     },
     onSuccess: () => {
       toast({
