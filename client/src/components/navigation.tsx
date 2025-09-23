@@ -16,11 +16,41 @@ const navigationItems = [
 ];
 
 const featureItems = [
-  { name: "👥 Group Chat", href: "/group-chat", icon: "💬" },
-  { name: "🚀 AR Learning", href: "/ar-learning", icon: "👁️" },
-  { name: "❤️ Emotional Learning", href: "/emotional-learning", icon: "🧠" },
-  { name: "👤 Avatars", href: "/avatars", icon: "🎨" },
-  { name: "📊 Progress Tracker", href: "/lms-structure", icon: "📈" },
+  { 
+    name: "👥 Group Chat", 
+    href: "/group-chat", 
+    icon: "💬",
+    description: "Collaborate with classmates in real-time",
+    color: "from-blue-400 to-blue-600" 
+  },
+  { 
+    name: "🚀 AR Learning", 
+    href: "/ar-learning", 
+    icon: "👁️",
+    description: "Experience immersive augmented reality education",
+    color: "from-purple-400 to-purple-600" 
+  },
+  { 
+    name: "❤️ Emotional Learning", 
+    href: "/emotional-learning", 
+    icon: "🧠",
+    description: "Develop emotional intelligence and mindfulness",
+    color: "from-pink-400 to-pink-600" 
+  },
+  { 
+    name: "👤 Avatars", 
+    href: "/avatars", 
+    icon: "🎨",
+    description: "Create your personalized learning avatar",
+    color: "from-green-400 to-green-600" 
+  },
+  { 
+    name: "📊 Progress Tracker", 
+    href: "/lms-structure", 
+    icon: "📈",
+    description: "Monitor your academic journey and achievements",
+    color: "from-orange-400 to-orange-600" 
+  },
 ];
 
 export function Navigation() {
@@ -151,40 +181,92 @@ export function Navigation() {
               </Link>
             </div>
             
-            {/* Interactive Features Dropdown */}
+            {/* Interactive Features Dropdown - Enhanced */}
             <div className="relative group mr-4">
-              <button className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full font-medium hover:from-purple-600 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
-                ✨ Features
-                <svg className="w-4 h-4 transition-transform group-hover:rotate-180 duration-200" fill="currentColor" viewBox="0 0 20 20">
+              <button className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white rounded-full font-bold hover:from-purple-600 hover:via-pink-600 hover:to-red-600 transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:scale-110 animate-pulse hover:animate-none border-2 border-white/20">
+                <span className="text-xl animate-spin-slow">✨</span>
+                <span className="text-lg">Explore Features</span>
+                <svg className="w-5 h-5 transition-transform group-hover:rotate-180 duration-300" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
                 </svg>
               </button>
-              <div className="absolute top-full right-0 mt-3 w-72 bg-white border border-gray-100 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 z-50">
-                <div className="p-3">
-                  <div className="text-center mb-4">
-                    <h3 className="font-bold text-gray-800 text-lg">🚀 Interactive Learning</h3>
-                    <p className="text-sm text-gray-500">Explore our innovative features</p>
+              
+              {/* Mega Dropdown */}
+              <div className="absolute top-full right-0 mt-4 w-96 bg-gradient-to-br from-white via-blue-50 to-purple-50 border border-purple-100 rounded-3xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-500 transform translate-y-4 group-hover:translate-y-0 z-50 backdrop-blur-lg">
+                <div className="p-6">
+                  {/* Header */}
+                  <div className="text-center mb-6 pb-4 border-b border-purple-100">
+                    <div className="flex items-center justify-center gap-3 mb-2">
+                      <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center animate-bounce">
+                        <span className="text-2xl">🚀</span>
+                      </div>
+                      <h3 className="font-black text-2xl bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                        Interactive Learning Hub
+                      </h3>
+                    </div>
+                    <p className="text-sm text-gray-600 font-medium">
+                      🎯 Discover amazing tools that make learning fun & engaging
+                    </p>
                   </div>
-                  <div className="grid grid-cols-1 gap-2">
-                    {featureItems.map((item) => (
+                  
+                  {/* Features Grid */}
+                  <div className="grid grid-cols-1 gap-3">
+                    {featureItems.map((item, index) => (
                       <Link
                         key={item.name}
                         href={item.href}
-                        className={`flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-eduverse-light hover:to-purple-50 transition-all duration-200 transform hover:scale-102 ${
+                        className={`group/item relative overflow-hidden rounded-2xl p-4 transition-all duration-300 transform hover:scale-105 hover:shadow-lg ${
                           isActive(item.href) 
-                            ? "bg-gradient-to-r from-eduverse-light to-purple-50 text-eduverse-blue font-semibold shadow-md" 
-                            : "text-gray-700 hover:text-eduverse-blue"
+                            ? "bg-gradient-to-r " + item.color + " text-white shadow-lg scale-105" 
+                            : "bg-white/80 hover:bg-gradient-to-r hover:" + item.color + " hover:text-white"
                         }`}
+                        style={{ animationDelay: `${index * 100}ms` }}
                       >
-                        <span className="text-2xl">{item.icon}</span>
-                        <div className="flex-1">
-                          <span className="text-sm font-semibold block">{item.name}</span>
+                        {/* Animated Background */}
+                        <div className="absolute inset-0 bg-gradient-to-r opacity-0 group-hover/item:opacity-100 transition-opacity duration-300 rounded-2xl" 
+                             style={{ backgroundImage: `linear-gradient(45deg, ${item.color.split(' ')[1]}, ${item.color.split(' ')[3]})` }}>
                         </div>
-                        <svg className="w-4 h-4 text-gray-400 group-hover:text-eduverse-blue transition-colors" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                        </svg>
+                        
+                        <div className="relative z-10 flex items-center gap-4">
+                          {/* Icon with animation */}
+                          <div className="w-14 h-14 bg-gradient-to-br from-white/20 to-white/10 rounded-xl flex items-center justify-center group-hover/item:animate-pulse group-hover/item:scale-110 transition-transform duration-300">
+                            <span className="text-3xl filter drop-shadow-md">{item.icon}</span>
+                          </div>
+                          
+                          {/* Content */}
+                          <div className="flex-1">
+                            <div className="font-bold text-lg mb-1 group-hover/item:text-white transition-colors">
+                              {item.name}
+                            </div>
+                            <p className="text-sm opacity-90 group-hover/item:text-white/90 transition-colors">
+                              {item.description}
+                            </p>
+                          </div>
+                          
+                          {/* Arrow */}
+                          <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center group-hover/item:bg-white/30 transition-all duration-300 group-hover/item:translate-x-1">
+                            <svg className="w-4 h-4 group-hover/item:text-white transition-colors" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                            </svg>
+                          </div>
+                        </div>
+                        
+                        {/* Hover Effect Overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 -translate-x-full group-hover/item:translate-x-full transition-transform duration-1000 ease-out"></div>
                       </Link>
                     ))}
+                  </div>
+                  
+                  {/* Bottom CTA */}
+                  <div className="mt-6 pt-4 border-t border-purple-100 text-center">
+                    <p className="text-sm text-gray-600 mb-3">
+                      🎨 <strong>Ready to transform your learning experience?</strong>
+                    </p>
+                    <div className="flex justify-center space-x-2">
+                      <div className="w-2 h-2 bg-purple-400 rounded-full animate-ping"></div>
+                      <div className="w-2 h-2 bg-pink-400 rounded-full animate-ping" style={{ animationDelay: '0.2s' }}></div>
+                      <div className="w-2 h-2 bg-red-400 rounded-full animate-ping" style={{ animationDelay: '0.4s' }}></div>
+                    </div>
                   </div>
                 </div>
               </div>

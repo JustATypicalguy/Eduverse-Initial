@@ -1469,7 +1469,10 @@ async function initializeDemoData() {
 
       for (const event of demoEvents) {
         try {
-          await storage.createEvent(event);
+          await storage.createEvent({
+            ...event,
+            organizerId: createdUsers.find(u => u.role === 'teacher')?.id || 'demo-organizer'
+          });
         } catch (error) {
           console.log('Error creating event:', error);
         }

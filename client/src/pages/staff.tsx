@@ -330,7 +330,7 @@ export default function StaffDirectory() {
                   {member.officeHours && formatOfficeHours(member.officeHours) && (
                     <div className="flex items-start gap-2 text-gray-600">
                       <Clock className="h-4 w-4 flex-shrink-0 text-gray-400 mt-0.5" />
-                      <span className="text-xs">{String(formatOfficeHours(member.officeHours))}</span>
+                      <span className="text-xs">{formatOfficeHours(member.officeHours)}</span>
                     </div>
                   )}
                 </div>
