@@ -82,9 +82,8 @@ export default function StaffDirectory() {
   }
 
   return (
-    <>
     <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-sky-50 to-blue-50 py-12">
-        <div className="container mx-auto px-4 max-w-7xl">
+      <div className="container mx-auto px-4 max-w-7xl">
           {/* Cyan/Sky Theme Header */}
           <div className="bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-500 text-white py-12 mb-8 rounded-2xl shadow-lg" data-testid="staff-header">
             <div className="text-center">
@@ -108,8 +107,7 @@ export default function StaffDirectory() {
           </div>
         </div>
 
-        <div className="container mx-auto px-4 max-w-7xl">
-          {/* Search and Filter Controls */}
+        {/* Search and Filter Controls */}
         <Card className="p-6 mb-8 bg-white/80 backdrop-blur-sm border-0 shadow-lg">
           <div className="flex flex-col lg:flex-row gap-6">
             {/* Search Input */}
@@ -393,9 +391,6 @@ export default function StaffDirectory() {
             )}
           </div>
         )}
-        </div>
-      </div>
     </div>
-    </>
   );
 }
