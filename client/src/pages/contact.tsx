@@ -98,7 +98,7 @@ export default function Contact() {
                       <Mail className="text-white" size={24} />
                     </div>
                     <h3 className="font-semibold text-gray-800 mb-2">Email</h3>
-                    <p className="text-eduverse-gray">admissions@eduverse.edu</p>
+                    <p className="text-eduverse-gray bg-white border border-eduverse-blue/20 rounded-lg px-4 py-2 font-mono">admissions@eduverse.edu</p>
                   </CardContent>
                 </Card>
                 
