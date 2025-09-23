@@ -153,8 +153,8 @@ export default function LMSStructure() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <Avatar className="w-16 h-16 bg-white">
-                    <AvatarFallback className="text-2xl">
+                  <Avatar className="w-16 h-16 bg-white border-2 border-white/20">
+                    <AvatarFallback className="text-2xl text-eduverse-blue bg-white">
                       {selectedStudent.avatar}
                     </AvatarFallback>
                   </Avatar>
