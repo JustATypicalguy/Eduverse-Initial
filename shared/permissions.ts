@@ -346,8 +346,56 @@ export const USER_ROLES: Role[] = [
     description: 'Full administrative permissions for department heads',
     isActive: true,
     permissions: [
-      // All standard teacher permissions
-      ...USER_ROLES.find(r => r.id === 'standard_teacher')?.permissions || [],
+      // Full class management (copied from standard_teacher)
+      { resource: 'classes', action: 'create', description: 'Create new classes' },
+      { resource: 'classes', action: 'read', description: 'View class information' },
+      { resource: 'classes', action: 'update', description: 'Edit class details' },
+      { resource: 'classes', action: 'manage_students', description: 'Manage class enrollment' },
+      
+      // Student management (copied from standard_teacher)
+      { resource: 'students', action: 'read', description: 'View student profiles' },
+      { resource: 'students', action: 'update', description: 'Edit student information' },
+      { resource: 'students', action: 'view_grades', description: 'View student grades' },
+      { resource: 'students', action: 'edit_grades', description: 'Modify student grades' },
+      { resource: 'students', action: 'send_messages', description: 'Send messages to students' },
+      { resource: 'students', action: 'view_attendance', description: 'View student attendance' },
+      { resource: 'students', action: 'mark_attendance', description: 'Mark student attendance' },
+      
+      // Assessment management (copied from standard_teacher)
+      { resource: 'assessments', action: 'create', description: 'Create assessments' },
+      { resource: 'assessments', action: 'read', description: 'View assessments' },
+      { resource: 'assessments', action: 'update', description: 'Edit assessments' },
+      { resource: 'assessments', action: 'delete', description: 'Delete assessments' },
+      { resource: 'assessments', action: 'grade', description: 'Grade submissions' },
+      { resource: 'assessments', action: 'publish', description: 'Publish results' },
+      
+      // Content management (copied from standard_teacher)
+      { resource: 'content', action: 'create', description: 'Create content' },
+      { resource: 'content', action: 'read', description: 'Access content library' },
+      { resource: 'content', action: 'update', description: 'Edit own content' },
+      { resource: 'content', action: 'delete', description: 'Delete own content' },
+      { resource: 'content', action: 'share', description: 'Share content' },
+      { resource: 'content', action: 'bookmark', description: 'Bookmark content' },
+      
+      // Analytics (copied from standard_teacher)
+      { resource: 'analytics', action: 'view_class_performance', description: 'View class analytics' },
+      { resource: 'analytics', action: 'view_student_progress', description: 'View student progress' },
+      { resource: 'analytics', action: 'export_reports', description: 'Export reports' },
+      { resource: 'analytics', action: 'view_engagement', description: 'View engagement metrics' },
+      
+      // Communication (copied from standard_teacher)
+      { resource: 'communication', action: 'create_announcements', description: 'Create announcements' },
+      { resource: 'communication', action: 'send_messages', description: 'Send messages' },
+      { resource: 'communication', action: 'manage_forums', description: 'Participate in forums' },
+      { resource: 'communication', action: 'create_support_tickets', description: 'Create support tickets' },
+      { resource: 'communication', action: 'manage_group_chats', description: 'Manage group chats' },
+      
+      // Profile (copied from standard_teacher)
+      { resource: 'profile', action: 'read', description: 'View own profile' },
+      { resource: 'profile', action: 'update', description: 'Edit own profile' },
+      { resource: 'profile', action: 'change_password', description: 'Change password' },
+      { resource: 'profile', action: 'manage_notifications', description: 'Manage notifications' },
+      { resource: 'profile', action: 'export_data', description: 'Export data' },
       
       // Additional administrative permissions
       { resource: 'admin', action: 'manage_teachers', description: 'Manage other teachers' },

@@ -72,7 +72,7 @@ const authRateLimit = rateLimit({
 const authSlowDown = slowDown({
   windowMs: 15 * 60 * 1000, // 15 minutes
   delayAfter: 2, // Allow 2 attempts per windowMs without delay
-  delayMs: 500, // Add 500ms delay per attempt after delayAfter
+  delayMs: () => 500, // Add 500ms delay per attempt after delayAfter (updated for v2)
   maxDelayMs: 10000, // Max delay of 10 seconds
 });
 
