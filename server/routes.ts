@@ -15,7 +15,7 @@ import {
   insertNewsArticleSchema, insertEventSchema, insertEventRegistrationSchema,
   insertNewsCommentSchema, insertStaffProfileSchema, insertStaffAchievementSchema
 } from "@shared/schema";
-import { isEducationalQuestion, answerEducationalQuestion, isDemoMode } from "./services/openai";
+import { isEducationalQuestion, answerEducationalQuestion, isDemoMode, type ChatResponse } from "./services/openai";
 import { GroupChatWebSocketService } from "./websocket";
 import { authMiddleware, requireRole, generateToken, type AuthenticatedRequest } from "./middleware/auth";
 import bcrypt from "bcryptjs";
@@ -549,39 +549,106 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Chat endpoints
+  // Chat endpoints - Enhanced with robust fallback and error handling
   app.post("/api/chat", async (req, res) => {
+    const startTime = Date.now();
+    console.log(`[API Chat] Request received at ${new Date().toISOString()}`);
+    
     try {
       const { message, buddyType = 'general', chatMode = 'buddy' } = req.body;
       
+      // Enhanced input validation
       if (!message || typeof message !== 'string') {
-        return res.status(400).json({ message: "Message is required and must be a string" });
+        console.error('[API Chat] Invalid input: missing or invalid message');
+        return res.status(400).json({ 
+          message: "Message is required and must be a string",
+          response: "Please provide a valid message to continue our conversation.",
+          demoMode: isDemoMode,
+          persona: { buddyType, chatMode },
+          error: "Invalid input"
+        });
       }
 
-      // Generate personality-based response
-      const response = await answerEducationalQuestion(message, buddyType, chatMode);
+      if (message.trim().length === 0) {
+        console.error('[API Chat] Invalid input: empty message');
+        return res.status(400).json({ 
+          message: "Message cannot be empty",
+          response: "Please type a question or message for me to help you with!",
+          demoMode: isDemoMode,
+          persona: { buddyType, chatMode },
+          error: "Empty message"
+        });
+      }
 
-      // Store the chat message with buddy info
-      const chatMessage = await storage.createChatMessage({
-        message,
-        response,
-        isEducational: 'yes' // Since we answer everything now
-      });
+      console.log(`[API Chat] Processing message with buddy: ${buddyType}, mode: ${chatMode}`);
 
-      res.json({ 
-        message: chatMessage.message, 
-        response: chatMessage.response,
-        isEducational: true,
-        buddyType,
-        chatMode,
-        demoMode: isDemoMode
-      });
+      // Generate personality-based response with robust fallback
+      const aiResponse: ChatResponse = await answerEducationalQuestion(message, buddyType, chatMode);
+
+      // Store the chat message with metadata
+      let chatMessage;
+      try {
+        chatMessage = await storage.createChatMessage({
+          message,
+          response: aiResponse.response,
+          isEducational: 'yes' // Since we answer everything now
+        });
+        console.log('[API Chat] Successfully stored chat message in database');
+      } catch (storageError) {
+        console.error('[API Chat] Failed to store chat message:', storageError);
+        // Continue without storing - don't break the user experience
+        chatMessage = { message, response: aiResponse.response };
+      }
+
+      const processingTime = Date.now() - startTime;
+      console.log(`[API Chat] Request completed in ${processingTime}ms`);
+
+      // Return consistent API contract with all required fields
+      const response = {
+        message: chatMessage.message,
+        response: aiResponse.response,
+        demoMode: aiResponse.demoMode,
+        persona: aiResponse.persona,
+        // Additional metadata for debugging and analytics
+        meta: {
+          model: aiResponse.model,
+          processingTime,
+          timestamp: new Date().toISOString(),
+          isEducational: true // We handle all educational content
+        }
+      };
+
+      res.json(response);
     } catch (error) {
-      console.error("Chat error:", error);
-      res.status(500).json({ 
-        message: "Failed to process chat message", 
-        response: "I'm experiencing technical difficulties. Please try again later or contact our admissions team for assistance.",
-        error: error instanceof Error ? error.message : "Unknown error" 
+      const processingTime = Date.now() - startTime;
+      console.error(`[API Chat] Critical error after ${processingTime}ms:`, error);
+      
+      // Production-safe fallback response - never break the chat interface
+      const { message, buddyType = 'general', chatMode = 'buddy' } = req.body;
+      
+      // Determine appropriate fallback message based on buddy type
+      let fallbackResponse = "I'm experiencing some technical difficulties right now, but I'm still here to help! Please try asking your question again, or feel free to contact our support team.";
+      
+      if (buddyType === 'funny') {
+        fallbackResponse = "Oops! 😅 Looks like I got a bit tangled up in the digital wires! Don't worry though - even the best of us have our 'oops' moments. Try asking me again, and I'll be right back to my helpful, fun-loving self! 🚀";
+      } else if (buddyType === 'serious') {
+        fallbackResponse = "I apologize for the technical interruption. Our systems are experiencing a temporary issue, but rest assured that your educational support remains our priority. Please resubmit your query, and I will provide the comprehensive assistance you require.";
+      } else if (buddyType === 'motivational') {
+        fallbackResponse = "Hey there, champion! 💪 Even the strongest systems sometimes need a quick reset - just like how we all need breaks to come back stronger! This little hiccup won't stop us from achieving your learning goals. Give it another shot, and let's keep that momentum going! 🌟";
+      }
+
+      res.status(500).json({
+        message: message || "System error",
+        response: fallbackResponse,
+        demoMode: true, // Safe fallback to demo mode on errors
+        persona: { buddyType, chatMode },
+        meta: {
+          error: true,
+          processingTime,
+          timestamp: new Date().toISOString(),
+          errorType: error instanceof Error ? error.name : "UnknownError"
+        },
+        error: process.env.NODE_ENV === 'development' ? (error instanceof Error ? error.message : "Unknown error") : "Internal server error"
       });
     }
   });

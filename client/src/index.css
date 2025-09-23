@@ -648,4 +648,278 @@
     50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
     100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
   }
+  
+  /* EduVerse Unique Branding Elements */
+  .eduverse-signature-gradient {
+    background: linear-gradient(135deg, var(--eduverse-blue) 0%, var(--eduverse-gold) 50%, var(--eduverse-blue) 100%);
+    background-size: 200% 200%;
+    animation: gradientShift 6s ease-in-out infinite;
+  }
+  
+  .eduverse-learning-particles {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .eduverse-learning-particles::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      radial-gradient(circle at 25% 25%, rgba(65, 131, 215, 0.1) 2px, transparent 2px),
+      radial-gradient(circle at 75% 75%, rgba(255, 204, 0, 0.1) 3px, transparent 3px),
+      radial-gradient(circle at 50% 50%, rgba(65, 131, 215, 0.05) 1px, transparent 1px);
+    background-size: 50px 50px, 80px 80px, 30px 30px;
+    animation: particleFloat 20s linear infinite;
+    pointer-events: none;
+  }
+  
+  @keyframes particleFloat {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    33% { transform: translate(30px, -30px) rotate(120deg); }
+    66% { transform: translate(-20px, 20px) rotate(240deg); }
+    100% { transform: translate(0, 0) rotate(360deg); }
+  }
+  
+  .eduverse-knowledge-ripple {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .eduverse-knowledge-ripple::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(65, 131, 215, 0.1) 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    animation: knowledgeRipple 4s ease-out infinite;
+    pointer-events: none;
+  }
+  
+  @keyframes knowledgeRipple {
+    0% { 
+      width: 0; 
+      height: 0; 
+      opacity: 1; 
+    }
+    70% { 
+      width: 300px; 
+      height: 300px; 
+      opacity: 0.6; 
+    }
+    100% { 
+      width: 600px; 
+      height: 600px; 
+      opacity: 0; 
+    }
+  }
+  
+  .eduverse-text-gradient {
+    background: linear-gradient(135deg, var(--eduverse-blue), var(--eduverse-gold));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+  
+  .eduverse-text-shimmer {
+    background: linear-gradient(90deg, var(--eduverse-blue) 25%, var(--eduverse-gold) 50%, var(--eduverse-blue) 75%);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: shimmer 3s ease-in-out infinite;
+  }
+  
+  .eduverse-glass-card {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  }
+  
+  .eduverse-neon-border {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  
+  .eduverse-neon-border::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    padding: 2px;
+    background: linear-gradient(45deg, var(--eduverse-blue), var(--eduverse-gold), var(--eduverse-blue));
+    border-radius: 12px;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    animation: neonPulse 2s ease-in-out infinite;
+  }
+  
+  @keyframes neonPulse {
+    0%, 100% { 
+      opacity: 1;
+      filter: drop-shadow(0 0 8px rgba(65, 131, 215, 0.3));
+    }
+    50% { 
+      opacity: 0.7;
+      filter: drop-shadow(0 0 16px rgba(255, 204, 0, 0.5));
+    }
+  }
+  
+  .eduverse-study-beam {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .eduverse-study-beam::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    animation: studyBeam 3s ease-in-out infinite;
+  }
+  
+  @keyframes studyBeam {
+    0% { left: -100%; }
+    50% { left: 0; }
+    100% { left: 100%; }
+  }
+  
+  /* EduVerse Learning Badge Styles */
+  .eduverse-badge {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2rem;
+    height: 2rem;
+    background: linear-gradient(135deg, var(--eduverse-blue), var(--eduverse-gold));
+    border-radius: 50%;
+    color: white;
+    font-weight: 600;
+    font-size: 0.75rem;
+    box-shadow: 0 4px 12px rgba(65, 131, 215, 0.3);
+    animation: badgePulse 2s ease-in-out infinite;
+  }
+  
+  @keyframes badgePulse {
+    0%, 100% { 
+      transform: scale(1);
+      box-shadow: 0 4px 12px rgba(65, 131, 215, 0.3);
+    }
+    50% { 
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(65, 131, 215, 0.4);
+    }
+  }
+  
+  /* Enhanced Interactive Elements */
+  .eduverse-interactive-hover {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .eduverse-interactive-hover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+    transform: translateX(-100%) rotate(45deg);
+    transition: transform 0.6s ease;
+  }
+  
+  .eduverse-interactive-hover:hover::before {
+    transform: translateX(100%) rotate(45deg);
+  }
+  
+  .eduverse-interactive-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(65, 131, 215, 0.15);
+  }
+  
+  /* Code highlighting theme for programming responses */
+  .eduverse-code-block {
+    background: #1e293b;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-left: 4px solid var(--eduverse-blue);
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    color: #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+  
+  .eduverse-code-block .keyword { color: #7c3aed; }
+  .eduverse-code-block .string { color: #10b981; }
+  .eduverse-code-block .comment { color: #6b7280; }
+  .eduverse-code-block .number { color: #f59e0b; }
+  .eduverse-code-block .function { color: #3b82f6; }
+  
+  /* Mathematical equation styling */
+  .eduverse-math-equation {
+    background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+    border: 2px solid var(--eduverse-blue);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+    font-family: 'KaTeX_Main', 'Times New Roman', serif;
+    text-align: center;
+    font-size: 1.125rem;
+    color: #1e293b;
+    box-shadow: 0 2px 4px rgba(65, 131, 215, 0.1);
+  }
+  
+  /* EduVerse progress indicators */
+  .eduverse-progress-ring {
+    transform: rotate(-90deg);
+  }
+  
+  .eduverse-progress-ring circle {
+    stroke: var(--eduverse-blue);
+    stroke-width: 4;
+    fill: transparent;
+    stroke-linecap: round;
+    stroke-dasharray: 283;
+    stroke-dashoffset: 283;
+    transition: stroke-dashoffset 0.5s ease;
+  }
+  
+  /* Unique page transition effects */
+  .page-transition-enter {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  
+  .page-transition-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  
+  .page-transition-exit {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .page-transition-exit-active {
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
 }

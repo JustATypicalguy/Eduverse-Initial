@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Bot, User, Send, Info, Sparkles, Brain, Target, Lightbulb, Globe, Heart } from "lucide-react";
+import { formatEducationalResponse, StudyProgressTracker } from "@/lib/response-formatter";
 
 interface ChatMessage {
   id: string;
@@ -219,7 +220,7 @@ export default function AiChat() {
   return (
     <div className="pt-24 min-h-screen">
       {/* AI Chat Header with Enhanced Background */}
-      <section className="py-20 bg-gradient-to-br from-eduverse-blue via-blue-700 to-eduverse-dark text-white relative overflow-hidden">
+      <section className="py-20 bg-gradient-to-br from-eduverse-blue via-blue-700 to-eduverse-dark text-white relative overflow-hidden eduverse-learning-particles">
         {/* Animated Background Elements */}
         <div className="absolute inset-0">
           {/* Floating geometric shapes */}
@@ -415,7 +416,7 @@ export default function AiChat() {
                           <selectedBuddy.icon className="text-white" size={16} />
                         </div>
                         <div className="bg-eduverse-light rounded-lg p-4 max-w-md">
-                          <p className="text-gray-800 whitespace-pre-wrap">{msg.response}</p>
+                          {formatEducationalResponse(msg.response)}
                         </div>
                       </div>
                     )}
@@ -435,6 +436,15 @@ export default function AiChat() {
                       </p>
                     </div>
                   </div>
+                )}
+                
+                {/* Study Progress Tracker (demo) */}
+                {messages.length > 2 && selectedBuddy && (
+                  <StudyProgressTracker 
+                    progress={Math.min(85, messages.length * 10)} 
+                    subject={selectedBuddy.name.includes('Fun') ? 'Fun Learning' : selectedBuddy.name.includes('Focus') ? 'Advanced Studies' : 'Motivation & Goals'}
+                    streak={Math.floor(messages.length / 3)}
+                  />
                 )}
                 
                 <div ref={messagesEndRef} />

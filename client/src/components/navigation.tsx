@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronRight, Home } from "lucide-react";
 import { Logo } from "./logo";
 
 const navigationItems = [
@@ -53,21 +53,106 @@ const featureItems = [
   },
 ];
 
+// Breadcrumb component for better navigation
+function Breadcrumb({ location }: { location: string }) {
+  const getBreadcrumbs = (path: string) => {
+    const segments = path.split('/').filter(Boolean);
+    const breadcrumbs = [{ label: 'Home', path: '/home' }];
+    
+    let currentPath = '';
+    segments.forEach((segment, index) => {
+      currentPath += `/${segment}`;
+      const label = segment.split('-').map(word => 
+        word.charAt(0).toUpperCase() + word.slice(1)
+      ).join(' ');
+      
+      // Special handling for known routes
+      const routeLabels: Record<string, string> = {
+        'ai-chat': 'AI Study Buddy',
+        'group-chat': 'Group Chat',
+        'ar-learning': 'AR Learning',
+        'emotional-learning': 'Emotional Learning',
+        'lms-structure': 'LMS Structure',
+        'teacher-dashboard': 'Teacher Dashboard',
+        'student-dashboard': 'Student Dashboard',
+        'admin-dashboard': 'Admin Dashboard'
+      };
+      
+      breadcrumbs.push({
+        label: routeLabels[segment] || label,
+        path: currentPath
+      });
+    });
+    
+    return breadcrumbs;
+  };
+  
+  const breadcrumbs = getBreadcrumbs(location);
+  
+  if (location === '/' || location === '/home' || breadcrumbs.length <= 1) {
+    return null;
+  }
+  
+  return (
+    <div className="bg-gradient-to-r from-blue-50 to-purple-50 border-b border-blue-100">
+      <div className="container mx-auto px-6 py-3">
+        <nav aria-label="Breadcrumb">
+          <ol className="flex items-center space-x-2 text-sm">
+            {breadcrumbs.map((crumb, index) => (
+              <li key={crumb.path} className="flex items-center">
+                {index === 0 && <Home className="w-4 h-4 mr-1 text-eduverse-blue" />}
+                {index < breadcrumbs.length - 1 ? (
+                  <>
+                    <Link 
+                      href={crumb.path}
+                      className="text-eduverse-blue hover:text-eduverse-dark transition-colors font-medium"
+                    >
+                      {crumb.label}
+                    </Link>
+                    <ChevronRight className="w-4 h-4 mx-2 text-gray-400" />
+                  </>
+                ) : (
+                  <span className="text-gray-700 font-semibold">{crumb.label}</span>
+                )}
+              </li>
+            ))}
+          </ol>
+        </nav>
+      </div>
+    </div>
+  );
+}
+
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const [location] = useLocation();
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     setIsOpen(false);
   }, [location]);
+  
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const isActive = (href: string) => {
     return location === href;
   };
 
   return (
-    <header className="bg-white shadow-lg fixed w-full top-0 z-50">
-      <nav className="container mx-auto px-6 py-4">
+    <>
+      <header className={`fixed w-full top-0 z-50 transition-all duration-300 ${
+        isScrolled 
+          ? 'bg-white/95 backdrop-blur-md shadow-xl border-b border-blue-100' 
+          : 'bg-white shadow-lg'
+      }`}>
+        <nav className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           <Link href="/">
             <Logo />
@@ -291,53 +376,94 @@ export function Navigation() {
           </button>
         </div>
         
-        {/* Mobile Navigation */}
-        {isOpen && (
-          <div className="lg:hidden mt-4 pb-4">
-            <div className="flex flex-col space-y-4">
-              {navigationItems.map((item) => (
+        {/* Enhanced Mobile Navigation with Animations */}
+        <div className={`lg:hidden transition-all duration-500 ease-out ${
+          isOpen 
+            ? 'max-h-screen opacity-100 translate-y-0' 
+            : 'max-h-0 opacity-0 -translate-y-4 overflow-hidden'
+        }`}>
+          <div className="mt-4 pb-4 space-y-4">
+            {/* Quick Navigation Cards */}
+            <div className="grid grid-cols-2 gap-3">
+              {navigationItems.slice(0, 4).map((item, index) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`font-medium ${
+                  className={`p-3 rounded-xl border transition-all duration-300 transform hover:scale-105 ${
                     isActive(item.href) 
-                      ? "text-eduverse-blue font-medium" 
-                      : "text-gray-600"
+                      ? "bg-eduverse-blue text-white shadow-lg border-eduverse-blue" 
+                      : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-blue-50"
+                  }`}
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <div className="text-center font-medium text-sm">{item.name}</div>
+                </Link>
+              ))}
+            </div>
+            
+            {/* Remaining Navigation */}
+            <div className="space-y-2">
+              {navigationItems.slice(4).map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={`block py-2 px-4 rounded-lg transition-colors ${
+                    isActive(item.href) 
+                      ? "text-eduverse-blue bg-blue-50 font-semibold" 
+                      : "text-gray-600 hover:text-eduverse-blue hover:bg-blue-50"
                   }`}
                 >
                   {item.name}
                 </Link>
               ))}
-              
-              {/* Mobile Features Section */}
-              <div className="border-t border-gray-200 pt-4 mt-4">
-                <p className="text-sm font-semibold text-eduverse-blue mb-3">✨ Features</p>
-                {featureItems.map((item) => (
+            </div>
+            
+            {/* Mobile Features Section with Enhanced Design */}
+            <div className="border-t border-gray-200 pt-4 mt-4">
+              <p className="text-sm font-semibold text-eduverse-blue mb-3 flex items-center">
+                <span className="animate-pulse mr-1">✨</span> 
+                Interactive Features
+              </p>
+              <div className="grid grid-cols-1 gap-2">
+                {featureItems.map((item, index) => (
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={`flex items-center gap-2 font-medium mb-2 ${
+                    className={`flex items-center gap-3 p-3 rounded-lg transition-all duration-300 ${
                       isActive(item.href) 
-                        ? "text-eduverse-blue font-medium" 
-                        : "text-gray-600"
+                        ? "text-eduverse-blue bg-blue-50 font-medium shadow-sm" 
+                        : "text-gray-600 hover:text-eduverse-blue hover:bg-blue-50"
                     }`}
+                    style={{ animationDelay: `${(index + 4) * 100}ms` }}
                   >
-                    <span>{item.icon}</span>
-                    <span className="text-sm">{item.name}</span>
+                    <span className="text-lg">{item.icon}</span>
+                    <div>
+                      <div className="font-medium text-sm">{item.name}</div>
+                      <div className="text-xs text-gray-500 mt-1">{item.description}</div>
+                    </div>
                   </Link>
                 ))}
               </div>
-              
-              <Link
-                href="/ai-chat"
-                className="bg-eduverse-blue text-white px-4 py-2 rounded-lg inline-block text-center"
-              >
-                🤖 Ask EduVerse AI
-              </Link>
             </div>
+            
+            {/* Enhanced AI Chat Button */}
+            <Link
+              href="/ai-chat"
+              className="flex items-center justify-center gap-2 bg-gradient-to-r from-eduverse-blue to-blue-600 text-white px-6 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+            >
+              <span className="animate-bounce">🤖</span>
+              <span>Ask EduVerse AI</span>
+              <span className="text-xs bg-white/20 px-2 py-1 rounded-full">NEW</span>
+            </Link>
           </div>
-        )}
+        </div>
       </nav>
-    </header>
+      </header>
+      
+      {/* Add Breadcrumb Navigation */}
+      <div className="pt-20">
+        <Breadcrumb location={location} />
+      </div>
+    </>
   );
 }
