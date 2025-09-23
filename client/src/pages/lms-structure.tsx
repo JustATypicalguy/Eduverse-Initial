@@ -149,9 +149,9 @@ export default function LMSStructure() {
           </div>
 
           {/* Student Overview Card */}
-          <Card className="mb-8 bg-gradient-to-r from-eduverse-blue to-eduverse-gold text-white">
-            <CardHeader>
-              <div className="flex items-center justify-between">
+          <Card className="mb-8 bg-gradient-to-r from-eduverse-blue to-eduverse-gold text-white border-0">
+            <CardHeader className="text-white">
+              <div className="flex items-center justify-between text-white">
                 <div className="flex items-center gap-4">
                   <Avatar className="w-16 h-16 bg-white border-2 border-white/20">
                     <AvatarFallback className="text-2xl text-eduverse-blue bg-white">
@@ -159,32 +159,32 @@ export default function LMSStructure() {
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <CardTitle className="text-2xl">{selectedStudent.name}</CardTitle>
+                    <CardTitle className="text-2xl text-white">{selectedStudent.name}</CardTitle>
                     <p className="text-blue-100">Student ID: {selectedStudent.id}</p>
                   </div>
                 </div>
-                <div className="text-right">
-                  <div className="text-3xl font-bold">{selectedStudent.overallGrade}%</div>
+                <div className="text-right text-white">
+                  <div className="text-3xl font-bold text-white">{selectedStudent.overallGrade}%</div>
                   <p className="text-blue-100">Overall Grade</p>
                 </div>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="text-white">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 <div className="text-center">
-                  <div className="text-2xl font-bold">{getGradeLetter(selectedStudent.overallGrade)}</div>
+                  <div className="text-2xl font-bold text-white">{getGradeLetter(selectedStudent.overallGrade)}</div>
                   <p className="text-blue-100 text-sm">Letter Grade</p>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold">#{selectedStudent.rank}</div>
+                  <div className="text-2xl font-bold text-white">#{selectedStudent.rank}</div>
                   <p className="text-blue-100 text-sm">Class Rank</p>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold">{selectedStudent.subjects.length}</div>
+                  <div className="text-2xl font-bold text-white">{selectedStudent.subjects.length}</div>
                   <p className="text-blue-100 text-sm">Subjects</p>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold">
+                  <div className="text-2xl font-bold text-white">
                     {selectedStudent.subjects.reduce((acc, subject) => acc + subject.completedAssignments, 0)}
                   </div>
                   <p className="text-blue-100 text-sm">Completed Tasks</p>
