@@ -1401,6 +1401,172 @@ async function initializeDemoData() {
       }
     }
 
+    // Create demo news articles
+    try {
+      const demoNews = [
+        {
+          title: "Welcome to the New School Year! 📚✨",
+          content: "We are excited to welcome all students, families, and staff to another amazing year at EduVerse! This year brings new opportunities, innovative learning experiences, and exciting adventures. Our dedicated team of educators has been working hard to create an inspiring environment where every student can thrive and discover their potential.",
+          excerpt: "Join us for an incredible year of learning, growth, and discovery at EduVerse!",
+          tags: ["school-year", "welcome", "education"],
+          category: "general",
+          isPublished: true,
+          isPinned: true,
+          authorId: createdUsers.find(u => u.role === 'teacher')?.id || 'demo-author',
+          slug: "welcome-new-school-year"
+        },
+        {
+          title: "Science Fair Winners Announced! 🏆🔬",
+          content: "Congratulations to all our amazing students who participated in this year's Science Fair! The creativity, dedication, and scientific thinking displayed were truly impressive. Our winners have shown exceptional innovation in their projects covering topics from renewable energy to marine biology. Special recognition goes to Sarah Chen for her groundbreaking research on sustainable water filtration systems.",
+          excerpt: "Celebrating our brilliant young scientists and their innovative projects!",
+          tags: ["science-fair", "students", "achievement"],
+          category: "achievements",
+          isPublished: true,
+          isPinned: false,
+          authorId: createdUsers.find(u => u.role === 'teacher')?.id || 'demo-author',
+          slug: "science-fair-winners-announced"
+        }
+      ];
+
+      for (const article of demoNews) {
+        try {
+          await storage.createNewsArticle(article);
+        } catch (error) {
+          console.log('Error creating news article:', error);
+        }
+      }
+      console.log('Created demo news articles');
+    } catch (error) {
+      console.log('Error creating demo news:', error);
+    }
+
+    // Create demo events
+    try {
+      const demoEvents = [
+        {
+          title: "Open House & School Tour 🏫🌟",
+          description: "Join us for our monthly Open House event! Tour our beautiful campus, meet our passionate educators, and discover what makes EduVerse special. This is a perfect opportunity for prospective families to experience our innovative learning environment and see our students in action.",
+          category: "school",
+          startDate: new Date('2025-10-15T10:00:00.000Z'),
+          endDate: new Date('2025-10-15T15:00:00.000Z'),
+          location: "Main Campus - Welcome Center",
+          isPublished: true,
+          isFeatured: true,
+          maxAttendees: 100
+        },
+        {
+          title: "Annual Art Exhibition 🎨✨",
+          description: "Come celebrate creativity at our Annual Art Exhibition featuring amazing artwork from students across all grade levels. From paintings and sculptures to digital art and photography, this showcase highlights the incredible artistic talents of our EduVerse community.",
+          category: "social",
+          startDate: new Date('2025-10-22T18:00:00.000Z'),
+          endDate: new Date('2025-10-22T21:00:00.000Z'),
+          location: "Arts Center - Gallery Hall",
+          isPublished: true,
+          isFeatured: true,
+          maxAttendees: 200
+        }
+      ];
+
+      for (const event of demoEvents) {
+        try {
+          await storage.createEvent(event);
+        } catch (error) {
+          console.log('Error creating event:', error);
+        }
+      }
+      console.log('Created demo events');
+    } catch (error) {
+      console.log('Error creating demo events:', error);
+    }
+
+    // Create demo staff profiles
+    try {
+      const demoStaff = [
+        {
+          firstName: "Dr. Sarah",
+          lastName: "Johnson",
+          email: "sarah.johnson@eduverse.com",
+          phone: "(555) 123-4567",
+          title: "Principal & Educational Leader",
+          department: "Administration",
+          bio: "Dr. Sarah Johnson brings over 15 years of educational leadership experience to EduVerse. She holds a Ph.D. in Educational Administration and is passionate about creating innovative learning environments that inspire both students and teachers. Her vision focuses on preparing students for the challenges of tomorrow through cutting-edge educational practices.",
+          expertise: ["Educational Leadership", "Curriculum Development", "Student Success", "Innovation in Education"],
+          education: ["Ph.D. Educational Administration - Stanford University", "M.Ed. Educational Leadership - UC Berkeley"],
+          experience: "15+ years in education leadership",
+          officeLocation: "Main Building, Room 101",
+          officeHours: {"Monday": "9:00 AM - 4:00 PM", "Tuesday": "9:00 AM - 4:00 PM", "Wednesday": "9:00 AM - 4:00 PM"},
+          languages: ["English", "Spanish"],
+          isActive: true,
+          displayOrder: 1
+        },
+        {
+          firstName: "Mr. David",
+          lastName: "Chen",
+          email: "david.chen@eduverse.com",
+          phone: "(555) 234-5678",
+          title: "Mathematics Department Head",
+          department: "Mathematics",
+          bio: "Mr. David Chen is a dedicated mathematics educator with a passion for making complex concepts accessible and exciting. He specializes in advanced mathematics and has helped countless students discover their love for numbers and problem-solving. His innovative teaching methods combine traditional techniques with modern technology.",
+          expertise: ["Calculus", "Statistics", "Advanced Algebra", "Mathematical Modeling"],
+          education: ["M.S. Mathematics - MIT", "B.S. Mathematics Education - UCLA"],
+          experience: "12 years of mathematics education",
+          officeLocation: "Science Building, Room 205",
+          officeHours: {"Tuesday": "2:00 PM - 4:00 PM", "Thursday": "2:00 PM - 4:00 PM"},
+          languages: ["English", "Mandarin"],
+          certifications: ["AP Calculus Certification", "Statistics Education Certificate"],
+          isActive: true,
+          displayOrder: 2
+        },
+        {
+          firstName: "Ms. Emily",
+          lastName: "Rodriguez",
+          email: "emily.rodriguez@eduverse.com",
+          phone: "(555) 345-6789",
+          title: "Science Department Coordinator",
+          department: "Science",
+          bio: "Ms. Emily Rodriguez brings the wonder of science to life in her classroom every day. With expertise in biology and environmental science, she inspires students to explore the natural world and understand their role as environmental stewards. Her hands-on approach to learning makes science both fun and meaningful.",
+          expertise: ["Biology", "Environmental Science", "Laboratory Management", "Field Research"],
+          education: ["M.S. Environmental Biology - UC Davis", "B.S. Biology - San Diego State"],
+          experience: "8 years of science education",
+          officeLocation: "Science Building, Room 150",
+          officeHours: {"Monday": "1:00 PM - 3:00 PM", "Wednesday": "1:00 PM - 3:00 PM", "Friday": "12:00 PM - 2:00 PM"},
+          languages: ["English", "Spanish"],
+          certifications: ["Environmental Education Certificate"],
+          isActive: true,
+          displayOrder: 3
+        },
+        {
+          firstName: "Mrs. Lisa",
+          lastName: "Thompson",
+          email: "lisa.thompson@eduverse.com",
+          phone: "(555) 456-7890",
+          title: "Arts & Creative Director",
+          department: "Arts",
+          bio: "Mrs. Lisa Thompson is a creative force who believes in the power of artistic expression to transform lives. She leads our comprehensive arts program, encompassing visual arts, music, and drama. Her students regularly win regional competitions and many have gone on to pursue careers in the creative industries.",
+          expertise: ["Visual Arts", "Art History", "Creative Direction", "Student Exhibitions"],
+          education: ["M.F.A. Studio Arts - RISD", "B.A. Art Education - NYU"],
+          experience: "10 years fostering creativity",
+          officeLocation: "Arts Center, Studio 1",
+          officeHours: {"Tuesday": "3:00 PM - 5:00 PM", "Thursday": "3:00 PM - 5:00 PM"},
+          languages: ["English", "French"],
+          certifications: ["Museum Education Certificate"],
+          isActive: true,
+          displayOrder: 4
+        }
+      ];
+
+      for (const staff of demoStaff) {
+        try {
+          await storage.createStaffProfile(staff);
+        } catch (error) {
+          console.log('Error creating staff profile:', error);
+        }
+      }
+      console.log('Created demo staff profiles');
+    } catch (error) {
+      console.log('Error creating demo staff:', error);
+    }
+
     console.log('Demo data initialization complete!');
   } catch (error) {
     console.log('Error initializing demo data:', error);
