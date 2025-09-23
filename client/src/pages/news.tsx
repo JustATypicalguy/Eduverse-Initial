@@ -72,7 +72,7 @@ export default function News() {
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
               📰 EduVerse News & Updates
             </h1>
-            <p className="text-xl text-eduverse-gray max-w-2xl mx-auto">
+            <p className="text-xl max-w-2xl mx-auto ml-[152px] mr-[152px] mt-[77px] mb-[77px] bg-[#3b82f6] text-[#eab308]">
               Stay informed about the latest happenings, achievements, and important updates from our educational community.
             </p>
           </div>
@@ -115,7 +115,6 @@ export default function News() {
           </div>
         </div>
       </header>
-
       {/* News Content */}
       <main className="container mx-auto px-6 py-8">
         {filteredArticles?.length === 0 ? (
