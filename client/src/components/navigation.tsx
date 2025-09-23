@@ -17,39 +17,60 @@ const navigationItems = [
 
 const featureItems = [
   { 
-    name: "👥 Group Chat", 
+    name: "AI Study Assistant", 
+    href: "/ai-chat", 
+    icon: "🤖",
+    description: "Get personalized help from our AI tutor",
+    color: "from-blue-100 to-blue-200" 
+  },
+  { 
+    name: "Group Chat", 
     href: "/group-chat", 
     icon: "💬",
-    description: "Collaborate with classmates in real-time",
-    color: "from-blue-400 to-blue-600" 
+    description: "Collaborate with classmates in study groups",
+    color: "from-emerald-100 to-emerald-200" 
   },
   { 
-    name: "🚀 AR Learning", 
-    href: "/ar-learning", 
-    icon: "👁️",
-    description: "Experience immersive augmented reality education",
-    color: "from-purple-400 to-purple-600" 
-  },
-  { 
-    name: "❤️ Emotional Learning", 
-    href: "/emotional-learning", 
-    icon: "🧠",
-    description: "Develop emotional intelligence and mindfulness",
-    color: "from-pink-400 to-pink-600" 
-  },
-  { 
-    name: "👤 Avatars", 
+    name: "Learning Avatars", 
     href: "/avatars", 
     icon: "🎨",
-    description: "Create your personalized learning avatar",
-    color: "from-green-400 to-green-600" 
+    description: "Create your personalized learning character",
+    color: "from-purple-100 to-purple-200" 
   },
   { 
-    name: "📊 Progress Tracker", 
+    name: "Progress Tracking", 
     href: "/lms-structure", 
     icon: "📈",
-    description: "Monitor your academic journey and achievements",
-    color: "from-orange-400 to-orange-600" 
+    description: "Monitor your academic achievements",
+    color: "from-orange-100 to-orange-200" 
+  },
+  { 
+    name: "Study Materials", 
+    href: "/subjects", 
+    icon: "📚",
+    description: "Access comprehensive learning resources",
+    color: "from-teal-100 to-teal-200" 
+  },
+  { 
+    name: "Live Events", 
+    href: "/events", 
+    icon: "📅",
+    description: "Join educational events and workshops",
+    color: "from-indigo-100 to-indigo-200" 
+  },
+  { 
+    name: "News & Updates", 
+    href: "/news", 
+    icon: "📰",
+    description: "Stay updated with educational news",
+    color: "from-rose-100 to-rose-200" 
+  },
+  { 
+    name: "Staff Directory", 
+    href: "/staff", 
+    icon: "👥",
+    description: "Connect with teachers and staff members",
+    color: "from-cyan-100 to-cyan-200" 
   },
 ];
 
@@ -268,7 +289,7 @@ export function Navigation() {
             
             {/* Interactive Features Dropdown - Enhanced */}
             <div className="relative group mr-4">
-              <button className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white rounded-full font-bold hover:from-purple-600 hover:via-pink-600 hover:to-red-600 transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:scale-110 animate-pulse hover:animate-none border-2 border-white/20">
+              <button className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-slate-500 via-blue-500 to-indigo-500 text-white rounded-full font-bold hover:from-slate-600 hover:via-blue-600 hover:to-indigo-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 border-2 border-white/20">
                 <span className="text-xl animate-spin-slow">✨</span>
                 <span className="text-lg">Explore Features</span>
                 <svg className="w-5 h-5 transition-transform group-hover:rotate-180 duration-300" fill="currentColor" viewBox="0 0 20 20">
@@ -277,16 +298,16 @@ export function Navigation() {
               </button>
               
               {/* Mega Dropdown */}
-              <div className="absolute top-full right-0 mt-4 w-96 bg-gradient-to-br from-white via-blue-50 to-purple-50 border border-purple-100 rounded-3xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-500 transform translate-y-4 group-hover:translate-y-0 z-50 backdrop-blur-lg">
+              <div className="absolute top-full right-0 mt-4 w-96 bg-gradient-to-br from-white via-slate-50 to-blue-50 border border-slate-200 rounded-3xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-500 transform translate-y-4 group-hover:translate-y-0 z-50 backdrop-blur-lg">
                 <div className="p-6">
                   {/* Header */}
-                  <div className="text-center mb-6 pb-4 border-b border-purple-100">
+                  <div className="text-center mb-6 pb-4 border-b border-slate-200">
                     <div className="flex items-center justify-center gap-3 mb-2">
-                      <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center animate-bounce">
+                      <div className="w-10 h-10 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full flex items-center justify-center animate-bounce">
                         <span className="text-2xl">🚀</span>
                       </div>
-                      <h3 className="font-black text-2xl bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                        Interactive Learning Hub
+                      <h3 className="font-black text-2xl bg-gradient-to-r from-slate-600 to-blue-600 bg-clip-text text-transparent">
+                        EduVerse Learning Hub
                       </h3>
                     </div>
                     <p className="text-sm text-gray-600 font-medium">
