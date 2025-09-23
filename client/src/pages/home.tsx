@@ -70,12 +70,6 @@ export default function Home() {
           
           {/* Stats Section with Moving Images */}
           <div className="mt-20 relative">
-            {/* Animated Background Images */}
-            <img 
-              src="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150" 
-              alt="Open books and library learning" 
-              className="absolute top-20 right-16 w-20 h-20 rounded-full object-cover animate-float opacity-30 hover:opacity-60 transition-opacity" 
-            />
             
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 relative z-10">
             <Card className="text-center creative-shadow hover:scale-105 transition-transform animate-bounce-in bg-gradient-to-br from-blue-50 to-blue-100">
@@ -118,17 +112,6 @@ export default function Home() {
         <div className="absolute top-10 right-10 w-32 h-32 bg-gradient-to-r from-blue-600 to-yellow-500 rounded-full opacity-10 animate-float" style={{background: 'linear-gradient(to right, #1e40af, #D4AF37)'}}></div>
         <div className="absolute bottom-20 left-20 w-24 h-24 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full opacity-10 animate-pulse-slow"></div>
         
-        {/* Floating Educational Images */}
-        <img 
-          src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150" 
-          alt="University graduation and education achievement" 
-          className="absolute top-1/4 left-8 w-20 h-20 rounded-full object-cover animate-float opacity-40 hover:opacity-70 transition-opacity" 
-        />
-        <img 
-          src="https://images.unsplash.com/photo-1509062522246-3755977927d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150" 
-          alt="Diverse students in modern classroom learning" 
-          className="absolute top-1/3 left-1/3 w-26 h-26 rounded-xl object-cover animate-bounce-in opacity-50 hover:opacity-80 transition-all" 
-        />
         
         <div className="container mx-auto px-6 relative">
           <div className="text-center mb-16 animate-fade-in">
@@ -197,22 +180,6 @@ export default function Home() {
         <div className="absolute top-0 left-0 w-40 h-40 bg-gradient-to-r from-green-400 to-blue-500 rounded-full opacity-5 animate-float"></div>
         <div className="absolute bottom-0 right-0 w-32 h-32 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full opacity-5 animate-pulse-slow"></div>
         
-        {/* Subject-Related Moving Images */}
-        <img 
-          src="https://images.unsplash.com/photo-1532619675605-1ede6c2ed2b0?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150" 
-          alt="Interactive science experiment education" 
-          className="absolute top-16 left-1/4 w-28 h-28 rounded-2xl object-cover animate-slide-up opacity-50 hover:opacity-80 transition-all creative-shadow" 
-        />
-        <img 
-          src="https://images.unsplash.com/photo-1564694202779-bc908c327862?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150" 
-          alt="Digital learning and technology education" 
-          className="absolute top-1/3 right-20 w-26 h-26 rounded-full object-cover animate-float opacity-50 hover:opacity-80 transition-all creative-shadow" 
-        />
-        <img 
-          src="https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=120" 
-          alt="Mathematical equations and formulas education" 
-          className="absolute top-1/4 right-1/3 w-22 h-22 rounded-xl object-cover animate-slide-up opacity-45 hover:opacity-75 transition-all creative-shadow" 
-        />
         
         <div className="container mx-auto px-6 relative">
           <div className="text-center mb-16 animate-fade-in">
