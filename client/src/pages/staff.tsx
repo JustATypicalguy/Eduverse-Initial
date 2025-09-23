@@ -274,7 +274,7 @@ export default function StaffDirectory() {
                         variant="secondary" 
                         className="text-xs bg-eduverse-light text-eduverse-blue hover:bg-eduverse-blue hover:text-white transition-colors"
                       >
-                        {String(skill)}
+                        {skill}
                       </Badge>
                     ))}
                     {formatExpertise(member.expertise).length > 4 && (

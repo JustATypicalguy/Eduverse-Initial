@@ -1,42 +1,74 @@
 import type { Request, Response, NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
 
 interface AuthenticatedRequest extends Request {
   userId?: string;
   userRole?: string;
 }
 
-// Simple authentication middleware (in production, use proper JWT/session)
+interface JWTPayload {
+  sub: string; // user ID
+  role: string;
+  exp: number; // expiration timestamp
+  iat: number; // issued at timestamp
+}
+
+// Get JWT secret from environment
+const getJWTSecret = (): string => {
+  const secret = process.env.SESSION_SECRET;
+  if (!secret) {
+    throw new Error('SESSION_SECRET environment variable is required for JWT signing');
+  }
+  return secret;
+};
+
+// Secure JWT authentication middleware - supports both cookies and headers for transition
 export const authMiddleware = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-  console.log('Auth middleware - Headers:', req.headers.authorization ? 'Present' : 'Missing');
-  console.log('Auth middleware - Request path:', req.path);
-  console.log('Auth middleware - Request body:', JSON.stringify(req.body, null, 2));
+  // Try to get token from HttpOnly cookie first (preferred), then fallback to Authorization header
+  let token: string | undefined;
   
-  const authHeader = req.headers.authorization;
+  // Check for token in HttpOnly cookie (secure approach)
+  if (req.cookies && req.cookies.auth_token) {
+    token = req.cookies.auth_token;
+  } else {
+    // Fallback to Authorization header for backward compatibility
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      token = authHeader.substring(7);
+    }
+  }
   
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    console.log('Auth middleware - No valid authorization header');
+  if (!token) {
     return res.status(401).json({ message: 'Authentication required' });
   }
-
-  const token = authHeader.substring(7);
-  console.log('Auth middleware - Token received (first 20 chars):', token.substring(0, 20) + '...');
   
-  // Simple token validation (in production, verify JWT signature)
   try {
-    const decoded = JSON.parse(Buffer.from(token, 'base64').toString());
-    console.log('Auth middleware - Decoded token:', decoded);
-    if (decoded.userId && decoded.role) {
-      req.userId = decoded.userId;
-      req.userRole = decoded.role;
-      console.log('Auth middleware - User authenticated:', decoded.userId, decoded.role);
-      next();
-    } else {
-      console.log('Auth middleware - Invalid token format, missing userId or role');
-      res.status(401).json({ message: 'Invalid token format' });
+    // Verify JWT signature and decode payload
+    const decoded = jwt.verify(token, getJWTSecret(), { algorithms: ['HS256'] }) as JWTPayload;
+    
+    // Check if token has required fields
+    if (!decoded.sub || !decoded.role) {
+      return res.status(401).json({ message: 'Invalid token format' });
     }
+
+    // Check if token is expired (jwt.verify already does this, but being explicit)
+    if (decoded.exp && Date.now() >= decoded.exp * 1000) {
+      return res.status(401).json({ message: 'Token expired' });
+    }
+
+    // Set user information on request
+    req.userId = decoded.sub;
+    req.userRole = decoded.role;
+    
+    next();
   } catch (error) {
-    console.log('Auth middleware - Token decode error:', error);
-    res.status(401).json({ message: 'Invalid token' });
+    if (error instanceof jwt.TokenExpiredError) {
+      return res.status(401).json({ message: 'Token expired' });
+    }
+    if (error instanceof jwt.JsonWebTokenError) {
+      return res.status(401).json({ message: 'Invalid token' });
+    }
+    return res.status(401).json({ message: 'Authentication failed' });
   }
 };
 
@@ -50,10 +82,16 @@ export const requireRole = (allowedRoles: string[]) => {
   };
 };
 
-// Simple token generation for development/testing
+// Secure JWT token generation
 export const generateToken = (userId: string, role: string): string => {
-  const payload = { userId, role };
-  return Buffer.from(JSON.stringify(payload)).toString('base64');
+  const payload: JWTPayload = {
+    sub: userId,
+    role: role,
+    iat: Math.floor(Date.now() / 1000),
+    exp: Math.floor(Date.now() / 1000) + (2 * 60 * 60), // 2 hours for enhanced security
+  };
+  
+  return jwt.sign(payload, getJWTSecret(), { algorithm: 'HS256' });
 };
 
 export type { AuthenticatedRequest };

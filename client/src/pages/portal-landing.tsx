@@ -55,7 +55,6 @@ export default function PortalLanding() {
       case 'parent':
         return <ParentPortalContent user={user} setLocation={setLocation} />;
       case 'admin':
-      case 'administrator':
         return <AdminPortalContent user={user} setLocation={setLocation} />;
       default:
         return <StudentPortalContent user={user} setLocation={setLocation} />;

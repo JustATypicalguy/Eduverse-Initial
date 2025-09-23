@@ -50,6 +50,17 @@ export interface IStorage {
   getUsers(): Promise<User[]>;
   getUser(id: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
+  updateLastLogin(userId: string): Promise<boolean>;
+  setPasswordResetToken(userId: string, token: string, expires: Date): Promise<boolean>;
+  getUserByResetToken(token: string): Promise<User | undefined>;
+  getUsersWithActiveResetTokens(): Promise<User[]>;
+  clearPasswordResetToken(userId: string): Promise<boolean>;
+  updatePassword(userId: string, passwordHash: string): Promise<boolean>;
+  getUserByVerificationToken(token: string): Promise<User | undefined>;
+  getUsersWithActiveVerificationTokens(): Promise<User[]>;
+  verifyEmail(userId: string): Promise<boolean>;
+  updateUserRole(userId: string, newRole: string): Promise<boolean>;
   
   // Groups
   createGroup(group: InsertGroup): Promise<Group>;
@@ -222,6 +233,119 @@ export class DatabaseStorage implements IStorage {
   async getUserByUsername(username: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.username, username));
     return user || undefined;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user || undefined;
+  }
+
+  async updateLastLogin(userId: string): Promise<boolean> {
+    const result = await db
+      .update(users)
+      .set({ 
+        lastLoginAt: new Date(),
+        updatedAt: new Date()
+      })
+      .where(eq(users.id, userId));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  async setPasswordResetToken(userId: string, token: string, expires: Date): Promise<boolean> {
+    const result = await db
+      .update(users)
+      .set({ 
+        passwordResetToken: token,
+        passwordResetExpires: expires,
+        updatedAt: new Date()
+      })
+      .where(eq(users.id, userId));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  async getUserByResetToken(token: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.passwordResetToken, token));
+    return user || undefined;
+  }
+
+  async getUsersWithActiveResetTokens(): Promise<User[]> {
+    const result = await db
+      .select()
+      .from(users)
+      .where(
+        and(
+          sql`${users.passwordResetToken} IS NOT NULL`,
+          sql`${users.passwordResetExpires} IS NOT NULL`,
+          sql`${users.passwordResetExpires} > NOW()`
+        )
+      );
+    return result;
+  }
+
+  async clearPasswordResetToken(userId: string): Promise<boolean> {
+    const result = await db
+      .update(users)
+      .set({ 
+        passwordResetToken: null,
+        passwordResetExpires: null,
+        updatedAt: new Date()
+      })
+      .where(eq(users.id, userId));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  async updatePassword(userId: string, passwordHash: string): Promise<boolean> {
+    const result = await db
+      .update(users)
+      .set({ 
+        passwordHash,
+        passwordResetToken: null,
+        passwordResetExpires: null,
+        updatedAt: new Date()
+      })
+      .where(eq(users.id, userId));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  async getUserByVerificationToken(token: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.emailVerificationToken, token));
+    return user || undefined;
+  }
+
+  async getUsersWithActiveVerificationTokens(): Promise<User[]> {
+    const result = await db
+      .select()
+      .from(users)
+      .where(
+        and(
+          sql`${users.emailVerificationToken} IS NOT NULL`,
+          eq(users.emailVerified, false)
+        )
+      );
+    return result;
+  }
+
+  async verifyEmail(userId: string): Promise<boolean> {
+    const result = await db
+      .update(users)
+      .set({ 
+        emailVerified: true,
+        emailVerificationToken: null, // Clear token after successful verification
+        updatedAt: new Date()
+      })
+      .where(eq(users.id, userId));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  async updateUserRole(userId: string, newRole: string): Promise<boolean> {
+    const result = await db
+      .update(users)
+      .set({ 
+        role: newRole,
+        updatedAt: new Date()
+      })
+      .where(eq(users.id, userId));
+    return (result.rowCount ?? 0) > 0;
   }
 
   // Groups

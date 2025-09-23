@@ -1,5 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import rateLimit from "express-rate-limit";
+import slowDown from "express-slow-down";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
@@ -16,8 +18,485 @@ import {
 import { isEducationalQuestion, answerEducationalQuestion, isDemoMode } from "./services/openai";
 import { GroupChatWebSocketService } from "./websocket";
 import { authMiddleware, requireRole, generateToken, type AuthenticatedRequest } from "./middleware/auth";
+import bcrypt from "bcryptjs";
+import { eq, or } from "drizzle-orm";
+import crypto from "crypto";
+import { z } from "zod";
+
+// Auth validation schemas
+const registerSchema = insertUserSchema.extend({
+  password: z.string().min(6, "Password must be at least 6 characters long"),
+  confirmPassword: z.string().optional(),
+}).omit({
+  passwordHash: true,
+  emailVerificationToken: true,
+  role: true, // SECURITY: Users cannot choose their own role
+}).refine((data) => !data.confirmPassword || data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+});
+
+const loginSchema = z.object({
+  username: z.string().min(1, "Username or email is required"),
+  password: z.string().min(1, "Password is required"),
+});
+
+const forgotPasswordSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+});
+
+const resetPasswordSchema = z.object({
+  token: z.string().min(1, "Reset token is required"),
+  newPassword: z.string().min(6, "Password must be at least 6 characters long"),
+});
+
+const verifyEmailSchema = z.object({
+  token: z.string().min(1, "Verification token is required"),
+});
+
+const elevateRoleSchema = z.object({
+  userId: z.string().min(1, "User ID is required"),
+  newRole: z.enum(["student", "teacher", "admin"], { message: "Role must be student, teacher, or admin" }),
+});
+
+// Rate limiting configuration for authentication endpoints
+const authRateLimit = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // Limit each IP to 5 login attempts per windowMs
+  message: { message: 'Too many authentication attempts, please try again later.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Progressive delay for repeated failed attempts
+const authSlowDown = slowDown({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  delayAfter: 2, // Allow 2 attempts per windowMs without delay
+  delayMs: 500, // Add 500ms delay per attempt after delayAfter
+  maxDelayMs: 10000, // Max delay of 10 seconds
+});
+
+// Stricter rate limiting for forgot password (to prevent email spam)
+const forgotPasswordRateLimit = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 3, // Limit each IP to 3 forgot password requests per hour
+  message: { message: 'Too many password reset attempts, please try again later.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // ==================== AUTHENTICATION ROUTES ====================
+  
+  // Register new user
+  app.post("/api/auth/register", authRateLimit, authSlowDown, async (req, res) => {
+    try {
+      // Validate request body using Zod schema
+      const validationResult = registerSchema.safeParse(req.body);
+      if (!validationResult.success) {
+        return res.status(400).json({ 
+          message: "Validation failed", 
+          errors: validationResult.error.flatten().fieldErrors 
+        });
+      }
+
+      const { username, email, fullName, password } = validationResult.data;
+      // SECURITY: Force all new registrations to student role - only admins can elevate roles
+      const role = "student";
+
+      // Check if user already exists
+      const existingUser = await storage.getUserByUsername(username);
+      if (existingUser) {
+        return res.status(409).json({ message: "Username already exists" });
+      }
+
+      const existingEmail = await storage.getUserByEmail(email);
+      if (existingEmail) {
+        return res.status(409).json({ message: "Email already exists" });
+      }
+
+      // Hash password and verification tokens
+      const saltRounds = 12;
+      const passwordHash = await bcrypt.hash(password, saltRounds);
+
+      // Generate email verification token and hash it (security best practice)
+      const emailVerificationToken = crypto.randomBytes(32).toString('hex');
+      const hashedVerificationToken = await bcrypt.hash(emailVerificationToken, saltRounds);
+
+      // Create user
+      const user = await storage.createUser({
+        username,
+        email,
+        fullName,
+        role,
+        passwordHash,
+        emailVerificationToken: hashedVerificationToken,
+        preferredRole: role
+      });
+
+      // Generate JWT token
+      const token = generateToken(user.id, user.role);
+
+      // Set HttpOnly cookie with secure settings
+      res.cookie('auth_token', token, {
+        httpOnly: true, // Prevent XSS attacks
+        secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+        sameSite: 'strict', // CSRF protection
+        maxAge: 2 * 60 * 60 * 1000, // 2 hours (matches token expiry)
+        path: '/' // Available for all routes
+      });
+
+      // Don't return password hash or token in response
+      const { passwordHash: _, ...userWithoutPassword } = user;
+
+      res.status(201).json({
+        message: "User created successfully",
+        user: userWithoutPassword
+      });
+    } catch (error) {
+      console.error("Registration error:", error);
+      res.status(500).json({ message: "Failed to create user", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  // Login user
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      // Validate request body using Zod schema
+      const validationResult = loginSchema.safeParse(req.body);
+      if (!validationResult.success) {
+        return res.status(400).json({ 
+          message: "Validation failed", 
+          errors: validationResult.error.flatten().fieldErrors 
+        });
+      }
+
+      const { username, password } = validationResult.data;
+
+      // Find user by username or email
+      let user = await storage.getUserByUsername(username);
+      if (!user) {
+        user = await storage.getUserByEmail(username);
+      }
+
+      if (!user) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+
+      if (!user.isActive) {
+        return res.status(401).json({ message: "Account is disabled" });
+      }
+
+      // Verify password
+      const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+      if (!isPasswordValid) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+
+      // Update last login
+      await storage.updateLastLogin(user.id);
+
+      // Generate JWT token
+      const token = generateToken(user.id, user.role);
+
+      // Don't return password hash
+      const { passwordHash: _, ...userWithoutPassword } = user;
+
+      res.json({
+        message: "Login successful",
+        token,
+        user: userWithoutPassword
+      });
+    } catch (error) {
+      console.error("Login error:", error);
+      res.status(500).json({ message: "Login failed", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  // Request password reset
+  app.post("/api/auth/forgot-password", async (req, res) => {
+    try {
+      // Validate request body using Zod schema
+      const validationResult = forgotPasswordSchema.safeParse(req.body);
+      if (!validationResult.success) {
+        return res.status(400).json({ 
+          message: "Validation failed", 
+          errors: validationResult.error.flatten().fieldErrors 
+        });
+      }
+
+      const { email } = validationResult.data;
+
+      const user = await storage.getUserByEmail(email);
+      if (!user) {
+        // Don't reveal if email exists for security
+        return res.json({ message: "If the email exists, a password reset link has been sent" });
+      }
+
+      // Generate password reset token
+      const resetToken = crypto.randomBytes(32).toString('hex');
+      const resetExpires = new Date(Date.now() + 3600000); // 1 hour from now
+
+      // Hash token before storing (security best practice)
+      const saltRounds = 12;
+      const hashedToken = await bcrypt.hash(resetToken, saltRounds);
+      
+      await storage.setPasswordResetToken(user.id, hashedToken, resetExpires);
+
+      // In a real app, you would send an email here
+      // SECURITY: Don't log email addresses in production
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`Password reset token generated for ${email}`);
+      } else {
+        console.log('Password reset token generated for user');
+      }
+
+      res.json({ 
+        message: "If the email exists, a password reset link has been sent"
+        // SECURITY: Never echo tokens in responses
+      });
+    } catch (error) {
+      console.error("Forgot password error:", error);
+      res.status(500).json({ message: "Failed to process password reset request" });
+    }
+  });
+
+  // Reset password with token
+  app.post("/api/auth/reset-password", async (req, res) => {
+    try {
+      // Validate request body using Zod schema
+      const validationResult = resetPasswordSchema.safeParse(req.body);
+      if (!validationResult.success) {
+        return res.status(400).json({ 
+          message: "Validation failed", 
+          errors: validationResult.error.flatten().fieldErrors 
+        });
+      }
+
+      const { token, newPassword } = validationResult.data;
+
+      // Get all users with reset tokens and find matching hash
+      const usersWithResetTokens = await storage.getUsersWithActiveResetTokens();
+      let matchedUser = null;
+      
+      for (const user of usersWithResetTokens) {
+        if (user.passwordResetToken && user.passwordResetExpires) {
+          // Check if token is expired first
+          if (new Date() > user.passwordResetExpires) {
+            continue;
+          }
+          
+          // Compare provided token with hashed token in database
+          const isTokenValid = await bcrypt.compare(token, user.passwordResetToken);
+          if (isTokenValid) {
+            matchedUser = user;
+            break;
+          }
+        }
+      }
+      
+      if (!matchedUser) {
+        return res.status(400).json({ message: "Invalid or expired reset token" });
+      }
+
+      // Hash new password
+      const saltRounds = 12;
+      const passwordHash = await bcrypt.hash(newPassword, saltRounds);
+
+      // Update password and clear reset token
+      await storage.updatePassword(matchedUser.id, passwordHash);
+      
+      // Clear the reset token after successful use (security best practice)
+      await storage.clearPasswordResetToken(matchedUser.id);
+
+      res.json({ message: "Password reset successfully" });
+    } catch (error) {
+      console.error("Reset password error:", error);
+      res.status(500).json({ message: "Failed to reset password" });
+    }
+  });
+
+  // Verify email
+  app.post("/api/auth/verify-email", async (req, res) => {
+    try {
+      // Validate request body using Zod schema
+      const validationResult = verifyEmailSchema.safeParse(req.body);
+      if (!validationResult.success) {
+        return res.status(400).json({ 
+          message: "Validation failed", 
+          errors: validationResult.error.flatten().fieldErrors 
+        });
+      }
+
+      const { token } = validationResult.data;
+
+      // Get all users with verification tokens and find matching hash (constant-time comparison)
+      const usersWithVerificationTokens = await storage.getUsersWithActiveVerificationTokens();
+      let matchedUser = null;
+      
+      for (const user of usersWithVerificationTokens) {
+        if (user.emailVerificationToken) {
+          // Compare provided token with hashed token in database using constant-time comparison
+          const isTokenValid = await bcrypt.compare(token, user.emailVerificationToken);
+          if (isTokenValid) {
+            matchedUser = user;
+            break;
+          }
+        }
+      }
+      
+      if (!matchedUser) {
+        return res.status(400).json({ message: "Invalid verification token" });
+      }
+
+      // Verify email and clear token (security best practice)
+      await storage.verifyEmail(matchedUser.id);
+
+      res.json({ message: "Email verified successfully" });
+    } catch (error) {
+      console.error("Email verification error:", error);
+      res.status(500).json({ message: "Failed to verify email" });
+    }
+  });
+
+  // Get current user profile
+  app.get("/api/auth/me", authMiddleware, async (req: AuthenticatedRequest, res) => {
+    try {
+      const user = await storage.getUser(req.userId!);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Don't return password hash
+      const { passwordHash: _, ...userWithoutPassword } = user;
+      
+      res.json(userWithoutPassword);
+    } catch (error) {
+      console.error("Get profile error:", error);
+      res.status(500).json({ message: "Failed to get user profile" });
+    }
+  });
+
+  // Admin-only role elevation endpoint - SECURITY: Only admins can promote users
+  app.post("/api/auth/elevate-role", authMiddleware, requireRole(["admin"]), async (req: AuthenticatedRequest, res) => {
+    try {
+      // Validate request body using Zod schema
+      const validationResult = elevateRoleSchema.safeParse(req.body);
+      if (!validationResult.success) {
+        return res.status(400).json({ 
+          message: "Validation failed", 
+          errors: validationResult.error.flatten().fieldErrors 
+        });
+      }
+
+      const { userId, newRole } = validationResult.data;
+
+      // Check if target user exists
+      const targetUser = await storage.getUser(userId);
+      if (!targetUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Prevent self-demotion from admin (security measure)
+      if (req.userId === userId && req.userRole === "admin" && newRole !== "admin") {
+        return res.status(400).json({ message: "Admins cannot demote themselves" });
+      }
+
+      // Update user role
+      const success = await storage.updateUserRole(userId, newRole);
+      if (!success) {
+        return res.status(500).json({ message: "Failed to update user role" });
+      }
+
+      // Get updated user (without password)
+      const updatedUser = await storage.getUser(userId);
+      const { passwordHash: _, ...userWithoutPassword } = updatedUser!;
+
+      res.json({
+        message: `User role successfully updated to ${newRole}`,
+        user: userWithoutPassword
+      });
+    } catch (error) {
+      console.error("Role elevation error:", error);
+      res.status(500).json({ message: "Failed to elevate user role" });
+    }
+  });
+
+  // Create demo users for development
+  app.post("/api/auth/create-demo-users", async (req, res) => {
+    try {
+      const demoUsers = [
+        {
+          username: "student_demo",
+          email: "student@eduverse.demo",
+          fullName: "Alex Student",
+          role: "student",
+          password: "demo123"
+        },
+        {
+          username: "teacher_demo",
+          email: "teacher@eduverse.demo", 
+          fullName: "Sarah Teacher",
+          role: "teacher",
+          password: "demo123"
+        },
+        {
+          username: "admin_demo",
+          email: "admin@eduverse.demo",
+          fullName: "Mike Administrator",
+          role: "admin",
+          password: "demo123"
+        },
+        {
+          username: "parent_demo",
+          email: "parent@eduverse.demo",
+          fullName: "Lisa Parent",
+          role: "parent",
+          password: "demo123"
+        }
+      ];
+
+      const createdUsers = [];
+      for (const demoUser of demoUsers) {
+        try {
+          // Check if user already exists
+          const existing = await storage.getUserByUsername(demoUser.username);
+          if (existing) {
+            console.log(`Demo user ${demoUser.username} already exists, skipping...`);
+            continue;
+          }
+
+          const passwordHash = await bcrypt.hash(demoUser.password, 12);
+          const user = await storage.createUser({
+            username: demoUser.username,
+            email: demoUser.email,
+            fullName: demoUser.fullName,
+            role: demoUser.role,
+            passwordHash,
+            emailVerified: true,
+            preferredRole: demoUser.role
+          });
+
+          const { passwordHash: _, ...userWithoutPassword } = user;
+          createdUsers.push(userWithoutPassword);
+        } catch (error) {
+          console.error(`Failed to create demo user ${demoUser.username}:`, error);
+        }
+      }
+
+      res.json({
+        message: "Demo users created successfully",
+        users: createdUsers,
+        credentials: demoUsers.map(u => ({ username: u.username, password: u.password, role: u.role }))
+      });
+    } catch (error) {
+      console.error("Create demo users error:", error);
+      res.status(500).json({ message: "Failed to create demo users" });
+    }
+  });
+
+  // ==================== END AUTHENTICATION ROUTES ====================
+
   // Applications endpoints
   app.post("/api/applications", async (req, res) => {
     try {
@@ -689,8 +1168,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Initialize WebSocket service
   const wsService = new GroupChatWebSocketService(httpServer);
 
-  // Initialize demo data
-  initializeDemoData();
+  // Demo data initialization moved to /api/auth/create-demo-users endpoint
 
   // Helper function to find user by username or email
   async function findUserByUsernameOrEmail(identifier: string) {
@@ -705,7 +1183,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const allUsers = await storage.getUsers();
         user = allUsers.find(u => u.email === identifier);
       } catch (error) {
-        console.log('Error searching users by email:', error);
+        // SECURITY: Don't log email details in production
+        if (process.env.NODE_ENV !== 'production') {
+          console.log('Error searching users by email:', error);
+        } else {
+          console.log('Error searching users:', error.message || 'Unknown error');
+        }
       }
     }
     
@@ -1229,349 +1712,4 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   return httpServer;
-}
-
-// Initialize demo data for testing
-async function initializeDemoData() {
-  try {
-    // Create demo users
-    const demoUsers = [
-      {
-        username: 'demo_student',
-        email: 'student@eduverse.com',
-        fullName: 'Alex Student',
-        role: 'student'
-      },
-      {
-        username: 'demo_teacher',
-        email: 'teacher@eduverse.com', 
-        fullName: 'Dr. Sarah Wilson',
-        role: 'teacher'
-      },
-      {
-        username: 'demo_admin',
-        email: 'admin@eduverse.com',
-        fullName: 'Admin User',
-        role: 'admin'
-      },
-      {
-        username: 'john_student',
-        email: 'john@eduverse.com',
-        fullName: 'John Smith',
-        role: 'student'
-      },
-      {
-        username: 'emily_student',
-        email: 'emily@eduverse.com',
-        fullName: 'Emily Johnson',
-        role: 'student'
-      }
-    ];
-
-    const createdUsers: any[] = [];
-    for (const userData of demoUsers) {
-      try {
-        const existingUser = await storage.getUserByUsername(userData.username);
-        if (!existingUser) {
-          const user = await storage.createUser(userData);
-          createdUsers.push(user);
-          console.log(`Created demo user: ${user.fullName} (${user.role})`);
-        } else {
-          createdUsers.push(existingUser);
-        }
-      } catch (error) {
-        console.log(`User ${userData.username} might already exist`);
-      }
-    }
-
-    // Create demo groups
-    const demoGroups = [
-      {
-        name: 'Biology Study Group',
-        description: 'Discuss biology concepts, share notes, and help each other',
-        type: 'class',
-        icon: '🧬',
-        createdBy: createdUsers.find(u => u.role === 'teacher')?.id || createdUsers[1]?.id
-      },
-      {
-        name: 'Math Problem Solving',
-        description: 'Work together on challenging math problems',
-        type: 'class', 
-        icon: '📐',
-        createdBy: createdUsers.find(u => u.role === 'teacher')?.id || createdUsers[1]?.id
-      },
-      {
-        name: 'Science Fair Project',
-        description: 'Collaborate on science fair projects',
-        type: 'project',
-        icon: '🔬',
-        createdBy: createdUsers.find(u => u.role === 'teacher')?.id || createdUsers[1]?.id
-      },
-      {
-        name: 'School Announcements',
-        description: 'Important school updates and announcements',
-        type: 'announcement',
-        icon: '📢',
-        createdBy: createdUsers.find(u => u.role === 'admin')?.id || createdUsers[2]?.id
-      }
-    ];
-
-    const createdGroups: any[] = [];
-    for (const groupData of demoGroups) {
-      try {
-        const group = await storage.createGroup(groupData);
-        createdGroups.push(group);
-        console.log(`Created demo group: ${group.name}`);
-      } catch (error) {
-        console.log(`Error creating group ${groupData.name}:`, error);
-      }
-    }
-
-    // Add users to groups
-    if (createdUsers.length > 0 && createdGroups.length > 0) {
-      for (const group of createdGroups) {
-        // Add teacher/admin as admin of all groups
-        const teacher = createdUsers.find(u => u.role === 'teacher');
-        if (teacher) {
-          try {
-            await storage.addGroupMember({
-              groupId: group.id,
-              userId: teacher.id,
-              role: 'admin'
-            });
-          } catch (error) {
-            console.log(`Error adding teacher to group:`, error);
-          }
-        }
-
-        // Add students as members
-        const students = createdUsers.filter(u => u.role === 'student');
-        for (const student of students) {
-          try {
-            await storage.addGroupMember({
-              groupId: group.id,
-              userId: student.id,
-              role: 'member'
-            });
-          } catch (error) {
-            console.log(`Error adding student to group:`, error);
-          }
-        }
-      }
-    }
-
-    // Add some demo messages
-    if (createdGroups.length > 0 && createdUsers.length > 0) {
-      const biologyGroup = createdGroups.find(g => g.name.includes('Biology'));
-      const teacher = createdUsers.find(u => u.role === 'teacher');
-      const students = createdUsers.filter(u => u.role === 'student');
-
-      if (biologyGroup && teacher && students.length > 0) {
-        try {
-          // Teacher welcome message
-          await storage.createGroupMessage({
-            groupId: biologyGroup.id,
-            userId: teacher.id,
-            content: 'Welcome to our Biology Study Group! 🧬 Feel free to ask questions, share interesting discoveries, and help each other understand complex concepts. Let\'s make learning biology fun and collaborative!',
-            messageType: 'text'
-          });
-
-          // Student question
-          await storage.createGroupMessage({
-            groupId: biologyGroup.id,
-            userId: students[0].id,
-            content: 'Hi everyone! Can someone help me understand photosynthesis? I\'m having trouble with the light-dependent reactions. 🌱',
-            messageType: 'text'
-          });
-
-          // Another student\'s response
-          if (students[1]) {
-            await storage.createGroupMessage({
-              groupId: biologyGroup.id,
-              userId: students[1].id,
-              content: 'Sure! The light-dependent reactions happen in the thylakoids. Chlorophyll absorbs light energy, which splits water molecules (H2O) and produces ATP and NADPH. Think of it as the \"photo\" part of photosynthesis! ☀️',
-              messageType: 'text'
-            });
-          }
-
-          console.log('Created demo messages');
-        } catch (error) {
-          console.log('Error creating demo messages:', error);
-        }
-      }
-    }
-
-    // Create demo news articles
-    try {
-      const demoNews = [
-        {
-          title: "Welcome to the New School Year! 📚✨",
-          content: "We are excited to welcome all students, families, and staff to another amazing year at EduVerse! This year brings new opportunities, innovative learning experiences, and exciting adventures. Our dedicated team of educators has been working hard to create an inspiring environment where every student can thrive and discover their potential.",
-          excerpt: "Join us for an incredible year of learning, growth, and discovery at EduVerse!",
-          tags: ["school-year", "welcome", "education"],
-          category: "general",
-          isPublished: true,
-          isPinned: true,
-          authorId: createdUsers.find(u => u.role === 'teacher')?.id || 'demo-author',
-          slug: "welcome-new-school-year"
-        },
-        {
-          title: "Science Fair Winners Announced! 🏆🔬",
-          content: "Congratulations to all our amazing students who participated in this year's Science Fair! The creativity, dedication, and scientific thinking displayed were truly impressive. Our winners have shown exceptional innovation in their projects covering topics from renewable energy to marine biology. Special recognition goes to Sarah Chen for her groundbreaking research on sustainable water filtration systems.",
-          excerpt: "Celebrating our brilliant young scientists and their innovative projects!",
-          tags: ["science-fair", "students", "achievement"],
-          category: "achievements",
-          isPublished: true,
-          isPinned: false,
-          authorId: createdUsers.find(u => u.role === 'teacher')?.id || 'demo-author',
-          slug: "science-fair-winners-announced"
-        }
-      ];
-
-      for (const article of demoNews) {
-        try {
-          await storage.createNewsArticle(article);
-        } catch (error) {
-          console.log('Error creating news article:', error);
-        }
-      }
-      console.log('Created demo news articles');
-    } catch (error) {
-      console.log('Error creating demo news:', error);
-    }
-
-    // Create demo events
-    try {
-      const demoEvents = [
-        {
-          title: "Open House & School Tour 🏫🌟",
-          description: "Join us for our monthly Open House event! Tour our beautiful campus, meet our passionate educators, and discover what makes EduVerse special. This is a perfect opportunity for prospective families to experience our innovative learning environment and see our students in action.",
-          category: "school",
-          startDate: new Date('2025-10-15T10:00:00.000Z'),
-          endDate: new Date('2025-10-15T15:00:00.000Z'),
-          location: "Main Campus - Welcome Center",
-          isPublished: true,
-          isFeatured: true,
-          maxAttendees: 100
-        },
-        {
-          title: "Annual Art Exhibition 🎨✨",
-          description: "Come celebrate creativity at our Annual Art Exhibition featuring amazing artwork from students across all grade levels. From paintings and sculptures to digital art and photography, this showcase highlights the incredible artistic talents of our EduVerse community.",
-          category: "social",
-          startDate: new Date('2025-10-22T18:00:00.000Z'),
-          endDate: new Date('2025-10-22T21:00:00.000Z'),
-          location: "Arts Center - Gallery Hall",
-          isPublished: true,
-          isFeatured: true,
-          maxAttendees: 200
-        }
-      ];
-
-      for (const event of demoEvents) {
-        try {
-          await storage.createEvent({
-            ...event,
-            organizerId: createdUsers.find(u => u.role === 'teacher')?.id || 'demo-organizer'
-          });
-        } catch (error) {
-          console.log('Error creating event:', error);
-        }
-      }
-      console.log('Created demo events');
-    } catch (error) {
-      console.log('Error creating demo events:', error);
-    }
-
-    // Create demo staff profiles
-    try {
-      const demoStaff = [
-        {
-          firstName: "Dr. Sarah",
-          lastName: "Johnson",
-          email: "sarah.johnson@eduverse.com",
-          phone: "(555) 123-4567",
-          title: "Principal & Educational Leader",
-          department: "Administration",
-          bio: "Dr. Sarah Johnson brings over 15 years of educational leadership experience to EduVerse. She holds a Ph.D. in Educational Administration and is passionate about creating innovative learning environments that inspire both students and teachers. Her vision focuses on preparing students for the challenges of tomorrow through cutting-edge educational practices.",
-          expertise: ["Educational Leadership", "Curriculum Development", "Student Success", "Innovation in Education"],
-          education: ["Ph.D. Educational Administration - Stanford University", "M.Ed. Educational Leadership - UC Berkeley"],
-          experience: "15+ years in education leadership",
-          officeLocation: "Main Building, Room 101",
-          officeHours: {"Monday": "9:00 AM - 4:00 PM", "Tuesday": "9:00 AM - 4:00 PM", "Wednesday": "9:00 AM - 4:00 PM"},
-          languages: ["English", "Spanish"],
-          isActive: true,
-          displayOrder: 1
-        },
-        {
-          firstName: "Mr. David",
-          lastName: "Chen",
-          email: "david.chen@eduverse.com",
-          phone: "(555) 234-5678",
-          title: "Mathematics Department Head",
-          department: "Mathematics",
-          bio: "Mr. David Chen is a dedicated mathematics educator with a passion for making complex concepts accessible and exciting. He specializes in advanced mathematics and has helped countless students discover their love for numbers and problem-solving. His innovative teaching methods combine traditional techniques with modern technology.",
-          expertise: ["Calculus", "Statistics", "Advanced Algebra", "Mathematical Modeling"],
-          education: ["M.S. Mathematics - MIT", "B.S. Mathematics Education - UCLA"],
-          experience: "12 years of mathematics education",
-          officeLocation: "Science Building, Room 205",
-          officeHours: {"Tuesday": "2:00 PM - 4:00 PM", "Thursday": "2:00 PM - 4:00 PM"},
-          languages: ["English", "Mandarin"],
-          certifications: ["AP Calculus Certification", "Statistics Education Certificate"],
-          isActive: true,
-          displayOrder: 2
-        },
-        {
-          firstName: "Ms. Emily",
-          lastName: "Rodriguez",
-          email: "emily.rodriguez@eduverse.com",
-          phone: "(555) 345-6789",
-          title: "Science Department Coordinator",
-          department: "Science",
-          bio: "Ms. Emily Rodriguez brings the wonder of science to life in her classroom every day. With expertise in biology and environmental science, she inspires students to explore the natural world and understand their role as environmental stewards. Her hands-on approach to learning makes science both fun and meaningful.",
-          expertise: ["Biology", "Environmental Science", "Laboratory Management", "Field Research"],
-          education: ["M.S. Environmental Biology - UC Davis", "B.S. Biology - San Diego State"],
-          experience: "8 years of science education",
-          officeLocation: "Science Building, Room 150",
-          officeHours: {"Monday": "1:00 PM - 3:00 PM", "Wednesday": "1:00 PM - 3:00 PM", "Friday": "12:00 PM - 2:00 PM"},
-          languages: ["English", "Spanish"],
-          certifications: ["Environmental Education Certificate"],
-          isActive: true,
-          displayOrder: 3
-        },
-        {
-          firstName: "Mrs. Lisa",
-          lastName: "Thompson",
-          email: "lisa.thompson@eduverse.com",
-          phone: "(555) 456-7890",
-          title: "Arts & Creative Director",
-          department: "Arts",
-          bio: "Mrs. Lisa Thompson is a creative force who believes in the power of artistic expression to transform lives. She leads our comprehensive arts program, encompassing visual arts, music, and drama. Her students regularly win regional competitions and many have gone on to pursue careers in the creative industries.",
-          expertise: ["Visual Arts", "Art History", "Creative Direction", "Student Exhibitions"],
-          education: ["M.F.A. Studio Arts - RISD", "B.A. Art Education - NYU"],
-          experience: "10 years fostering creativity",
-          officeLocation: "Arts Center, Studio 1",
-          officeHours: {"Tuesday": "3:00 PM - 5:00 PM", "Thursday": "3:00 PM - 5:00 PM"},
-          languages: ["English", "French"],
-          certifications: ["Museum Education Certificate"],
-          isActive: true,
-          displayOrder: 4
-        }
-      ];
-
-      for (const staff of demoStaff) {
-        try {
-          await storage.createStaffProfile(staff);
-        } catch (error) {
-          console.log('Error creating staff profile:', error);
-        }
-      }
-      console.log('Created demo staff profiles');
-    } catch (error) {
-      console.log('Error creating demo staff:', error);
-    }
-
-    console.log('Demo data initialization complete!');
-  } catch (error) {
-    console.log('Error initializing demo data:', error);
-  }
 }

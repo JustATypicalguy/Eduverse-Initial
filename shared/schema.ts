@@ -57,15 +57,28 @@ export type Contact = typeof contacts.$inferSelect;
 export type InsertChatMessage = z.infer<typeof insertChatMessageSchema>;
 export type ChatMessage = typeof chatMessages.$inferSelect;
 
-// Enhanced Users table for group chat system
+// Enhanced Users table for comprehensive authentication system
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   username: text("username").notNull().unique(),
   email: text("email").notNull().unique(),
   fullName: text("full_name").notNull(),
   role: text("role").notNull().default("student"), // 'student', 'teacher', 'admin', 'parent'
+  // Authentication fields
+  passwordHash: text("password_hash").notNull(),
+  emailVerified: boolean("email_verified").default(false),
+  emailVerificationToken: text("email_verification_token"),
+  passwordResetToken: text("password_reset_token"),
+  passwordResetExpires: timestamp("password_reset_expires"),
+  // User experience fields
+  preferredRole: text("preferred_role"), // Remember role selection
+  lastLoginAt: timestamp("last_login_at"),
+  // Social login preparation
+  socialProviders: json("social_providers").default({}), // Store social login info
+  // Account status
   isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 // Groups table
@@ -170,6 +183,7 @@ export const fileAttachments = pgTable("file_attachments", {
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
+  updatedAt: true,
 });
 
 export const insertGroupSchema = createInsertSchema(groups).omit({
