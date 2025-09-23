@@ -470,8 +470,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (wsService) {
         const message = await storage.getGroupMessage(messageId);
         if (message) {
-          wsService.broadcastToGroup(message.groupId, {
-            type: 'file_uploaded',
+          wsService.broadcastToGroupExternal(message.groupId, 'file_uploaded', {
             messageId,
             attachments,
             userId: req.userId!
