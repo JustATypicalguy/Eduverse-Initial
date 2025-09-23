@@ -91,15 +91,23 @@ export default function Events() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-eduverse-light via-white to-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+    <>
+      {/* SEO Meta Tags */}
+      <title>EduVerse Live Events - Educational Events & Workshops Calendar</title>
+      <meta name="description" content="Join educational events, workshops, and activities at EduVerse. Discover upcoming learning opportunities in our vibrant community calendar." />
+      
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-blue-50 to-purple-50">
+        {/* Indigo/Blue Theme Header */}
+        <header className="bg-gradient-to-r from-indigo-600 via-blue-600 to-purple-600 text-white shadow-xl" data-testid="events-header">
         <div className="container mx-auto px-6 py-8">
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              🗓️ Events Calendar
-            </h1>
-            <p className="text-eduverse-gray max-w-2xl mx-auto mt-[75px] mb-[75px] text-[25px] font-bold">
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <span className="text-6xl animate-bounce">📅</span>
+              <h1 className="text-5xl font-bold">
+                Live Events Calendar
+              </h1>
+            </div>
+            <p className="text-indigo-100 max-w-2xl mx-auto text-xl">
               Discover upcoming events, workshops, and activities in our vibrant educational community.
             </p>
           </div>
@@ -361,5 +369,6 @@ export default function Events() {
         )}
       </main>
     </div>
+    </>
   );
 }

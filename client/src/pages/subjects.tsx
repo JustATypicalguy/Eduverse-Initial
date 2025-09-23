@@ -57,9 +57,29 @@ export default function Subjects() {
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
 
   return (
-    <div className="pt-24">
-      {/* Subjects Header */}
-      <section className="py-20 bg-white dark:bg-gray-900">
+    <>
+      {/* SEO Meta Tags */}
+      <title>EduVerse Study Materials - Academic Subjects by Grade Level</title>
+      <meta name="description" content="Explore comprehensive study materials and academic subjects organized by grade level at EduVerse. Access age-appropriate learning resources." />
+      
+      <div className="pt-24">
+        {/* Teal/Cyan Theme Header */}
+        <section className="py-20 bg-gradient-to-br from-teal-500 via-cyan-500 to-blue-500 text-white" data-testid="subjects-header">
+          <div className="container mx-auto px-6">
+            <div className="text-center mb-16">
+              <div className="flex items-center justify-center gap-4 mb-6">
+                <span className="text-6xl animate-pulse">📚</span>
+                <h1 className="text-5xl font-bold">Study Materials & Subjects</h1>
+              </div>
+              <p className="text-xl text-teal-100 max-w-3xl mx-auto">
+                Discover comprehensive learning resources organized by grade level with engaging activities and examples
+              </p>
+            </div>
+          </div>
+        </section>
+        
+        {/* Content Section */}
+        <section className="py-20 bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-50">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h1 className="text-4xl font-bold text-gray-800 dark:text-white mb-4">Academic Subjects by Grade Level</h1>
@@ -244,5 +264,6 @@ export default function Subjects() {
         </div>
       </section>
     </div>
+    </>
   );
 }

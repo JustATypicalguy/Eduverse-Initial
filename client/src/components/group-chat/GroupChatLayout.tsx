@@ -50,9 +50,18 @@ export function GroupChatLayout() {
   };
 
   return (
-    <div className="mx-4 mb-4 h-full bg-white rounded-lg shadow-lg overflow-hidden flex">
-      {/* Sidebar */}
-      <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
+    <div className="mx-4 mb-4 h-full bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
+      {/* Offline Banner */}
+      {!isConnected && (
+        <div className="bg-red-500 text-white px-4 py-2 text-sm flex items-center justify-center gap-2" data-testid="offline-banner">
+          <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
+          <span>Connection lost. Attempting to reconnect...</span>
+        </div>
+      )}
+      
+      <div className="flex flex-1">
+        {/* Sidebar */}
+        <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
         <GroupSidebar
           user={user}
           selectedGroup={selectedGroup}
@@ -86,6 +95,7 @@ export function GroupChatLayout() {
             </div>
           </div>
         )}
+      </div>
       </div>
 
       {/* Auth Modal */}

@@ -112,18 +112,29 @@ const getAvatarForName = (name: string): Avatar => {
 export default function Avatars() {
   const [studentName, setStudentName] = useState("");
   const [showAvatar, setShowAvatar] = useState(false);
+  const [randomAvatar, setRandomAvatar] = useState<Avatar | null>(null);
+  const [isRandomMode, setIsRandomMode] = useState(false);
   
-  const currentAvatar = useMemo(() => getAvatarForName(studentName), [studentName]);
+  // Use random avatar if in random mode, otherwise generate from name
+  const currentAvatar = useMemo(() => {
+    if (isRandomMode && randomAvatar) {
+      return randomAvatar;
+    }
+    return getAvatarForName(studentName);
+  }, [studentName, randomAvatar, isRandomMode]);
   
   const generateAvatar = () => {
     if (studentName.trim()) {
+      setIsRandomMode(false);
       setShowAvatar(true);
     }
   };
   
   const randomizeAvatar = () => {
     const randomIndex = Math.floor(Math.random() * avatarTypes.length);
-    const randomAvatar = avatarTypes[randomIndex];
+    const selectedAvatar = avatarTypes[randomIndex];
+    setRandomAvatar(selectedAvatar);
+    setIsRandomMode(true);
     setShowAvatar(true);
   };
   
@@ -135,26 +146,33 @@ export default function Avatars() {
   ];
 
   return (
-    <div className="pt-24 min-h-screen bg-gradient-to-br from-eduverse-light via-white to-indigo-50">
+    <>
+      {/* SEO Meta Tags */}
+      <title>EduVerse Learning Avatars - Create Your Unique Learning Character</title>
+      <meta name="description" content="Generate your personalized learning avatar with EduVerse. Discover your unique character based on your personality and learning style." />
+      
+      <div className="pt-24 min-h-screen bg-gradient-to-br from-purple-50 via-violet-50 to-indigo-50">
       <div className="container mx-auto px-6 py-8">
         <div className="max-w-4xl mx-auto">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <User className="text-eduverse-blue" size={40} />
-              <h1 className="text-4xl font-bold text-gray-800">
-                Avatar Generator
-              </h1>
+          {/* Purple/Violet Theme Header */}
+          <div className="bg-gradient-to-r from-purple-500 via-violet-500 to-indigo-500 text-white py-12 mb-8 rounded-2xl shadow-lg" data-testid="avatars-header">
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-3 mb-4">
+                <span className="text-6xl animate-bounce">🎨</span>
+                <h1 className="text-4xl font-bold">
+                  Learning Avatars Generator
+                </h1>
+              </div>
+              <p className="text-xl text-purple-100 max-w-2xl mx-auto">
+                Unleash your creativity! Discover your unique learning avatar based on your personality ✨
+              </p>
             </div>
-            <p className="text-xl text-eduverse-gray">
-              Discover your unique learning avatar based on your name! 🎨✨
-            </p>
           </div>
 
           {/* Name Input */}
           <Card className="mb-8">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-eduverse-blue">
+              <CardTitle className="flex items-center gap-2 text-purple-600">
                 <Sparkles size={24} />
                 Enter Your Name
               </CardTitle>
@@ -167,6 +185,7 @@ export default function Avatars() {
                   onChange={(e) => {
                     setStudentName(e.target.value);
                     if (e.target.value.trim()) {
+                      setIsRandomMode(false);
                       setShowAvatar(true);
                     }
                   }}
@@ -175,7 +194,7 @@ export default function Avatars() {
                 />
                 <Button 
                   onClick={generateAvatar}
-                  className="bg-eduverse-blue hover:bg-eduverse-dark px-8"
+                  className="bg-purple-600 hover:bg-purple-700 px-8"
                   data-testid="button-generate-avatar"
                 >
                   <Sparkles className="mr-2" size={16} />
@@ -184,7 +203,7 @@ export default function Avatars() {
                 <Button 
                   onClick={randomizeAvatar}
                   variant="outline"
-                  className="border-eduverse-gold text-eduverse-gold hover:bg-eduverse-gold hover:text-white"
+                  className="border-violet-500 text-violet-600 hover:bg-violet-500 hover:text-white"
                   data-testid="button-random-avatar"
                 >
                   <Shuffle className="mr-2" size={16} />
@@ -333,5 +352,6 @@ export default function Avatars() {
         </div>
       </div>
     </div>
+    </>
   );
 }

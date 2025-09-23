@@ -82,17 +82,26 @@ export default function StaffDirectory() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-12">
-      <div className="container mx-auto px-4 max-w-7xl">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <div className="flex items-center justify-center gap-3 mb-6">
-            <div className="p-3 bg-eduverse-blue/10 rounded-full">
-              <Users className="h-8 w-8 text-eduverse-blue" />
+    <>
+      {/* SEO Meta Tags */}
+      <title>EduVerse Staff Directory - Meet Our Dedicated Team</title>
+      <meta name="description" content="Connect with EduVerse's dedicated educators and staff members. Find contact information, expertise, and office hours for teachers and administrators." />
+      
+      <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-sky-50 to-blue-50 py-12">
+        <div className="container mx-auto px-4 max-w-7xl">
+          {/* Cyan/Sky Theme Header */}
+          <div className="bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-500 text-white py-12 mb-8 rounded-2xl shadow-lg" data-testid="staff-header">
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-4 mb-6">
+                <span className="text-6xl">👥</span>
+                <h1 className="text-5xl font-bold">
+                  Meet Our Team
+                </h1>
+              </div>
+              <p className="text-xl text-cyan-100 max-w-3xl mx-auto">
+                Connect with our dedicated educators and professionals who make EduVerse exceptional
+              </p>
             </div>
-            <h1 className="text-5xl font-bold bg-gradient-to-r from-eduverse-blue to-purple-600 bg-clip-text text-transparent">
-              👥 Meet Our Team
-            </h1>
           </div>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             Get to know the dedicated educators and professionals who make EduVerse a place of excellence, 

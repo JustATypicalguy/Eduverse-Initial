@@ -297,81 +297,47 @@ export function Navigation() {
                 </svg>
               </button>
               
-              {/* Mega Dropdown */}
-              <div className="absolute top-full right-0 mt-4 w-96 bg-gradient-to-br from-white via-slate-50 to-blue-50 border border-slate-200 rounded-3xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-500 transform translate-y-4 group-hover:translate-y-0 z-50 backdrop-blur-lg">
-                <div className="p-6">
-                  {/* Header */}
-                  <div className="text-center mb-6 pb-4 border-b border-slate-200">
-                    <div className="flex items-center justify-center gap-3 mb-2">
-                      <div className="w-10 h-10 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full flex items-center justify-center animate-bounce">
-                        <span className="text-2xl">🚀</span>
-                      </div>
-                      <h3 className="font-black text-2xl bg-gradient-to-r from-slate-600 to-blue-600 bg-clip-text text-transparent">
-                        EduVerse Learning Hub
-                      </h3>
-                    </div>
-                    <p className="text-sm text-gray-600 font-medium">
-                      🎯 Discover amazing tools that make learning fun & engaging
-                    </p>
+              {/* Compact Features Dropdown */}
+              <div className="absolute top-full right-0 mt-2 w-[90vw] sm:w-80 md:w-96 lg:w-[600px] xl:w-[700px] bg-white border border-gray-200 rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 z-50" data-testid="features-dropdown">
+                <div className="p-3">
+                  {/* Compact Header */}
+                  <div className="text-center mb-3 pb-2 border-b border-gray-100">
+                    <h3 className="font-semibold text-sm text-gray-700 flex items-center justify-center gap-2">
+                      <span className="text-lg">✨</span>
+                      EduVerse Features
+                    </h3>
                   </div>
                   
-                  {/* Features Grid */}
-                  <div className="grid grid-cols-1 gap-3">
-                    {featureItems.map((item, index) => (
-                      <Link
-                        key={item.name}
-                        href={item.href}
-                        className={`group/item relative overflow-hidden rounded-2xl p-4 transition-all duration-300 transform hover:scale-105 hover:shadow-lg ${
-                          isActive(item.href) 
-                            ? "bg-gradient-to-r " + item.color + " text-white shadow-lg scale-105" 
-                            : "bg-white/80 hover:bg-gradient-to-r hover:" + item.color + " hover:text-white"
-                        }`}
-                        style={{ animationDelay: `${index * 100}ms` }}
-                      >
-                        {/* Animated Background */}
-                        <div className="absolute inset-0 bg-gradient-to-r opacity-0 group-hover/item:opacity-100 transition-opacity duration-300 rounded-2xl" 
-                             style={{ backgroundImage: `linear-gradient(45deg, ${item.color.split(' ')[1]}, ${item.color.split(' ')[3]})` }}>
-                        </div>
-                        
-                        <div className="relative z-10 flex items-center gap-4">
-                          {/* Icon with animation */}
-                          <div className="w-14 h-14 bg-gradient-to-br from-white/20 to-white/10 rounded-xl flex items-center justify-center group-hover/item:animate-pulse group-hover/item:scale-110 transition-transform duration-300">
-                            <span className="text-3xl filter drop-shadow-md">{item.icon}</span>
-                          </div>
-                          
-                          {/* Content */}
-                          <div className="flex-1">
-                            <div className="font-bold text-lg mb-1 group-hover/item:text-white transition-colors">
+                  {/* Compact Features Grid with Responsive Breakpoints */}
+                  <div className="max-h-[60vh] overflow-y-auto">
+                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                      {featureItems.map((item, index) => (
+                        <Link
+                          key={item.name}
+                          href={item.href}
+                          className={`group/item relative overflow-hidden rounded-lg p-2 transition-all duration-200 hover:shadow-md ${
+                            isActive(item.href) 
+                              ? "bg-gradient-to-r " + item.color + " text-gray-800 shadow-sm" 
+                              : "bg-gray-50 hover:bg-gradient-to-r hover:" + item.color + " hover:text-gray-800"
+                          }`}
+                          data-testid={`feature-link-${item.href.slice(1)}`}
+                        >
+                          <div className="relative z-10 text-center">
+                            {/* Compact Icon */}
+                            <div className="w-8 h-8 mx-auto mb-1 flex items-center justify-center">
+                              <span className="text-xl">{item.icon}</span>
+                            </div>
+                            
+                            {/* Compact Content */}
+                            <div className="font-medium text-xs mb-1 leading-tight line-clamp-2">
                               {item.name}
                             </div>
-                            <p className="text-sm opacity-90 group-hover/item:text-white/90 transition-colors">
+                            <p className="text-xs opacity-75 leading-tight line-clamp-2 hidden sm:block">
                               {item.description}
                             </p>
                           </div>
-                          
-                          {/* Arrow */}
-                          <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center group-hover/item:bg-white/30 transition-all duration-300 group-hover/item:translate-x-1">
-                            <svg className="w-4 h-4 group-hover/item:text-white transition-colors" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                            </svg>
-                          </div>
-                        </div>
-                        
-                        {/* Hover Effect Overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 -translate-x-full group-hover/item:translate-x-full transition-transform duration-1000 ease-out"></div>
-                      </Link>
-                    ))}
-                  </div>
-                  
-                  {/* Bottom CTA */}
-                  <div className="mt-6 pt-4 border-t border-purple-100 text-center">
-                    <p className="text-sm text-gray-600 mb-3">
-                      🎨 <strong>Ready to transform your learning experience?</strong>
-                    </p>
-                    <div className="flex justify-center space-x-2">
-                      <div className="w-2 h-2 bg-purple-400 rounded-full animate-ping"></div>
-                      <div className="w-2 h-2 bg-pink-400 rounded-full animate-ping" style={{ animationDelay: '0.2s' }}></div>
-                      <div className="w-2 h-2 bg-red-400 rounded-full animate-ping" style={{ animationDelay: '0.4s' }}></div>
+                        </Link>
+                      ))}
                     </div>
                   </div>
                 </div>
