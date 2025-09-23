@@ -67,12 +67,18 @@ export interface IStorage {
   getGroups(): Promise<Group[]>;
   getGroup(id: string): Promise<Group | undefined>;
   getUserGroups(userId: string): Promise<Group[]>;
+  getPublicGroups(): Promise<Group[]>;
+  updateGroupSettings(groupId: string, settings: any): Promise<boolean>;
+  canUserJoinGroup(userId: string, groupId: string): Promise<{ canJoin: boolean; reason?: string }>;
   
   // Group Members
   addGroupMember(member: InsertGroupMember): Promise<GroupMember>;
   removeGroupMember(groupId: string, userId: string): Promise<boolean>;
   getGroupMembers(groupId: string): Promise<GroupMember[]>;
   isGroupMember(userId: string, groupId: string): Promise<boolean>;
+  updateMemberRole(groupId: string, userId: string, role: string): Promise<boolean>;
+  getGroupMemberRole(groupId: string, userId: string): Promise<string | undefined>;
+  getGroupMemberCount(groupId: string): Promise<number>;
   
   // Group Messages
   createGroupMessage(message: InsertGroupMessage): Promise<GroupMessage>;
@@ -381,6 +387,55 @@ export class DatabaseStorage implements IStorage {
       .where(inArray(groups.id, groupIds));
   }
 
+  async getPublicGroups(): Promise<Group[]> {
+    return await db
+      .select()
+      .from(groups)
+      .where(and(eq(groups.isActive, true), eq(groups.privacy, 'public')));
+  }
+
+  async updateGroupSettings(groupId: string, settings: any): Promise<boolean> {
+    const result = await db
+      .update(groups)
+      .set({ settings })
+      .where(eq(groups.id, groupId));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  async canUserJoinGroup(userId: string, groupId: string): Promise<{ canJoin: boolean; reason?: string }> {
+    const group = await this.getGroup(groupId);
+    if (!group) {
+      return { canJoin: false, reason: 'Group not found' };
+    }
+
+    if (!group.isActive) {
+      return { canJoin: false, reason: 'Group is not active' };
+    }
+
+    // Check if already a member
+    const isMember = await this.isGroupMember(userId, groupId);
+    if (isMember) {
+      return { canJoin: false, reason: 'Already a member' };
+    }
+
+    // Check member limit
+    const memberCount = await this.getGroupMemberCount(groupId);
+    if (memberCount >= group.memberLimit) {
+      return { canJoin: false, reason: 'Group is full' };
+    }
+
+    // Check privacy settings
+    if (group.privacy === 'private') {
+      return { canJoin: false, reason: 'Group is private' };
+    }
+
+    if (group.privacy === 'invite_only') {
+      return { canJoin: false, reason: 'Group is invite only' };
+    }
+
+    return { canJoin: true };
+  }
+
   // Group Members
   async addGroupMember(insertMember: InsertGroupMember): Promise<GroupMember> {
     const [member] = await db
@@ -410,6 +465,30 @@ export class DatabaseStorage implements IStorage {
       .from(groupMembers)
       .where(and(eq(groupMembers.userId, userId), eq(groupMembers.groupId, groupId)));
     return !!member;
+  }
+
+  async updateMemberRole(groupId: string, userId: string, role: string): Promise<boolean> {
+    const result = await db
+      .update(groupMembers)
+      .set({ role })
+      .where(and(eq(groupMembers.groupId, groupId), eq(groupMembers.userId, userId)));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  async getGroupMemberRole(groupId: string, userId: string): Promise<string | undefined> {
+    const [member] = await db
+      .select({ role: groupMembers.role })
+      .from(groupMembers)
+      .where(and(eq(groupMembers.groupId, groupId), eq(groupMembers.userId, userId)));
+    return member?.role;
+  }
+
+  async getGroupMemberCount(groupId: string): Promise<number> {
+    const result = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(groupMembers)
+      .where(eq(groupMembers.groupId, groupId));
+    return result[0]?.count || 0;
   }
 
   // Group Messages

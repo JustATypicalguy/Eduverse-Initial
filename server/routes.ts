@@ -733,6 +733,121 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Enhanced group management endpoints
+  
+  // Get public groups (for navigation/discovery)
+  app.get("/api/groups/public", async (req, res) => {
+    try {
+      const groups = await storage.getPublicGroups();
+      res.json(groups);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch public groups", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  // Check if user can join a group
+  app.get("/api/groups/:groupId/can-join", async (req: AuthenticatedRequest, res) => {
+    try {
+      const result = await storage.canUserJoinGroup(req.userId!, req.params.groupId);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to check join eligibility", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  // Join a group
+  app.post("/api/groups/:groupId/join", async (req: AuthenticatedRequest, res) => {
+    try {
+      const groupId = req.params.groupId;
+      const userId = req.userId!;
+
+      // Check if user can join
+      const eligibility = await storage.canUserJoinGroup(userId, groupId);
+      if (!eligibility.canJoin) {
+        return res.status(400).json({ message: eligibility.reason });
+      }
+
+      // Add user as member
+      const member = await storage.addGroupMember({
+        groupId,
+        userId,
+        role: 'member'
+      });
+
+      res.json(member);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to join group", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  // Update member role (promote to moderator, etc.)
+  app.patch("/api/groups/:groupId/members/:userId/role", async (req: AuthenticatedRequest, res) => {
+    try {
+      const { groupId, userId } = req.params;
+      const { role } = req.body;
+      
+      // Check if requester is admin or moderator
+      const requesterRole = await storage.getGroupMemberRole(groupId, req.userId!);
+      if (requesterRole !== 'admin' && requesterRole !== 'moderator') {
+        return res.status(403).json({ message: "Only admins and moderators can change member roles" });
+      }
+
+      const success = await storage.updateMemberRole(groupId, userId, role);
+      if (!success) {
+        return res.status(404).json({ message: "Member not found" });
+      }
+
+      res.json({ success: true, message: "Member role updated" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update member role", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  // Remove member from group
+  app.delete("/api/groups/:groupId/members/:userId", async (req: AuthenticatedRequest, res) => {
+    try {
+      const { groupId, userId } = req.params;
+      
+      // Check if requester has permission to remove members
+      const requesterRole = await storage.getGroupMemberRole(groupId, req.userId!);
+      if (requesterRole !== 'admin' && requesterRole !== 'moderator' && req.userId !== userId) {
+        return res.status(403).json({ message: "Insufficient permissions" });
+      }
+
+      const success = await storage.removeGroupMember(groupId, userId);
+      if (!success) {
+        return res.status(404).json({ message: "Member not found" });
+      }
+
+      res.json({ success: true, message: "Member removed from group" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to remove member", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  // Update group settings
+  app.patch("/api/groups/:groupId/settings", async (req: AuthenticatedRequest, res) => {
+    try {
+      const groupId = req.params.groupId;
+      const { settings } = req.body;
+      
+      // Check if requester is admin
+      const requesterRole = await storage.getGroupMemberRole(groupId, req.userId!);
+      if (requesterRole !== 'admin') {
+        return res.status(403).json({ message: "Only admins can update group settings" });
+      }
+
+      const success = await storage.updateGroupSettings(groupId, settings);
+      if (!success) {
+        return res.status(404).json({ message: "Group not found" });
+      }
+
+      res.json({ success: true, message: "Group settings updated" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update group settings", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
   // User management endpoints
   app.post("/api/users", async (req, res) => {
     try {

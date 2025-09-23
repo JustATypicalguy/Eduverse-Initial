@@ -1,13 +1,16 @@
 import { useState, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Search, Users, Plus, Settings, LogOut, MessageCircle } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useToast } from '@/hooks/use-toast';
+import { Search, Users, Plus, Settings, LogOut, MessageCircle, UserPlus, Globe, Lock, Mail } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { CreateGroupModal } from './CreateGroupModal';
+import { queryClient } from '@/lib/queryClient';
 import type { Group, User } from '@shared/schema';
 
 interface GroupSidebarProps {
@@ -22,6 +25,7 @@ export function GroupSidebar({ user, selectedGroup, onGroupSelect, onlineUsers, 
   const [searchTerm, setSearchTerm] = useState('');
   const [showCreateModal, setShowCreateModal] = useState(false);
   const { getAuthHeaders } = useAuth();
+  const { toast } = useToast();
 
   // Fetch user's groups
   const { data: groups = [], isLoading } = useQuery({
@@ -37,9 +41,58 @@ export function GroupSidebar({ user, selectedGroup, onGroupSelect, onlineUsers, 
     enabled: !!user
   });
 
+  // Fetch public groups (for discovery)
+  const { data: publicGroups = [], isLoading: isLoadingPublic } = useQuery({
+    queryKey: ['public-groups'],
+    queryFn: async () => {
+      const response = await fetch('/api/groups/public');
+      if (!response.ok) throw new Error('Failed to fetch public groups');
+      return response.json();
+    }
+  });
+
+  // Join group mutation
+  const joinGroupMutation = useMutation({
+    mutationFn: async (groupId: string) => {
+      const response = await fetch(`/api/groups/${groupId}/join`, {
+        method: 'POST',
+        headers: getAuthHeaders()
+      });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to join group');
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      // Refresh both queries
+      queryClient.invalidateQueries({ queryKey: ['user-groups'] });
+      queryClient.invalidateQueries({ queryKey: ['public-groups'] });
+      toast({
+        title: "Success",
+        description: "You've successfully joined the group!",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  });
+
   const filteredGroups = groups.filter((group: Group) =>
     group.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     group.description?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Filter public groups that user is not already a member of
+  const userGroupIds = groups.map((group: Group) => group.id);
+  const filteredPublicGroups = publicGroups.filter((group: Group) => 
+    !userGroupIds.includes(group.id) &&
+    (group.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+     group.description?.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   const getGroupIcon = (type: string) => {
@@ -58,6 +111,19 @@ export function GroupSidebar({ user, selectedGroup, onGroupSelect, onlineUsers, 
       case 'announcement': return 'bg-yellow-100 text-yellow-800';
       default: return 'bg-gray-100 text-gray-800';
     }
+  };
+
+  const getPrivacyIcon = (privacy: string) => {
+    switch (privacy) {
+      case 'public': return <Globe className="h-4 w-4 text-green-600" />;
+      case 'private': return <Lock className="h-4 w-4 text-red-600" />;
+      case 'invite_only': return <Mail className="h-4 w-4 text-orange-600" />;
+      default: return <Globe className="h-4 w-4 text-green-600" />;
+    }
+  };
+
+  const handleJoinGroup = (groupId: string) => {
+    joinGroupMutation.mutate(groupId);
   };
 
   return (
@@ -107,69 +173,159 @@ export function GroupSidebar({ user, selectedGroup, onGroupSelect, onlineUsers, 
         </div>
       </div>
 
-      {/* Groups List */}
-      <div className="flex-1 overflow-y-auto">
-        {isLoading ? (
-          <div className="p-4 text-center text-gray-500">
-            Loading groups...
+      {/* Groups Tabs */}
+      <div className="flex-1 overflow-hidden">
+        <Tabs defaultValue="my-groups" className="h-full flex flex-col">
+          <div className="px-4 pt-2">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="my-groups" className="text-xs">
+                My Groups ({filteredGroups.length})
+              </TabsTrigger>
+              <TabsTrigger value="discover" className="text-xs">
+                Discover ({filteredPublicGroups.length})
+              </TabsTrigger>
+            </TabsList>
           </div>
-        ) : filteredGroups.length === 0 ? (
-          <div className="p-4 text-center text-gray-500">
-            {searchTerm ? 'No groups found' : 'No groups available'}
-          </div>
-        ) : (
-          <div className="space-y-1 p-2">
-            {filteredGroups.map((group: Group) => (
-              <button
-                key={group.id}
-                onClick={() => onGroupSelect(group)}
-                className={`w-full p-3 rounded-lg text-left transition-colors ${
-                  selectedGroup?.id === group.id
-                    ? 'bg-eduverse-blue text-white'
-                    : 'hover:bg-gray-100'
-                }`}
-                data-testid={`group-item-${group.id}`}
-              >
-                <div className="flex items-center gap-3">
-                  <div className="text-2xl">{getGroupIcon(group.type)}</div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <p className={`font-medium truncate ${
-                        selectedGroup?.id === group.id ? 'text-white' : 'text-gray-900'
-                      }`}>
-                        {group.name}
-                      </p>
-                      <Badge 
-                        variant="secondary" 
-                        className={`text-xs ${
-                          selectedGroup?.id === group.id 
-                            ? 'bg-white/20 text-white' 
-                            : getGroupTypeColor(group.type)
-                        }`}
-                      >
-                        {group.type}
-                      </Badge>
-                    </div>
-                    {group.description && (
-                      <p className={`text-sm truncate ${
-                        selectedGroup?.id === group.id ? 'text-white/80' : 'text-gray-500'
-                      }`}>
-                        {group.description}
-                      </p>
-                    )}
-                  </div>
-                  <div className="flex flex-col items-end gap-1">
-                    <div className="flex items-center gap-1">
-                      <Users className="h-3 w-3" />
-                      <span className="text-xs">12</span>
-                    </div>
-                    {/* <div className="w-2 h-2 bg-green-500 rounded-full"></div> */}
-                  </div>
+
+          <TabsContent value="my-groups" className="flex-1 overflow-y-auto m-0">
+            {isLoading ? (
+              <div className="p-4 text-center text-gray-500">
+                Loading groups...
+              </div>
+            ) : filteredGroups.length === 0 ? (
+              <div className="p-4 text-center text-gray-500">
+                {searchTerm ? 'No groups found' : 'No groups available'}
+                <div className="mt-2 text-xs">
+                  {user?.role === 'teacher' || user?.role === 'admin' ? 'Create your first group!' : 'Ask your teacher to add you to a group'}
                 </div>
-              </button>
-            ))}
-          </div>
-        )}
+              </div>
+            ) : (
+              <div className="space-y-1 p-2">
+                {filteredGroups.map((group: Group) => (
+                  <button
+                    key={group.id}
+                    onClick={() => onGroupSelect(group)}
+                    className={`w-full p-3 rounded-lg text-left transition-colors ${
+                      selectedGroup?.id === group.id
+                        ? 'bg-eduverse-blue text-white'
+                        : 'hover:bg-gray-100'
+                    }`}
+                    data-testid={`group-item-${group.id}`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="text-2xl">{getGroupIcon(group.type)}</div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <p className={`font-medium truncate ${
+                            selectedGroup?.id === group.id ? 'text-white' : 'text-gray-900'
+                          }`}>
+                            {group.name}
+                          </p>
+                          <Badge 
+                            variant="secondary" 
+                            className={`text-xs ${
+                              selectedGroup?.id === group.id 
+                                ? 'bg-white/20 text-white' 
+                                : getGroupTypeColor(group.type)
+                            }`}
+                          >
+                            {group.type}
+                          </Badge>
+                        </div>
+                        {group.description && (
+                          <p className={`text-sm truncate ${
+                            selectedGroup?.id === group.id ? 'text-white/80' : 'text-gray-500'
+                          }`}>
+                            {group.description}
+                          </p>
+                        )}
+                      </div>
+                      <div className="flex flex-col items-end gap-1">
+                        <div className="flex items-center gap-1">
+                          <Users className="h-3 w-3" />
+                          <span className="text-xs">12</span>
+                        </div>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="discover" className="flex-1 overflow-y-auto m-0">
+            {isLoadingPublic ? (
+              <div className="p-4 text-center text-gray-500">
+                Loading public groups...
+              </div>
+            ) : filteredPublicGroups.length === 0 ? (
+              <div className="p-4 text-center text-gray-500">
+                {searchTerm ? 'No public groups found' : 'No public groups available to join'}
+              </div>
+            ) : (
+              <div className="space-y-1 p-2">
+                {filteredPublicGroups.map((group: Group) => (
+                  <div
+                    key={group.id}
+                    className="w-full p-3 rounded-lg border border-gray-200 hover:border-eduverse-blue/50 transition-colors"
+                    data-testid={`public-group-item-${group.id}`}
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="text-2xl">{getGroupIcon(group.type)}</div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <p className="font-medium truncate text-gray-900">
+                            {group.name}
+                          </p>
+                          <Badge variant="secondary" className={`text-xs ${getGroupTypeColor(group.type)}`}>
+                            {group.type}
+                          </Badge>
+                        </div>
+                        {group.description && (
+                          <p className="text-sm text-gray-500 truncate mb-2">
+                            {group.description}
+                          </p>
+                        )}
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3 text-xs text-gray-500">
+                            <div className="flex items-center gap-1">
+                              {getPrivacyIcon(group.privacy)}
+                              <span className="capitalize">{group.privacy}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Users className="h-3 w-3" />
+                              <span>0/{group.memberLimit}</span>
+                            </div>
+                          </div>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleJoinGroup(group.id)}
+                            disabled={joinGroupMutation.isPending}
+                            className="h-7 px-2 text-xs"
+                            data-testid={`button-join-${group.id}`}
+                          >
+                            {joinGroupMutation.isPending ? (
+                              <>
+                                <div className="w-3 h-3 border-2 border-gray-300 border-t-eduverse-blue rounded-full animate-spin mr-1" />
+                                Joining...
+                              </>
+                            ) : (
+                              <>
+                                <UserPlus className="h-3 w-3 mr-1" />
+                                Join
+                              </>
+                            )}
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
       </div>
 
       {/* Create Group Button */}

@@ -26,6 +26,8 @@ import {
 import { MessageBubble } from './MessageBubble';
 import { TypingIndicator } from './TypingIndicator';
 import { PollModal } from './PollModal';
+import { GroupMembersModal } from './GroupMembersModal';
+import { GroupSettingsModal } from './GroupSettingsModal';
 import type { Group, User, GroupMessage } from '@shared/schema';
 
 interface ChatAreaProps {
@@ -48,12 +50,17 @@ export function ChatArea({
   const [messageText, setMessageText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [showPollModal, setShowPollModal] = useState(false);
+  const [showMembersModal, setShowMembersModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [isUploading, setIsUploading] = useState(false);
+  const [isDragOver, setIsDragOver] = useState(false);
+  const [replyToMessage, setReplyToMessage] = useState<GroupMessage | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout>();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -124,6 +131,36 @@ export function ChatArea({
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
+  // Drag and drop handlers
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    
+    const files = Array.from(e.dataTransfer.files);
+    if (files.length > 0) {
+      setSelectedFiles(prev => [...prev, ...files].slice(0, 5)); // Max 5 files
+    }
+  };
+
+  // Message threading
+  const handleReplyToMessage = (message: GroupMessage) => {
+    setReplyToMessage(message);
+  };
+
+  const clearReply = () => {
+    setReplyToMessage(null);
   };
 
   const handleUploadFiles = async () => {
@@ -276,6 +313,30 @@ export function ChatArea({
               </Button>
             )}
             
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => setShowMembersModal(true)}
+              className="text-purple-600 border-purple-200 hover:bg-purple-50"
+              data-testid="button-group-members"
+            >
+              <Users className="h-4 w-4 mr-1" />
+              Members
+            </Button>
+
+            {user && (user.role === 'teacher' || user.role === 'admin') && (
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => setShowSettingsModal(true)}
+                className="text-gray-600 border-gray-200 hover:bg-gray-50"
+                data-testid="button-group-settings"
+              >
+                <Settings className="h-4 w-4 mr-1" />
+                Settings
+              </Button>
+            )}
+            
             <Button variant="ghost" size="sm">
               <Phone className="h-4 w-4" />
             </Button>
@@ -290,13 +351,35 @@ export function ChatArea({
       </div>
 
       {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto bg-gray-50 p-4 space-y-4">
+      <div 
+        ref={chatContainerRef}
+        className={`flex-1 overflow-y-auto bg-gray-50 p-4 space-y-4 relative transition-all duration-200 ${
+          isDragOver ? 'bg-blue-50 border-2 border-dashed border-blue-300' : ''
+        }`}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+      >
+        {isDragOver && (
+          <div className="absolute inset-0 bg-blue-50 bg-opacity-90 flex items-center justify-center z-10">
+            <div className="text-center">
+              <div className="text-4xl mb-2">📁</div>
+              <p className="text-lg font-medium text-blue-700">Drop files to upload</p>
+              <p className="text-sm text-blue-600">Maximum 5 files, 10MB each</p>
+            </div>
+          </div>
+        )}
+
         {messages.length === 0 ? (
           <div className="flex-1 flex items-center justify-center text-gray-500">
             <div className="text-center">
               <div className="text-4xl mb-2">{getGroupIcon(group.type)}</div>
               <h3 className="font-medium mb-1">Welcome to {group.name}</h3>
               <p className="text-sm">Start the conversation by sending a message</p>
+              <div className="mt-4 text-xs text-gray-400 space-y-1">
+                <p>💡 You can drag and drop files to share them</p>
+                <p>💬 Click reply on any message to start a thread</p>
+              </div>
             </div>
           </div>
         ) : (
@@ -308,6 +391,8 @@ export function ChatArea({
                 currentUser={user}
                 isFirstInGroup={index === 0 || messages[index - 1].userId !== message.userId}
                 isLastInGroup={index === messages.length - 1 || messages[index + 1]?.userId !== message.userId}
+                onReply={() => handleReplyToMessage(message)}
+                replyToMessage={message.replyTo ? messages.find(m => m.id === message.replyTo) : undefined}
               />
             ))}
             
@@ -323,6 +408,29 @@ export function ChatArea({
 
       {/* Message Input */}
       <div className="bg-white border-t border-gray-200 p-4">
+        {/* Reply Preview */}
+        {replyToMessage && (
+          <div className="mb-3 p-3 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs font-medium text-blue-700">
+                Replying to {replyToMessage.senderName || 'Unknown User'}
+              </span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={clearReply}
+                className="h-6 w-6 p-0 text-blue-600 hover:text-blue-800"
+                data-testid="button-clear-reply"
+              >
+                <X className="h-3 w-3" />
+              </Button>
+            </div>
+            <p className="text-sm text-blue-800 truncate bg-white p-2 rounded">
+              {replyToMessage.content}
+            </p>
+          </div>
+        )}
+
         {/* File Preview Area */}
         {selectedFiles.length > 0 && (
           <div className="mb-4 p-3 bg-gray-50 rounded-lg border">
@@ -464,6 +572,23 @@ export function ChatArea({
           onSendPoll={handleCreatePoll}
         />
       )}
+
+      {/* Group Members Modal */}
+      <GroupMembersModal
+        open={showMembersModal}
+        onClose={() => setShowMembersModal(false)}
+        group={group}
+        currentUser={user}
+      />
+
+      {/* Group Settings Modal */}
+      <GroupSettingsModal
+        open={showSettingsModal}
+        onClose={() => setShowSettingsModal(false)}
+        group={group}
+        currentUser={user}
+        userRole={user?.role}
+      />
     </div>
   );
 }

@@ -6,7 +6,9 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, Users, BookOpen, Megaphone, FolderOpen } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Slider } from '@/components/ui/slider';
+import { Loader2, Users, BookOpen, Megaphone, FolderOpen, Globe, Lock, Mail } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { queryClient } from '@/lib/queryClient';
 import type { User } from '@shared/schema';
@@ -20,6 +22,10 @@ export function CreateGroupModal({ open, onClose }: CreateGroupModalProps) {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [type, setType] = useState<string>('');
+  const [privacy, setPrivacy] = useState<string>('public');
+  const [memberLimit, setMemberLimit] = useState<number>(100);
+  const [requireApproval, setRequireApproval] = useState(false);
+  const [allowMemberInvite, setAllowMemberInvite] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const { getAuthHeaders, user } = useAuth();
@@ -31,12 +37,22 @@ export function CreateGroupModal({ open, onClose }: CreateGroupModalProps) {
     { value: 'study', label: 'Study Group', icon: '📚', description: 'Peer learning and support' }
   ];
 
+  const privacyOptions = [
+    { value: 'public', label: 'Public', icon: '🌐', description: 'Anyone can discover and join' },
+    { value: 'private', label: 'Private', icon: '🔒', description: 'Invite only, not discoverable' },
+    { value: 'invite_only', label: 'Invite Only', icon: '📨', description: 'Discoverable but requires invitation' }
+  ];
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submission data:', { name: name.trim(), type, description: description.trim() });
     
     if (!name.trim() || !type) {
       setError('Please fill in all required fields');
+      return;
+    }
+
+    if (memberLimit < 2 || memberLimit > 1000) {
+      setError('Member limit must be between 2 and 1000');
       return;
     }
 
@@ -46,7 +62,11 @@ export function CreateGroupModal({ open, onClose }: CreateGroupModalProps) {
     const requestData = {
       name: name.trim(),
       description: description.trim() || undefined,
-      type
+      type,
+      privacy,
+      memberLimit,
+      requireApproval,
+      allowMemberInvite
     };
     
     console.log('Sending request data:', requestData);
@@ -66,11 +86,16 @@ export function CreateGroupModal({ open, onClose }: CreateGroupModalProps) {
 
       // Invalidate groups query to refresh the list
       queryClient.invalidateQueries({ queryKey: ['user-groups'] });
+      queryClient.invalidateQueries({ queryKey: ['public-groups'] });
       
       // Reset form and close modal
       setName('');
       setDescription('');
       setType('');
+      setPrivacy('public');
+      setMemberLimit(100);
+      setRequireApproval(false);
+      setAllowMemberInvite(true);
       onClose();
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Failed to create group');
@@ -160,6 +185,91 @@ export function CreateGroupModal({ open, onClose }: CreateGroupModalProps) {
               {description.length}/300 characters
             </div>
           </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="group-privacy">
+              Privacy Settings <span className="text-red-500">*</span>
+            </Label>
+            <Select value={privacy} onValueChange={setPrivacy} disabled={isLoading}>
+              <SelectTrigger data-testid="select-group-privacy">
+                <SelectValue placeholder="Select privacy level">
+                  {privacy && (
+                    <div className="flex items-center gap-2">
+                      <span>
+                        {privacy === 'public' && <Globe className="h-4 w-4" />}
+                        {privacy === 'private' && <Lock className="h-4 w-4" />}
+                        {privacy === 'invite_only' && <Mail className="h-4 w-4" />}
+                      </span>
+                      <span>{privacyOptions.find(p => p.value === privacy)?.label}</span>
+                    </div>
+                  )}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {privacyOptions.map((privacyOption) => (
+                  <SelectItem key={privacyOption.value} value={privacyOption.value}>
+                    <div className="flex items-center gap-3">
+                      <span className="text-lg">{privacyOption.icon}</span>
+                      <div>
+                        <div className="font-medium">{privacyOption.label}</div>
+                        <div className="text-xs text-gray-500">{privacyOption.description}</div>
+                      </div>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-3">
+            <Label htmlFor="member-limit">
+              Member Limit: {memberLimit} members
+            </Label>
+            <Slider
+              id="member-limit"
+              min={2}
+              max={1000}
+              step={1}
+              value={[memberLimit]}
+              onValueChange={(value) => setMemberLimit(value[0])}
+              disabled={isLoading}
+              className="w-full"
+              data-testid="slider-member-limit"
+            />
+            <div className="flex justify-between text-xs text-gray-500">
+              <span>2 members</span>
+              <span>1000 members</span>
+            </div>
+          </div>
+
+          {privacy !== 'private' && (
+            <div className="space-y-3">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="require-approval"
+                  checked={requireApproval}
+                  onCheckedChange={setRequireApproval}
+                  disabled={isLoading}
+                  data-testid="checkbox-require-approval"
+                />
+                <Label htmlFor="require-approval" className="text-sm font-normal">
+                  Require approval to join
+                </Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="allow-member-invite"
+                  checked={allowMemberInvite}
+                  onCheckedChange={setAllowMemberInvite}
+                  disabled={isLoading}
+                  data-testid="checkbox-allow-member-invite"
+                />
+                <Label htmlFor="allow-member-invite" className="text-sm font-normal">
+                  Allow members to invite others
+                </Label>
+              </div>
+            </div>
+          )}
 
           {error && (
             <Alert variant="destructive">

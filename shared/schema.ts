@@ -90,6 +90,12 @@ export const groups = pgTable("groups", {
   icon: text("icon").default("📚"),
   createdBy: varchar("created_by").notNull(),
   isActive: boolean("is_active").default(true),
+  // Privacy and access control
+  privacy: text("privacy").notNull().default("public"), // 'public', 'private', 'invite_only'
+  requireApproval: boolean("require_approval").default(false),
+  allowMemberInvite: boolean("allow_member_invite").default(true),
+  memberLimit: integer("member_limit").default(100), // Maximum members allowed
+  // Enhanced settings
   settings: json("settings").default({}), // JSON for group-specific settings
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
