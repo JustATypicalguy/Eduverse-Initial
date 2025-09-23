@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,16 +11,67 @@ import {
 } from "lucide-react";
 import { useState, useMemo } from "react";
 import { format, startOfMonth, endOfMonth, isSameDay, parseISO, isAfter, isBefore } from "date-fns";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import type { Event } from "@shared/schema";
 
 export default function Events() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [view, setView] = useState<"list" | "calendar">("list");
+  const { toast } = useToast();
 
   const { data: events, isLoading } = useQuery<Event[]>({
     queryKey: ['/api/events', { upcoming: 'true' }],
   });
+
+  // Event registration mutation
+  const registerMutation = useMutation({
+    mutationFn: async (eventId: string) => {
+      return apiRequest(`/api/events/${eventId}/register`, {
+        method: 'POST',
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Registration Successful",
+        description: "You have been registered for this event!",
+      });
+      // Invalidate and refetch events to update UI
+      queryClient.invalidateQueries({ queryKey: ['/api/events'] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Registration Failed",
+        description: error instanceof Error ? error.message : "Failed to register for event",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Event details handler
+  const handleViewDetails = (eventId: string, eventTitle: string) => {
+    // For now, show a toast with event details since we don't have a detail route yet
+    // In the future, this could navigate to `/events/${eventId}`
+    toast({
+      title: `Event Details: ${eventTitle}`,
+      description: `Viewing details for event ID: ${eventId}`,
+    });
+  };
+
+  // Event registration handler
+  const handleRegisterEvent = (eventId: string) => {
+    // Ensure we're passing the correct string ID, not the object
+    if (typeof eventId === 'string' && eventId.trim()) {
+      registerMutation.mutate(eventId);
+    } else {
+      toast({
+        title: "Registration Error", 
+        description: "Invalid event ID provided",
+        variant: "destructive",
+      });
+    }
+  };
 
   const categories = [
     { id: "all", name: "All Events", icon: CalendarLucide, color: "bg-blue-500" },
@@ -345,15 +396,18 @@ export default function Events() {
                           <Button 
                             size="sm"
                             className="bg-eduverse-blue hover:bg-eduverse-blue/90"
+                            onClick={() => handleRegisterEvent(event.id)}
+                            disabled={registerMutation.isPending}
                             data-testid={`button-register-${event.id}`}
                           >
-                            Register Now
+                            {registerMutation.isPending ? "Registering..." : "Register Now"}
                           </Button>
                         )}
                         <Button 
                           variant="ghost" 
                           size="sm"
                           className="text-eduverse-blue hover:text-eduverse-blue hover:bg-eduverse-light"
+                          onClick={() => handleViewDetails(event.id, event.title)}
                           data-testid={`button-details-${event.id}`}
                         >
                           View Details
