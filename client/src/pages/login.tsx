@@ -21,7 +21,9 @@ import {
   ChevronRight,
   Bot
 } from "lucide-react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 
 type UserRole = 'student' | 'teacher' | 'administrator' | null;
 
@@ -180,6 +182,11 @@ export default function Login() {
   const [rememberMe, setRememberMe] = useState(false);
   const [language, setLanguage] = useState("EN");
   const [currentQuote, setCurrentQuote] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const { login, isAuthenticated, user } = useAuth();
+  const [_, setLocation] = useLocation();
+  const { toast } = useToast();
 
   const motivationalQuotes = [
     "Today a reader, tomorrow a leader.",
@@ -219,6 +226,36 @@ export default function Login() {
     return () => clearInterval(interval);
   }, []);
 
+  // Check if user is already authenticated and redirect
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      redirectToRoleBasedHome(user.role);
+    }
+  }, [isAuthenticated, user]);
+
+  const redirectToRoleBasedHome = (role: string) => {
+    switch (role) {
+      case 'student':
+        setLocation('/lms-structure'); // Student progress tracker with grades and assignments
+        break;
+      case 'teacher':
+      case 'new_teacher':
+      case 'standard_teacher':
+      case 'senior_teacher':
+      case 'department_head':
+      case 'substitute_teacher':
+        setLocation('/teacher-dashboard'); // Teacher dashboard for managing groups and lessons
+        break;
+      case 'administrator':
+      case 'admin':
+        setLocation('/teacher-dashboard'); // Admin access with full permissions to all groups
+        break;
+      default:
+        setLocation('/lms-structure'); // Default fallback to student view
+        break;
+    }
+  };
+
   const roleData = {
     student: {
       icon: GraduationCap,
@@ -243,10 +280,57 @@ export default function Login() {
     }
   };
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log("Login attempt:", { email, password, role: selectedRole, rememberMe });
+    
+    if (!selectedRole) {
+      toast({
+        title: "Role Required",
+        description: "Please select your role before logging in.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!email || !password) {
+      toast({
+        title: "Missing Information",
+        description: "Please enter both email and password.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const result = await login({
+        username: email,
+        password: password
+      });
+
+      if (result.success) {
+        toast({
+          title: "Welcome to EduVerse!",
+          description: `Successfully logged in as ${selectedRole}.`,
+        });
+        // Redirect will happen automatically via useEffect when auth state updates
+      } else {
+        toast({
+          title: "Login Failed",
+          description: result.error || "Invalid credentials. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Connection Error",
+        description: "Unable to connect to server. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -368,10 +452,11 @@ export default function Login() {
 
                     <Button 
                       type="submit" 
-                      className={`w-full bg-gradient-to-r ${roleData[selectedRole].color} hover:shadow-lg transition-all duration-300`}
+                      disabled={isLoading}
+                      className={`w-full bg-gradient-to-r ${roleData[selectedRole].color} hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed`}
                       data-testid="button-login"
                     >
-                      {roleData[selectedRole].buttonText}
+                      {isLoading ? "Signing In..." : roleData[selectedRole].buttonText}
                     </Button>
                   </form>
                 </CardContent>
