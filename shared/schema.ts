@@ -63,7 +63,7 @@ export const users = pgTable("users", {
   username: text("username").notNull().unique(),
   email: text("email").notNull().unique(),
   fullName: text("full_name").notNull(),
-  role: text("role").notNull().default("student"), // 'student', 'teacher', 'admin'
+  role: text("role").notNull().default("student"), // 'student', 'teacher', 'admin', 'parent'
   isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

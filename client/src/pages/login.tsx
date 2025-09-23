@@ -25,7 +25,7 @@ import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 
-type UserRole = 'student' | 'teacher' | 'administrator' | null;
+type UserRole = 'student' | 'teacher' | 'parent' | 'administrator' | null;
 
 interface TestimonialCarouselProps {
   testimonials: Array<{
@@ -234,26 +234,9 @@ export default function Login() {
   }, [isAuthenticated, user]);
 
   const redirectToRoleBasedHome = (role: string) => {
-    switch (role) {
-      case 'student':
-        setLocation('/lms-structure'); // Student progress tracker with grades and assignments
-        break;
-      case 'teacher':
-      case 'new_teacher':
-      case 'standard_teacher':
-      case 'senior_teacher':
-      case 'department_head':
-      case 'substitute_teacher':
-        setLocation('/teacher'); // Teacher dashboard for managing groups and lessons
-        break;
-      case 'administrator':
-      case 'admin':
-        setLocation('/teacher'); // Admin access with full permissions to all groups
-        break;
-      default:
-        setLocation('/lms-structure'); // Default fallback to student view
-        break;
-    }
+    // All roles now redirect to the unified portal landing page
+    // which provides personalized dashboards based on user role
+    setLocation('/portal');
   };
 
   const roleData = {
@@ -270,6 +253,13 @@ export default function Login() {
       hint: "Use your faculty email for instant access.",
       buttonText: "Start Teaching",
       benefits: "Create groups, manage lessons & attendance, use AI grading assistant."
+    },
+    parent: {
+      icon: Users,
+      color: "from-orange-500 to-orange-600",
+      hint: "Use your registered parent email address.",
+      buttonText: "Parent Portal",
+      benefits: "Monitor your child's progress, communicate with teachers."
     },
     administrator: {
       icon: Shield,

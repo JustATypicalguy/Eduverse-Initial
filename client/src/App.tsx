@@ -25,6 +25,7 @@ import TeacherContent from "@/pages/teacher-content";
 import TeacherAnalytics from "@/pages/teacher-analytics";
 import TeacherCommunication from "@/pages/teacher-communication";
 import TeacherProfile from "@/pages/teacher-profile";
+import PortalLanding from "@/pages/portal-landing";
 import Login from "@/pages/login";
 import NotFound from "@/pages/not-found";
 
@@ -55,6 +56,7 @@ function Router() {
           <Route path="/teacher/analytics" component={TeacherAnalytics} />
           <Route path="/teacher/communication" component={TeacherCommunication} />
           <Route path="/teacher/profile" component={TeacherProfile} />
+          <Route path="/portal" component={PortalLanding} />
           <Route component={NotFound} />
         </Switch>
       </main>
