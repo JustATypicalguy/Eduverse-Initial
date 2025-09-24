@@ -51,17 +51,22 @@ function Router() {
       <Navigation />
       <main className="flex-1">
         <Switch>
+          {/* Demo login route - high priority */}
+          <Route path="/demo">
+            <PublicOnlyRoute>
+              <DemoLogin />
+            </PublicOnlyRoute>
+          </Route>
+          
+          {/* Public home page */}
+          <Route path="/home">
+            <Home />
+          </Route>
+          
           {/* Public-only routes (login page) */}
           <Route path="/">
             <PublicOnlyRoute>
               <Login />
-            </PublicOnlyRoute>
-          </Route>
-          
-          {/* Demo login route */}
-          <Route path="/demo">
-            <PublicOnlyRoute>
-              <DemoLogin />
             </PublicOnlyRoute>
           </Route>
           
