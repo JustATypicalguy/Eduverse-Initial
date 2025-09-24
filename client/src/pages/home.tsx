@@ -6,37 +6,42 @@ import { GraduationCap, Award, Globe, Users, BookOpen } from "lucide-react";
 export default function Home() {
   return (
     <div className="pt-24">
-      {/* Hero Section */}
-      <section className="min-h-screen bg-gradient-to-br from-eduverse-light via-white to-blue-50 relative overflow-hidden">
-        {/* Floating Elements */}
-        <div className="absolute top-20 left-20 w-20 h-20 bg-eduverse-blue bg-opacity-10 rounded-full animate-float"></div>
-        <div className="absolute top-40 right-32 w-16 h-16 bg-yellow-400 bg-opacity-20 rounded-full animate-pulse-slow"></div>
-        <div className="absolute bottom-32 left-16 w-24 h-24 bg-green-400 bg-opacity-15 rounded-full animate-bounce-in"></div>
+      {/* Hero Section - Ultra Luxury */}
+      <section className="min-h-screen relative overflow-hidden">
+        {/* Luxury Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-blue-50"></div>
+        <div className="absolute inset-0 bg-gradient-to-tr from-yellow-50/30 via-transparent to-purple-50/20"></div>
+        
+        {/* Premium Floating Elements */}
+        <div className="absolute top-20 left-20 w-20 h-20 bg-gradient-to-br from-yellow-400/20 to-yellow-600/30 rounded-full animate-float blur-sm"></div>
+        <div className="absolute top-40 right-32 w-16 h-16 gold-shimmer rounded-full animate-pulse-slow blur-sm"></div>
+        <div className="absolute bottom-32 left-16 w-24 h-24 bg-gradient-to-br from-blue-400/15 to-purple-400/25 rounded-full animate-bounce-in blur-sm"></div>
+        <div className="absolute top-1/2 right-1/4 w-32 h-32 bg-gradient-to-br from-yellow-300/10 to-orange-300/15 rounded-full animate-pulse blur-lg"></div>
         
         <div className="container mx-auto px-6 py-16 relative">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="text-center lg:text-left animate-fade-in">
-              <div className="mb-6">
-                <span className="text-eduverse-gold font-semibold text-lg" style={{color: '#D4AF37'}}>
-                  🌟 Excellence in Education
+              <div className="mb-8">
+                <span className="luxury-text-gradient font-luxury text-xl tracking-wide">
+                  ✨ Excellence in Luxury Education
                 </span>
               </div>
-              <h1 className="text-5xl lg:text-7xl font-bold text-gray-800 mb-6">
-                Welcome to <span className="text-eduverse-gold font-extrabold animate-gradient" style={{color: '#D4AF37'}}>EduVerse</span>
+              <h1 className="text-6xl lg:text-8xl font-luxury text-gray-800 mb-8 leading-tight">
+                Welcome to <span className="gold-shimmer bg-clip-text text-transparent font-luxury">EduVerse</span>
               </h1>
-              <p className="text-xl text-eduverse-gray mb-8 leading-relaxed">
-                🚀 Empowering global citizens through excellence in education, fostering creativity, 
-                critical thinking, and cultural understanding in our diverse learning community.
+              <p className="text-2xl text-gray-600 mb-10 leading-relaxed font-elegant">
+                🌟 Empowering global citizens through unparalleled excellence in education, fostering 
+                creativity, critical thinking, and cultural understanding in our prestigious learning community.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <div className="flex flex-col sm:flex-row gap-6 justify-center lg:justify-start">
                 <Link href="/programs">
-                  <Button className="bg-gradient-to-r from-blue-600 to-yellow-500 text-white px-8 py-4 rounded-xl creative-shadow hover:scale-105 transition-transform" style={{background: 'linear-gradient(to right, #1e40af, #D4AF37)'}}>
+                  <Button className="luxury-button text-white px-12 py-6 rounded-2xl text-lg font-luxury hover:scale-105 transition-all duration-300 shadow-2xl border-2 border-yellow-300/30">
                     ✨ Explore Our Curriculum
                   </Button>
                 </Link>
                 <Link href="/contact">
-                  <Button variant="outline" className="border-2 border-eduverse-blue text-eduverse-blue hover:bg-eduverse-blue hover:text-white px-8 py-4 rounded-xl glass-effect hover:scale-105 transition-transform">
-                    📅 Schedule a Visit
+                  <Button className="premium-glass border-2 border-yellow-400/50 text-yellow-700 hover:bg-yellow-50 px-12 py-6 rounded-2xl text-lg font-luxury hover:scale-105 transition-all duration-300 shadow-xl backdrop-blur-sm">
+                    💎 Schedule a Private Tour
                   </Button>
                 </Link>
               </div>
@@ -52,15 +57,15 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gradient-to-t from-blue-600/20 to-transparent rounded-3xl"></div>
                 
               </div>
-              <Card className="absolute -bottom-6 -left-6 border-gray-100 glass-effect animate-bounce-in">
-                <CardContent className="p-6">
+              <Card className="absolute -bottom-8 -left-8 luxury-card border-0 animate-bounce-in">
+                <CardContent className="p-8">
                   <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center animate-pulse-slow">
-                      <Award className="text-white" size={24} />
+                    <div className="w-16 h-16 gold-shimmer rounded-2xl flex items-center justify-center">
+                      <Award className="text-white" size={28} />
                     </div>
                     <div>
-                      <p className="font-semibold text-gray-800">🏆 IB Accredited</p>
-                      <p className="text-sm text-eduverse-gray">Excellence Certified</p>
+                      <p className="font-luxury text-xl text-gray-800">🏆 IB Accredited</p>
+                      <p className="text-sm text-yellow-600 font-premium">Prestigious Excellence</p>
                     </div>
                   </div>
                 </CardContent>
@@ -72,32 +77,32 @@ export default function Home() {
           <div className="mt-20 relative">
             
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 relative z-10">
-            <Card className="text-center creative-shadow hover:scale-105 transition-transform animate-bounce-in bg-gradient-to-br from-blue-50 to-blue-100">
-              <CardContent className="p-6">
-                <div className="text-4xl mb-2">🌍</div>
-                <div className="text-3xl font-bold text-eduverse-blue mb-2">1,200+</div>
-                <p className="text-eduverse-gray font-medium">Global Students</p>
+            <Card className="luxury-card text-center hover:scale-105 transition-all duration-500 animate-bounce-in border-0">
+              <CardContent className="p-8">
+                <div className="text-5xl mb-4">🌍</div>
+                <div className="text-4xl font-luxury text-yellow-600 mb-3">1,200+</div>
+                <p className="text-gray-600 font-premium">Global Students</p>
               </CardContent>
             </Card>
-            <Card className="text-center creative-shadow hover:scale-105 transition-transform animate-bounce-in bg-gradient-to-br from-green-50 to-green-100">
-              <CardContent className="p-6">
-                <div className="text-4xl mb-2">🗺️</div>
-                <div className="text-3xl font-bold text-eduverse-blue mb-2">45</div>
-                <p className="text-eduverse-gray font-medium">Countries</p>
+            <Card className="luxury-card text-center hover:scale-105 transition-all duration-500 animate-bounce-in border-0">
+              <CardContent className="p-8">
+                <div className="text-5xl mb-4">🗺️</div>
+                <div className="text-4xl font-luxury text-yellow-600 mb-3">45</div>
+                <p className="text-gray-600 font-premium">Countries</p>
               </CardContent>
             </Card>
-            <Card className="text-center creative-shadow hover:scale-105 transition-transform animate-bounce-in bg-gradient-to-br from-purple-50 to-purple-100">
-              <CardContent className="p-6">
-                <div className="text-4xl mb-2">👨‍🏫</div>
-                <div className="text-3xl font-bold text-eduverse-blue mb-2">150+</div>
-                <p className="text-eduverse-gray font-medium">Expert Teachers</p>
+            <Card className="luxury-card text-center hover:scale-105 transition-all duration-500 animate-bounce-in border-0">
+              <CardContent className="p-8">
+                <div className="text-5xl mb-4">👨‍🏫</div>
+                <div className="text-4xl font-luxury text-yellow-600 mb-3">150+</div>
+                <p className="text-gray-600 font-premium">Expert Teachers</p>
               </CardContent>
             </Card>
-            <Card className="text-center creative-shadow hover:scale-105 transition-transform animate-bounce-in bg-gradient-to-br from-orange-50 to-orange-100">
-              <CardContent className="p-6">
-                <div className="text-4xl mb-2">📚</div>
-                <div className="text-3xl font-bold text-eduverse-blue mb-2">25+</div>
-                <p className="text-eduverse-gray font-medium">Programs</p>
+            <Card className="luxury-card text-center hover:scale-105 transition-all duration-500 animate-bounce-in border-0">
+              <CardContent className="p-8">
+                <div className="text-5xl mb-4">📚</div>
+                <div className="text-4xl font-luxury text-yellow-600 mb-3">25+</div>
+                <p className="text-gray-600 font-premium">Programs</p>
               </CardContent>
             </Card>
           </div>
@@ -114,23 +119,24 @@ export default function Home() {
         
         
         <div className="container mx-auto px-6 relative">
-          <div className="text-center mb-16 animate-fade-in">
-            <h2 className="text-5xl font-bold text-gray-800 mb-4">
-              🌟 Why Choose <span className="text-eduverse-gold font-bold" style={{color: '#D4AF37'}}>EduVerse</span>?
+          <div className="text-center mb-20 animate-fade-in">
+            <h2 className="text-6xl font-luxury text-gray-800 mb-6">
+              💎 Why Choose <span className="gold-shimmer bg-clip-text text-transparent font-luxury">EduVerse</span>?
             </h2>
-            <p className="text-xl text-eduverse-gray max-w-3xl mx-auto">
-              Discover what makes our educational community exceptional and transformative.
+            <p className="text-2xl text-gray-600 max-w-4xl mx-auto font-elegant leading-relaxed">
+              Discover what makes our prestigious educational community exceptional and transformative for discerning families.
             </p>
           </div>
           
           <div className="grid lg:grid-cols-3 gap-8">
-            <Card className="text-center creative-shadow hover:scale-105 transition-all duration-300 bg-gradient-to-br from-blue-50 to-blue-100 border-0 animate-slide-up">
-              <CardContent className="p-8">
-                <div className="w-20 h-20 bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center mx-auto mb-6 animate-bounce-in">
-                  <Globe className="text-white" size={36} />
+            <Card className="luxury-card text-center hover:scale-105 transition-all duration-500 border-0 animate-slide-up relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-yellow-300/20 to-blue-300/20 rounded-full blur-lg"></div>
+              <CardContent className="p-10 relative z-10">
+                <div className="w-24 h-24 gold-shimmer rounded-3xl flex items-center justify-center mx-auto mb-8">
+                  <Globe className="text-white" size={40} />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-800 mb-4">🌍 Global Perspective</h3>
-                <p className="text-eduverse-gray leading-relaxed">
+                <h3 className="text-3xl font-luxury text-gray-800 mb-6">🌍 Global Perspective</h3>
+                <p className="text-gray-600 leading-relaxed text-lg font-elegant">
                   Students from 45+ countries create a truly diverse learning environment 
                   that prepares graduates for success in our interconnected world.
                 </p>
