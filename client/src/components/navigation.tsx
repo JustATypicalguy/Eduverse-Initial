@@ -168,37 +168,42 @@ export function Navigation() {
 
   return (
     <>
-      <header className={`fixed w-full top-0 z-50 transition-all duration-300 ${
+      <header className={`fixed w-full top-0 z-50 transition-all duration-500 ${
         isScrolled 
-          ? 'bg-white/95 backdrop-blur-md shadow-xl border-b border-blue-100' 
-          : 'bg-white shadow-lg'
+          ? 'luxury-card backdrop-blur-xl border-0 shadow-2xl' 
+          : 'luxury-card shadow-xl'
       }`}>
-        <nav className="container mx-auto px-6 py-4">
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-50/98 via-white/99 to-slate-50/98"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-px gold-shimmer"></div>
+        <nav className="container mx-auto px-6 py-4 relative z-10">
         <div className="flex items-center justify-between">
-          <Link href="/">
-            <Logo />
+          <Link href="/" className="relative group">
+            <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/20 to-blue-600/20 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="relative transform group-hover:scale-105 transition-transform duration-300">
+              <Logo />
+            </div>
           </Link>
           
           {/* Desktop Navigation - Organized & Creative */}
           <div className="hidden lg:flex items-center">
             {/* Main Navigation Group */}
-            <div className="flex items-center space-x-1 bg-gray-50/80 rounded-full px-6 py-2 mr-8">
+            <div className="flex items-center space-x-1 premium-glass rounded-full px-6 py-2 mr-8 border border-white/30">
               <Link
                 href="/home"
-                className={`px-4 py-2 rounded-full font-medium transition-all duration-200 ${
+                className={`px-4 py-2 rounded-full font-premium transition-all duration-300 ${
                   isActive("/home") 
-                    ? "bg-eduverse-blue text-white shadow-md transform scale-105" 
-                    : "text-gray-700 hover:text-eduverse-blue hover:bg-white/50"
+                    ? "luxury-button text-white shadow-lg transform scale-105" 
+                    : "text-gray-700 hover:text-yellow-600 hover:bg-white/80 hover:shadow-md"
                 }`}
               >
                 🏠 Home
               </Link>
               <Link
                 href="/about"
-                className={`px-4 py-2 rounded-full font-medium transition-all duration-200 ${
+                className={`px-4 py-2 rounded-full font-premium transition-all duration-300 ${
                   isActive("/about") 
-                    ? "bg-eduverse-blue text-white shadow-md transform scale-105" 
-                    : "text-gray-700 hover:text-eduverse-blue hover:bg-white/50"
+                    ? "luxury-button text-white shadow-lg transform scale-105" 
+                    : "text-gray-700 hover:text-yellow-600 hover:bg-white/80 hover:shadow-md"
                 }`}
               >
                 📚 About
@@ -344,13 +349,16 @@ export function Navigation() {
               </div>
             </div>
             
-            {/* AI Chat Button - Premium Style */}
+            {/* AI Chat Button - Ultra Premium Style */}
             <Link
               href="/ai-chat"
-              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-eduverse-blue to-blue-600 text-white rounded-full font-semibold hover:from-eduverse-dark hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 border-2 border-blue-300/30"
+              className="luxury-button flex items-center gap-2 px-8 py-4 text-white rounded-full font-luxury text-lg hover:shadow-xl transform hover:scale-105 border-2 border-yellow-300/40 relative overflow-hidden"
+              data-testid="nav-ai-chat-link"
             >
-              <span className="animate-pulse">🤖</span>
-              <span>Ask EduVerse AI</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 via-transparent to-yellow-400/20 animate-pulse"></div>
+              <span className="relative z-10 animate-bounce text-xl">🤖</span>
+              <span className="relative z-10 font-luxury">Ask EduVerse AI</span>
+              <div className="absolute top-1 right-2 w-2 h-2 bg-yellow-300 rounded-full animate-ping"></div>
             </Link>
           </div>
           
