@@ -6,71 +6,76 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-gray-900 text-white py-16">
-      <div className="container mx-auto px-6">
+    <footer className="bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800 text-white py-20 relative overflow-hidden">
+      {/* Luxury Background Elements */}
+      <div className="absolute top-0 left-0 w-full h-px gold-shimmer"></div>
+      <div className="absolute top-10 right-20 w-24 h-24 bg-gradient-to-br from-yellow-400/10 to-blue-400/10 rounded-full blur-lg"></div>
+      <div className="absolute bottom-20 left-20 w-32 h-32 bg-gradient-to-br from-purple-400/5 to-yellow-400/5 rounded-full blur-xl"></div>
+      
+      <div className="container mx-auto px-6 relative z-10">
         <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-8">
           {/* School Info */}
           <div>
-            <div className="mb-6">
+            <div className="mb-8 transform hover:scale-105 transition-transform duration-300">
               <Logo showText={true} className="text-white" />
             </div>
-            <p className="text-gray-300 mb-4">
-              Empowering global citizens through excellence in education since 2025.
+            <p className="text-gray-300 mb-6 text-lg font-elegant leading-relaxed">
+              Empowering global citizens through luxury education excellence since 2025.
             </p>
             <div className="flex space-x-4">
               <a
                 href="#"
-                className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-eduverse-blue transition-colors"
+                className="w-12 h-12 premium-glass rounded-2xl flex items-center justify-center hover:bg-yellow-500/20 transition-all duration-300 hover:scale-110 border border-yellow-400/30"
               >
-                <Facebook size={18} />
+                <Facebook size={20} />
               </a>
               <a
                 href="#"
-                className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-eduverse-blue transition-colors"
+                className="w-12 h-12 premium-glass rounded-2xl flex items-center justify-center hover:bg-yellow-500/20 transition-all duration-300 hover:scale-110 border border-yellow-400/30"
               >
-                <Twitter size={18} />
+                <Twitter size={20} />
               </a>
               <a
                 href="#"
-                className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-eduverse-blue transition-colors"
+                className="w-12 h-12 premium-glass rounded-2xl flex items-center justify-center hover:bg-yellow-500/20 transition-all duration-300 hover:scale-110 border border-yellow-400/30"
               >
-                <Instagram size={18} />
+                <Instagram size={20} />
               </a>
               <a
                 href="#"
-                className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-eduverse-blue transition-colors"
+                className="w-12 h-12 premium-glass rounded-2xl flex items-center justify-center hover:bg-yellow-500/20 transition-all duration-300 hover:scale-110 border border-yellow-400/30"
               >
-                <Linkedin size={18} />
+                <Linkedin size={20} />
               </a>
             </div>
           </div>
           
           {/* Quick Links */}
           <div>
-            <h3 className="text-xl font-bold mb-6">Quick Links</h3>
-            <ul className="space-y-3">
+            <h3 className="text-2xl font-luxury mb-8 text-yellow-400">Quick Links</h3>
+            <ul className="space-y-4">
               <li>
-                <Link href="/about" className="text-gray-300 hover:text-white transition-colors">
+                <Link href="/about" className="text-gray-300 hover:text-yellow-300 transition-all duration-300 hover:translate-x-2 font-premium text-lg">
                   About Us
                 </Link>
               </li>
               <li>
-                <Link href="/programs" className="text-gray-300 hover:text-white transition-colors">
+                <Link href="/programs" className="text-gray-300 hover:text-yellow-300 transition-all duration-300 hover:translate-x-2 font-premium text-lg">
                   Academic Programs
                 </Link>
               </li>
               <li>
-                <Link href="/admissions" className="text-gray-300 hover:text-white transition-colors">
+                <Link href="/admissions" className="text-gray-300 hover:text-yellow-300 transition-all duration-300 hover:translate-x-2 font-premium text-lg">
                   Admissions
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="text-gray-300 hover:text-white transition-colors">
+                <Link href="/contact" className="text-gray-300 hover:text-yellow-300 transition-all duration-300 hover:translate-x-2 font-premium text-lg">
                   Contact
                 </Link>
               </li>
               <li>
-                <Link href="/ai-chat" className="text-gray-300 hover:text-white transition-colors">
+                <Link href="/ai-chat" className="text-gray-300 hover:text-yellow-300 transition-all duration-300 hover:translate-x-2 font-premium text-lg">
                   Ask EduVerse AI
                 </Link>
               </li>
