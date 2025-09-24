@@ -21,56 +21,56 @@ const featureItems = [
     href: "/ai-chat", 
     icon: "🤖",
     description: "Get personalized help from our AI tutor",
-    color: "from-blue-100 to-blue-200" 
+    color: "from-yellow-50 to-yellow-100" 
   },
   { 
     name: "Group Chat", 
     href: "/group-chat", 
     icon: "💬",
     description: "Collaborate with classmates in study groups",
-    color: "from-emerald-100 to-emerald-200" 
+    color: "from-yellow-50 to-amber-100" 
   },
   { 
     name: "Learning Avatars", 
     href: "/avatars", 
     icon: "🎨",
     description: "Create your personalized learning character",
-    color: "from-purple-100 to-purple-200" 
+    color: "from-amber-50 to-yellow-100" 
   },
   { 
     name: "Progress Tracking", 
     href: "/lms-structure", 
     icon: "📈",
     description: "Monitor your academic achievements",
-    color: "from-orange-100 to-orange-200" 
+    color: "from-yellow-50 to-orange-100" 
   },
   { 
     name: "Study Materials", 
     href: "/subjects", 
     icon: "📚",
     description: "Access comprehensive learning resources",
-    color: "from-teal-100 to-teal-200" 
+    color: "from-amber-50 to-yellow-100" 
   },
   { 
     name: "Live Events", 
     href: "/events", 
     icon: "📅",
     description: "Join educational events and workshops",
-    color: "from-indigo-100 to-indigo-200" 
+    color: "from-yellow-50 to-amber-100" 
   },
   { 
     name: "News & Updates", 
     href: "/news", 
     icon: "📰",
     description: "Stay updated with educational news",
-    color: "from-rose-100 to-rose-200" 
+    color: "from-orange-50 to-yellow-100" 
   },
   { 
     name: "Staff Directory", 
     href: "/staff", 
     icon: "👥",
     description: "Connect with teachers and staff members",
-    color: "from-cyan-100 to-cyan-200" 
+    color: "from-yellow-50 to-amber-100" 
   },
 ];
 
@@ -294,22 +294,23 @@ export function Navigation() {
             
             {/* Interactive Features Dropdown - Enhanced */}
             <div className="relative group mr-4">
-              <button className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-slate-500 via-blue-500 to-indigo-500 text-white rounded-full font-bold hover:from-slate-600 hover:via-blue-600 hover:to-indigo-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 border-2 border-white/20">
-                <span className="text-xl animate-spin-slow">✨</span>
-                <span className="text-lg">Explore Features</span>
+              <button className="luxury-button flex items-center gap-3 px-8 py-4 text-white rounded-full font-luxury text-lg shadow-2xl hover:shadow-xl transform hover:scale-105 border-2 border-yellow-300/40 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 via-transparent to-yellow-400/20 animate-pulse"></div>
+                <span className="relative z-10 text-xl animate-spin-slow">✨</span>
+                <span className="relative z-10 font-luxury text-lg">Explore Features</span>
                 <svg className="w-5 h-5 transition-transform group-hover:rotate-180 duration-300" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
                 </svg>
               </button>
               
               {/* Compact Features Dropdown */}
-              <div className="absolute top-full right-0 mt-2 w-[90vw] sm:w-80 md:w-96 lg:w-[600px] xl:w-[700px] bg-white border border-gray-200 rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 z-50" data-testid="features-dropdown">
-                <div className="p-3">
-                  {/* Compact Header */}
-                  <div className="text-center mb-3 pb-2 border-b border-gray-100">
-                    <h3 className="font-semibold text-sm text-gray-700 flex items-center justify-center gap-2">
-                      <span className="text-lg">✨</span>
-                      EduVerse Features
+              <div className="absolute top-full right-0 mt-2 w-[90vw] sm:w-80 md:w-96 lg:w-[600px] xl:w-[700px] luxury-card border-0 shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 z-50" data-testid="features-dropdown">
+                <div className="p-4">
+                  {/* Luxury Header */}
+                  <div className="text-center mb-4 pb-3 border-b border-yellow-200/50">
+                    <h3 className="font-luxury text-lg text-gray-800 flex items-center justify-center gap-2">
+                      <span className="text-xl animate-pulse">✨</span>
+                      <span className="luxury-text-gradient">EduVerse Features</span>
                     </h3>
                   </div>
                   
@@ -320,24 +321,24 @@ export function Navigation() {
                         <Link
                           key={item.name}
                           href={item.href}
-                          className={`group/item relative overflow-hidden rounded-lg p-2 transition-all duration-200 hover:shadow-md ${
+                          className={`group/item luxury-card relative overflow-hidden rounded-xl p-3 transition-all duration-400 hover:scale-105 border-0 ${
                             isActive(item.href) 
-                              ? "bg-gradient-to-r " + item.color + " text-gray-800 shadow-sm" 
-                              : "bg-gray-50 hover:bg-gradient-to-r hover:" + item.color + " hover:text-gray-800"
+                              ? "bg-gradient-to-br from-yellow-50 to-yellow-100 text-gray-800 shadow-lg border border-yellow-300/50" 
+                              : "hover:bg-gradient-to-br hover:from-yellow-50/50 hover:to-white hover:text-gray-800 hover:border-yellow-200/30"
                           }`}
                           data-testid={`feature-link-${item.href.slice(1)}`}
                         >
                           <div className="relative z-10 text-center">
                             {/* Compact Icon */}
-                            <div className="w-8 h-8 mx-auto mb-1 flex items-center justify-center">
+                            <div className="w-10 h-10 mx-auto mb-2 flex items-center justify-center bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-xl shadow-sm">
                               <span className="text-xl">{item.icon}</span>
                             </div>
                             
                             {/* Compact Content */}
-                            <div className="font-medium text-xs mb-1 leading-tight line-clamp-2">
+                            <div className="font-luxury text-sm mb-1 leading-tight line-clamp-2 text-gray-800">
                               {item.name}
                             </div>
-                            <p className="text-xs opacity-75 leading-tight line-clamp-2 hidden sm:block">
+                            <p className="text-xs text-gray-600 leading-tight line-clamp-2 hidden sm:block font-elegant">
                               {item.description}
                             </p>
                           </div>
@@ -424,17 +425,19 @@ export function Navigation() {
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={`flex items-center gap-3 p-3 rounded-lg transition-all duration-300 ${
+                    className={`luxury-card flex items-center gap-4 p-4 rounded-xl transition-all duration-400 hover:scale-102 border-0 ${
                       isActive(item.href) 
-                        ? "text-eduverse-blue bg-blue-50 font-medium shadow-sm" 
-                        : "text-gray-600 hover:text-eduverse-blue hover:bg-blue-50"
+                        ? "text-gray-800 bg-gradient-to-r from-yellow-50 to-yellow-100 font-premium shadow-lg border border-yellow-300/50" 
+                        : "text-gray-700 hover:text-gray-800 hover:bg-gradient-to-r hover:from-yellow-50/50 hover:to-white"
                     }`}
                     style={{ animationDelay: `${(index + 4) * 100}ms` }}
                   >
-                    <span className="text-lg">{item.icon}</span>
+                    <div className="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-xl shadow-sm">
+                      <span className="text-lg">{item.icon}</span>
+                    </div>
                     <div>
-                      <div className="font-medium text-sm">{item.name}</div>
-                      <div className="text-xs text-gray-500 mt-1">{item.description}</div>
+                      <div className="font-luxury text-base text-gray-800">{item.name}</div>
+                      <div className="text-sm text-gray-600 mt-1 font-elegant">{item.description}</div>
                     </div>
                   </Link>
                 ))}
@@ -444,11 +447,12 @@ export function Navigation() {
             {/* Enhanced AI Chat Button */}
             <Link
               href="/ai-chat"
-              className="flex items-center justify-center gap-2 bg-gradient-to-r from-eduverse-blue to-blue-600 text-white px-6 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+              className="luxury-button flex items-center justify-center gap-3 text-white px-8 py-6 rounded-2xl font-luxury text-lg shadow-2xl hover:shadow-xl transition-all duration-300 transform hover:scale-105 border-2 border-yellow-300/40 relative overflow-hidden"
             >
-              <span className="animate-bounce">🤖</span>
-              <span>Ask EduVerse AI</span>
-              <span className="text-xs bg-white/20 px-2 py-1 rounded-full">NEW</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 via-transparent to-yellow-400/20 animate-pulse"></div>
+              <span className="relative z-10 animate-bounce text-xl">🤖</span>
+              <span className="relative z-10">Ask EduVerse AI</span>
+              <span className="relative z-10 text-xs bg-yellow-300/30 px-3 py-1 rounded-full font-premium">NEW</span>
             </Link>
           </div>
         </div>
