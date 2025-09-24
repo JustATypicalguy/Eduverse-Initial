@@ -106,6 +106,7 @@ const exampleStudents = [
 
 export default function LMSStructure() {
   const [selectedStudent] = useState<Student>(studentData);
+  const [activeTab, setActiveTab] = useState<'overview' | 'subjects' | 'achievements' | 'analytics'>('overview');
 
   const getGradeColor = (grade: number) => {
     if (grade >= 90) return "text-green-600 bg-green-50";
@@ -132,66 +133,136 @@ export default function LMSStructure() {
   };
 
   return (
-    <div className="pt-24 min-h-screen bg-gradient-to-br from-eduverse-light via-white to-gray-50">
-      <div className="container mx-auto px-6 py-8">
-        <div className="max-w-6xl mx-auto">
-          {/* Header */}
-          <div className="text-center mb-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+      {/* Modern Header with floating effect */}
+      <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-white/20 shadow-lg">
+        <div className="container mx-auto px-6 py-6">
+          <div className="text-center">
             <div className="flex items-center justify-center gap-3 mb-4">
-              <GraduationCap className="text-eduverse-blue" size={40} />
-              <h1 className="text-4xl font-bold text-gray-800">
-                LMS Progress Tracker
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl blur-lg opacity-30 animate-pulse"></div>
+                <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 p-3 rounded-xl">
+                  <TrendingUp className="text-white" size={32} />
+                </div>
+              </div>
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                Progress Dashboard
               </h1>
             </div>
-            <p className="text-xl text-eduverse-gray">
-              Track academic progress, grades, and achievements in real-time! 📊✨
+            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+              Your personalized learning journey with real-time insights and achievements! 🚀
             </p>
           </div>
+          
+          {/* Modern Tab Navigation */}
+          <div className="flex justify-center mt-6">
+            <div className="flex bg-white/60 backdrop-blur-sm rounded-2xl p-1 shadow-lg border border-white/30">
+              {[
+                { key: 'overview', label: 'Overview', icon: Target },
+                { key: 'subjects', label: 'Subjects', icon: BookOpen },
+                { key: 'achievements', label: 'Achievements', icon: Trophy },
+                { key: 'analytics', label: 'Analytics', icon: TrendingUp }
+              ].map(({ key, label, icon: Icon }) => (
+                <button
+                  key={key}
+                  onClick={() => setActiveTab(key as any)}
+                  className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all duration-300 ${
+                    activeTab === key
+                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg transform scale-105'
+                      : 'text-slate-600 hover:text-blue-600 hover:bg-white/50'
+                  }`}
+                  data-testid={`tab-${key}`}
+                >
+                  <Icon size={18} />
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
 
-          {/* Student Overview Card */}
-          <Card className="mb-8 bg-gradient-to-r from-eduverse-blue to-eduverse-gold text-white border-0">
-            <CardHeader className="text-white">
-              <div className="flex items-center justify-between text-white">
-                <div className="flex items-center gap-4">
-                  <Avatar className="w-16 h-16 bg-white border-2 border-white/20">
-                    <AvatarFallback className="text-2xl text-eduverse-blue bg-white">
-                      {selectedStudent.avatar}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <CardTitle className="text-2xl text-white">{selectedStudent.name}</CardTitle>
-                    <p className="text-blue-100">Student ID: {selectedStudent.id}</p>
+      <div className="container mx-auto px-6 py-8">
+        <div className="max-w-7xl mx-auto">
+
+          {/* Render content based on active tab */}
+          {activeTab === 'overview' && (
+            <div>
+              {/* Modern Student Overview Card */}
+              <Card className="mb-8 relative overflow-hidden border-0 shadow-2xl">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700"></div>
+                <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/10 via-purple-600/5 to-indigo-700/10 opacity-50"></div>
+                <CardHeader className="relative z-10">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="relative">
+                        <div className="absolute inset-0 bg-white/20 rounded-full blur-lg"></div>
+                        <Avatar className="w-20 h-20 bg-white/10 border-3 border-white/30 backdrop-blur-sm relative z-10">
+                          <AvatarFallback className="text-3xl bg-gradient-to-br from-white to-blue-100 text-blue-600">
+                            {selectedStudent.avatar}
+                          </AvatarFallback>
+                        </Avatar>
+                      </div>
+                      <div className="text-white">
+                        <CardTitle className="text-3xl font-bold mb-1">{selectedStudent.name}</CardTitle>
+                        <p className="text-white/80 text-lg">Student ID: {selectedStudent.id}</p>
+                        <div className="flex items-center gap-2 mt-2">
+                          <div className="flex items-center gap-1 bg-white/20 px-3 py-1 rounded-full text-sm">
+                            <Trophy size={14} />
+                            <span>Rank #{selectedStudent.rank}</span>
+                          </div>
+                          <div className="flex items-center gap-1 bg-white/20 px-3 py-1 rounded-full text-sm">
+                            <Users size={14} />
+                            <span>of {selectedStudent.totalStudents}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-right text-white">
+                      <div className="flex flex-col items-end">
+                        <div className="relative mb-4">
+                          <div className="absolute inset-0 bg-white/20 rounded-3xl blur-xl"></div>
+                          <div className="relative bg-white/10 backdrop-blur-sm rounded-3xl px-8 py-6 border border-white/20">
+                            <div className="text-7xl font-bold mb-2 bg-gradient-to-br from-white to-blue-100 bg-clip-text text-transparent">
+                              {selectedStudent.overallGrade}%
+                            </div>
+                            <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-bold px-4 py-2 text-lg border-0">
+                              {getGradeLetter(selectedStudent.overallGrade)} Grade
+                            </Badge>
+                          </div>
+                        </div>
+                        <div className="text-white/90 text-lg font-medium">
+                          {getPerformanceMessage(selectedStudent.overallGrade)}
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <div className="text-right text-white">
-                  <div className="text-3xl font-bold text-white">{selectedStudent.overallGrade}%</div>
-                  <p className="text-blue-100">Overall Grade</p>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="text-white">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-white">{getGradeLetter(selectedStudent.overallGrade)}</div>
-                  <p className="text-blue-100 text-sm">Letter Grade</p>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-white">#{selectedStudent.rank}</div>
-                  <p className="text-blue-100 text-sm">Class Rank</p>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-white">{selectedStudent.subjects.length}</div>
-                  <p className="text-blue-100 text-sm">Subjects</p>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-white">
-                    {selectedStudent.subjects.reduce((acc, subject) => acc + subject.completedAssignments, 0)}
+                </CardHeader>
+                <CardContent className="relative z-10 text-white">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <div className="text-center bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
+                      <div className="text-3xl font-bold text-white mb-1">{getGradeLetter(selectedStudent.overallGrade)}</div>
+                      <p className="text-white/80 text-sm">Letter Grade</p>
+                    </div>
+                    <div className="text-center bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
+                      <div className="text-3xl font-bold text-white mb-1">#{selectedStudent.rank}</div>
+                      <p className="text-white/80 text-sm">Class Rank</p>
+                    </div>
+                    <div className="text-center bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
+                      <div className="text-3xl font-bold text-white mb-1">{selectedStudent.subjects.length}</div>
+                      <p className="text-white/80 text-sm">Subjects</p>
+                    </div>
+                    <div className="text-center bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
+                      <div className="text-3xl font-bold text-white mb-1">
+                        {selectedStudent.subjects.reduce((acc, subject) => acc + subject.completedAssignments, 0)}
+                      </div>
+                      <p className="text-white/80 text-sm">Completed Tasks</p>
+                    </div>
                   </div>
-                  <p className="text-blue-100 text-sm">Completed Tasks</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+                </CardContent>
+              </Card>
+            </div>
+          )}
 
           {/* Subject Progress Cards */}
           <div className="mb-8">

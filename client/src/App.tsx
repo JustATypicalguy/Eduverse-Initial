@@ -39,6 +39,7 @@ import News from "@/pages/news";
 import Events from "@/pages/events";
 import StaffDirectory from "@/pages/staff";
 import NotFound from "@/pages/not-found";
+import DemoLogin from "@/components/DemoLogin";
 // Import new dashboard pages
 import StudentDashboard from "@/pages/student-dashboard";
 import TeacherDashboardEnhanced from "@/pages/teacher-dashboard-enhanced";
@@ -54,6 +55,13 @@ function Router() {
           <Route path="/">
             <PublicOnlyRoute>
               <Login />
+            </PublicOnlyRoute>
+          </Route>
+          
+          {/* Demo login route */}
+          <Route path="/demo">
+            <PublicOnlyRoute>
+              <DemoLogin />
             </PublicOnlyRoute>
           </Route>
           
