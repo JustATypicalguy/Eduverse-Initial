@@ -3,6 +3,28 @@ import cookieParser from "cookie-parser";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 
+// Environment variable validation for deployment
+function validateEnvironment() {
+  const requiredEnvVars = ['DATABASE_URL'];
+  const optionalEnvVars = ['OPENAI_API_KEY'];
+  
+  const missing = requiredEnvVars.filter(envVar => !process.env[envVar]);
+  
+  if (missing.length > 0) {
+    log(`WARNING: Missing required environment variables: ${missing.join(', ')}`, "deployment");
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error(`Missing required environment variables: ${missing.join(', ')}`);
+    }
+  }
+  
+  const missingOptional = optionalEnvVars.filter(envVar => !process.env[envVar]);
+  if (missingOptional.length > 0) {
+    log(`INFO: Missing optional environment variables: ${missingOptional.join(', ')} - some features may not work`, "deployment");
+  }
+  
+  log("Environment validation completed", "deployment");
+}
+
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -39,6 +61,14 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // Validate environment variables before starting
+  try {
+    validateEnvironment();
+  } catch (error) {
+    log(`FATAL: Environment validation failed: ${error.message}`, "deployment");
+    process.exit(1);
+  }
+
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
