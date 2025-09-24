@@ -84,19 +84,19 @@ export function Footer() {
           
           {/* Programs */}
           <div>
-            <h3 className="text-xl font-bold mb-6">Our Programs</h3>
-            <ul className="space-y-3">
-              <li><span className="text-gray-300">Elementary School (PYP)</span></li>
-              <li><span className="text-gray-300">Middle School (MYP)</span></li>
-              <li><span className="text-gray-300">High School (DP)</span></li>
-              <li><span className="text-gray-300">IGCSE Programme</span></li>
-              <li><span className="text-gray-300">Language Immersion</span></li>
+            <h3 className="text-2xl font-luxury mb-8 text-yellow-400">Our Programs</h3>
+            <ul className="space-y-4">
+              <li><span className="text-gray-300 font-premium text-lg">💎 Elementary School (PYP)</span></li>
+              <li><span className="text-gray-300 font-premium text-lg">✨ Middle School (MYP)</span></li>
+              <li><span className="text-gray-300 font-premium text-lg">🏆 High School (DP)</span></li>
+              <li><span className="text-gray-300 font-premium text-lg">🌟 IGCSE Programme</span></li>
+              <li><span className="text-gray-300 font-premium text-lg">🗣️ Language Immersion</span></li>
             </ul>
           </div>
           
           {/* Contact Info */}
           <div>
-            <h3 className="text-xl font-bold mb-6">Contact Info</h3>
+            <h3 className="text-2xl font-luxury mb-8 text-yellow-400">Contact Info</h3>
             <div className="space-y-4">
               <div className="flex items-start space-x-3">
                 <svg className="w-5 h-5 text-eduverse-blue mt-1" fill="currentColor" viewBox="0 0 20 20">
@@ -125,16 +125,22 @@ export function Footer() {
         </div>
         
         {/* Bottom Footer */}
-        <div className="border-t border-gray-800 mt-12 pt-8 text-center">
-          <p className="text-gray-400">
+        <div className="border-t border-gradient-to-r border-yellow-400/30 mt-16 pt-12 text-center">
+          <div className="mb-6">
+            <div className="w-20 h-px gold-shimmer mx-auto"></div>
+          </div>
+          <p className="text-gray-400 font-elegant text-lg">
             © {currentYear} EduVerse. All rights reserved. |{" "}
-            <a href="#" className="hover:text-white transition-colors">
+            <a href="#" className="hover:text-yellow-300 transition-all duration-300 font-premium">
               Privacy Policy
             </a>{" "}
             |{" "}
-            <a href="#" className="hover:text-white transition-colors">
+            <a href="#" className="hover:text-yellow-300 transition-all duration-300 font-premium">
               Terms of Service
             </a>
+          </p>
+          <p className="text-gray-500 mt-4 font-elegant">
+            Crafted with excellence for discerning educational families
           </p>
         </div>
       </div>
