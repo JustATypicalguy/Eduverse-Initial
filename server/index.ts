@@ -65,7 +65,8 @@ app.use((req, res, next) => {
   try {
     validateEnvironment();
   } catch (error) {
-    log(`FATAL: Environment validation failed: ${error.message}`, "deployment");
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    log(`FATAL: Environment validation failed: ${errorMessage}`, "deployment");
     process.exit(1);
   }
 
