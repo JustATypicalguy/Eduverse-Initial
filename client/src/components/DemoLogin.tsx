@@ -83,10 +83,10 @@ export default function DemoLogin() {
         
         // Navigate to appropriate dashboard
         const dashboards = {
-          student: '/portal',
-          teacher: '/portal', 
-          admin: '/portal',
-          parent: '/portal'
+          student: '/student',
+          teacher: '/teacher', 
+          admin: '/admin',
+          parent: '/parent'
         };
         setLocation(dashboards[demoUser.role as keyof typeof dashboards]);
       } else {
