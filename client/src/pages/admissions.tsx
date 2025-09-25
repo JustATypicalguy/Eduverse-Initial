@@ -77,11 +77,13 @@ export default function Admissions() {
       <section className="py-20">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h1 className="text-4xl font-luxury text-white/90 mb-4 drop-shadow-2xl">Admissions</h1>
-            <p className="text-xl text-white/80 max-w-3xl mx-auto font-elegant drop-shadow-lg">
-              Join our diverse international community. We welcome students from all backgrounds 
-              who are ready to embrace global learning.
-            </p>
+            <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-8 max-w-4xl mx-auto border border-white/30">
+              <h1 className="text-4xl font-luxury text-gray-900 mb-4">Admissions</h1>
+              <p className="text-xl text-gray-700 max-w-3xl mx-auto font-elegant">
+                Join our diverse international community. We welcome students from all backgrounds 
+                who are ready to embrace global learning.
+              </p>
+            </div>
           </div>
           
           <div className="grid lg:grid-cols-2 gap-12">

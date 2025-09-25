@@ -8,11 +8,13 @@ export default function About() {
       <section className="py-20">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h1 className="text-4xl font-luxury text-white/90 mb-4 drop-shadow-2xl">About EduVerse</h1>
-            <p className="text-xl text-white/80 max-w-3xl mx-auto font-elegant drop-shadow-lg">
-              A pioneering educational institution dedicated to nurturing young minds and preparing them for a 
-              globally connected world through innovative education and cultural diversity.
-            </p>
+            <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-8 max-w-4xl mx-auto border border-white/30">
+              <h1 className="text-4xl font-luxury text-gray-900 mb-4">About EduVerse</h1>
+              <p className="text-xl text-gray-700 max-w-3xl mx-auto font-elegant">
+                A pioneering educational institution dedicated to nurturing young minds and preparing them for a 
+                globally connected world through innovative education and cultural diversity.
+              </p>
+            </div>
           </div>
           
           <div className="grid lg:grid-cols-3 gap-12 mb-16">
@@ -62,15 +64,15 @@ export default function About() {
           {/* Accreditation & Diversity */}
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h3 className="text-3xl font-luxury text-white/90 mb-6 drop-shadow-lg">International Accreditation</h3>
+              <h3 className="text-3xl font-luxury text-gray-900 mb-6">International Accreditation</h3>
               <div className="space-y-6">
                 <div className="flex items-center space-x-4">
                   <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center shadow-lg">
                     <Tag className="text-white" size={24} />
                   </div>
                   <div>
-                    <h4 className="font-luxury text-white/90">International Baccalaureate (IB)</h4>
-                    <p className="text-white/70 font-elegant">World School authorization for PYP, MYP, and DP</p>
+                    <h4 className="font-luxury text-gray-800">International Baccalaureate (IB)</h4>
+                    <p className="text-gray-600 font-elegant">World School authorization for PYP, MYP, and DP</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-4">
@@ -78,8 +80,8 @@ export default function About() {
                     <Globe className="text-white" size={24} />
                   </div>
                   <div>
-                    <h4 className="font-luxury text-white/90">Cambridge International</h4>
-                    <p className="text-white/70 font-elegant">IGCSE and A-Level program accreditation</p>
+                    <h4 className="font-luxury text-gray-800">Cambridge International</h4>
+                    <p className="text-gray-600 font-elegant">IGCSE and A-Level program accreditation</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-4">
@@ -87,8 +89,8 @@ export default function About() {
                     <Star className="text-white" size={24} />
                   </div>
                   <div>
-                    <h4 className="font-luxury text-white/90">WASC Accredited</h4>
-                    <p className="text-white/70 font-elegant">Western Association of Schools and Colleges</p>
+                    <h4 className="font-luxury text-gray-800">WASC Accredited</h4>
+                    <p className="text-gray-600 font-elegant">Western Association of Schools and Colleges</p>
                   </div>
                 </div>
               </div>
@@ -106,11 +108,11 @@ export default function About() {
       </section>
 
       {/* Educational Philosophy */}
-      <section className="py-20 bg-black/10 backdrop-blur-sm">
+      <section className="py-20 bg-white/95 backdrop-blur-sm">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-luxury text-white/90 mb-4 drop-shadow-2xl">Our Educational Philosophy</h2>
-            <p className="text-xl text-white/80 max-w-3xl mx-auto font-elegant drop-shadow-lg">
+            <h2 className="text-4xl font-luxury text-gray-900 mb-4">Our Educational Philosophy</h2>
+            <p className="text-xl text-gray-700 max-w-3xl mx-auto font-elegant">
               We believe in developing the whole child through inquiry-based learning, 
               international-mindedness, and personal growth.
             </p>

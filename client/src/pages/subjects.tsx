@@ -166,11 +166,11 @@ export default function Subjects() {
         </section>
         
         {/* Content Section */}
-        <section className="py-20 bg-black/10 backdrop-blur-sm">
+        <section className="py-20 bg-white/95 backdrop-blur-sm">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h1 className="text-4xl font-luxury text-white/90 mb-4 drop-shadow-2xl">Academic Subjects by Grade Level</h1>
-            <p className="text-xl text-white/80 max-w-3xl mx-auto font-elegant drop-shadow-lg">
+            <h1 className="text-4xl font-luxury text-gray-900 mb-4 drop-shadow-lg">Academic Subjects by Grade Level</h1>
+            <p className="text-xl text-gray-700 max-w-3xl mx-auto font-elegant">
               Discover age-appropriate subjects with specific examples and activities designed for each grade level.
             </p>
           </div>
@@ -209,10 +209,10 @@ export default function Subjects() {
             <div className="mb-12">
               <div className="flex items-center justify-between mb-8">
                 <div>
-                  <h2 className="text-3xl font-luxury text-white/90 mb-2 drop-shadow-lg">
+                  <h2 className="text-3xl font-luxury text-gray-900 mb-2">
                     {gradeLevels.find(g => g.id === selectedGrade)?.name} Subjects
                   </h2>
-                  <p className="text-white/80 font-elegant drop-shadow-sm">
+                  <p className="text-gray-700 font-elegant">
                     {gradeLevels.find(g => g.id === selectedGrade)?.ageRange}
                   </p>
                 </div>

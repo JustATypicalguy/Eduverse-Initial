@@ -11,11 +11,13 @@ export default function Programs() {
       <section className="py-20">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h1 className="text-4xl font-luxury text-white/90 mb-4 drop-shadow-2xl">Academic Programs</h1>
-            <p className="text-xl text-white/80 max-w-3xl mx-auto font-elegant drop-shadow-lg">
-              Comprehensive educational pathways designed to challenge, inspire, and prepare 
-              students for university and beyond.
-            </p>
+            <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-8 max-w-4xl mx-auto border border-white/30">
+              <h1 className="text-4xl font-luxury text-gray-900 mb-4">Academic Programs</h1>
+              <p className="text-xl text-gray-700 max-w-3xl mx-auto font-elegant">
+                Comprehensive educational pathways designed to challenge, inspire, and prepare 
+                students for university and beyond.
+              </p>
+            </div>
           </div>
           
           <div className="grid lg:grid-cols-3 gap-8">
@@ -143,11 +145,11 @@ export default function Programs() {
       </section>
 
       {/* Curriculum Overview */}
-      <section className="py-20 bg-black/10 backdrop-blur-sm">
+      <section className="py-20 bg-white/95 backdrop-blur-sm">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-luxury text-white/90 mb-4 drop-shadow-2xl">Curriculum Framework</h2>
-            <p className="text-xl text-white/80 max-w-3xl mx-auto font-elegant drop-shadow-lg">
+            <h2 className="text-4xl font-luxury text-gray-900 mb-4">Curriculum Framework</h2>
+            <p className="text-xl text-gray-700 max-w-3xl mx-auto font-elegant">
               Our international curriculum is designed to develop well-rounded, globally-minded students.
             </p>
           </div>
