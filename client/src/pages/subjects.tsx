@@ -61,10 +61,9 @@ export default function Subjects() {
       {/* SEO Meta Tags */}
       <title>EduVerse Study Materials - Academic Subjects by Grade Level</title>
       <meta name="description" content="Explore comprehensive study materials and academic subjects organized by grade level at EduVerse. Access age-appropriate learning resources." />
-      
       <div className="pt-24 luxury-gradient min-h-screen">
         {/* Luxury Theme Header */}
-        <section className="py-20" data-testid="subjects-header">
+        <section className="py-20 bg-[#9b9ca1] ml-[0px] mr-[0px]" data-testid="subjects-header">
           <div className="container mx-auto px-6">
             <div className="text-center mb-16">
               <div className="flex items-center justify-center gap-4 mb-6">
