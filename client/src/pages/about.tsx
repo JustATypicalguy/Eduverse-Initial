@@ -71,7 +71,7 @@ export default function About() {
                     <Tag className="text-white" size={24} />
                   </div>
                   <div>
-                    <h4 className="font-luxury text-gray-800">International Baccalaureate (IB)</h4>
+                    <h4 className="font-luxury text-gray-800 text-[18px]">International Baccalaureate (IB)</h4>
                     <p className="font-elegant text-[#ffffff]">World School authorization for PYP, MYP, and DP</p>
                   </div>
                 </div>
@@ -80,7 +80,7 @@ export default function About() {
                     <Globe className="text-white" size={24} />
                   </div>
                   <div>
-                    <h4 className="font-luxury text-gray-800">Cambridge International</h4>
+                    <h4 className="font-luxury text-gray-800 text-[18px]">Cambridge International</h4>
                     <p className="font-elegant text-[#ffffff]">IGCSE and A-Level program accreditation</p>
                   </div>
                 </div>
@@ -89,7 +89,7 @@ export default function About() {
                     <Star className="text-white" size={24} />
                   </div>
                   <div>
-                    <h4 className="font-luxury text-gray-800">WASC Accredited</h4>
+                    <h4 className="font-luxury text-gray-800 text-[18px]">WASC Accredited</h4>
                     <p className="font-elegant text-[#f1f6fc]">Western Association of Schools and Colleges</p>
                   </div>
                 </div>
