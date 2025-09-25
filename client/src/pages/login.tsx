@@ -146,35 +146,33 @@ function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) {
 function FloatingParticles() {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {/* Floating books */}
-      <div className="absolute top-20 left-10 animate-float">
-        <BookOpen className="h-6 w-6 text-blue-300/30" />
+      {/* Static decorative elements - no animations */}
+      <div className="absolute top-20 left-10 opacity-30">
+        <BookOpen className="h-6 w-6 text-blue-300" />
       </div>
-      <div className="absolute top-40 right-20 animate-float-delayed">
-        <GraduationCap className="h-8 w-8 text-purple-300/30" />
+      <div className="absolute top-40 right-20 opacity-30">
+        <GraduationCap className="h-8 w-8 text-purple-300" />
       </div>
-      <div className="absolute bottom-40 left-20 animate-float">
-        <PenTool className="h-5 w-5 text-green-300/30" />
+      <div className="absolute bottom-40 left-20 opacity-30">
+        <PenTool className="h-5 w-5 text-green-300" />
       </div>
-      <div className="absolute top-60 right-40 animate-float-delayed">
-        <BookOpen className="h-7 w-7 text-orange-300/30" />
+      <div className="absolute top-60 right-40 opacity-30">
+        <BookOpen className="h-7 w-7 text-orange-300" />
       </div>
       
-      {/* Floating stars */}
-      {[...Array(8)].map((_, i) => (
-        <div
-          key={i}
-          className={`absolute animate-twinkle ${
-            i % 2 === 0 ? 'animate-delay-1000' : 'animate-delay-2000'
-          }`}
-          style={{
-            top: `${Math.random() * 100}%`,
-            left: `${Math.random() * 100}%`,
-          }}
-        >
-          <Star className="h-3 w-3 text-white/20" />
-        </div>
-      ))}
+      {/* Static stars */}
+      <div className="absolute top-10 left-1/4 opacity-20">
+        <Star className="h-3 w-3 text-white" />
+      </div>
+      <div className="absolute top-1/3 right-1/4 opacity-20">
+        <Star className="h-2 w-2 text-white" />
+      </div>
+      <div className="absolute bottom-1/3 left-1/3 opacity-20">
+        <Star className="h-3 w-3 text-white" />
+      </div>
+      <div className="absolute bottom-20 right-1/3 opacity-20">
+        <Star className="h-2 w-2 text-white" />
+      </div>
     </div>
   );
 }
@@ -189,7 +187,7 @@ function AIAssistant() {
       }`}
     >
       <div className="relative">
-        <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-full p-4 shadow-lg hover:shadow-xl transition-shadow cursor-pointer animate-bounce-gentle">
+        <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-full p-4 shadow-lg hover:shadow-xl transition-shadow cursor-pointer">
           <Bot className="h-6 w-6 text-white" />
         </div>
         
@@ -536,10 +534,9 @@ export default function Login() {
         <div className="text-center pt-12 pb-8">
           <div className="inline-block mb-4">
             <div className="text-6xl font-luxury font-bold relative">
-              <span className="luxury-text-gradient animate-pulse-glow drop-shadow-2xl">
+              <span className="luxury-text-gradient drop-shadow-2xl">
                 EDUVERSE
               </span>
-              <div className="absolute inset-0 blur-sm luxury-text-gradient opacity-50 animate-pulse"></div>
             </div>
           </div>
           <p className="text-xl text-white/90 font-elegant tracking-wide drop-shadow-lg">
@@ -654,7 +651,7 @@ export default function Login() {
                       className={`luxury-button w-full bg-gradient-to-r ${roleData[selectedRole].color} hover:shadow-2xl transition-all duration-400 disabled:opacity-50 disabled:cursor-not-allowed font-luxury text-white border-2 border-yellow-300/40 relative overflow-hidden`}
                       data-testid="button-login"
                     >
-                      <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 via-transparent to-yellow-400/20 animate-pulse"></div>
+                      <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 via-transparent to-yellow-400/20"></div>
                       <span className="relative z-10">{isLoading ? "Signing In..." : roleData[selectedRole].buttonText}</span>
                     </Button>
 
@@ -760,6 +757,302 @@ export default function Login() {
           </div>
         </footer>
       </div>
+
+      {/* Sign Up Modal */}
+      <Dialog open={isSignUpOpen} onOpenChange={setIsSignUpOpen}>
+        <DialogContent className="luxury-card border-0 shadow-2xl max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-luxury text-gray-800">Create Your Account</DialogTitle>
+            <DialogDescription className="text-gray-600 font-elegant">
+              Join the EduVerse community and start your learning journey.
+            </DialogDescription>
+          </DialogHeader>
+          <Form {...signUpForm}>
+            <form onSubmit={signUpForm.handleSubmit(handleSignUp)} className="space-y-4">
+              <FormField
+                control={signUpForm.control}
+                name="fullName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-gray-700 font-premium">Full Name</FormLabel>
+                    <FormControl>
+                      <Input 
+                        {...field} 
+                        className="bg-gradient-to-r from-white to-yellow-50/30 border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-yellow-400"
+                        placeholder="Enter your full name"
+                        data-testid="input-signup-name"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={signUpForm.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-gray-700 font-premium">Username</FormLabel>
+                    <FormControl>
+                      <Input 
+                        {...field} 
+                        className="bg-gradient-to-r from-white to-yellow-50/30 border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-yellow-400"
+                        placeholder="Choose a username"
+                        data-testid="input-signup-username"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={signUpForm.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-gray-700 font-premium">Email</FormLabel>
+                    <FormControl>
+                      <Input 
+                        {...field} 
+                        type="email"
+                        className="bg-gradient-to-r from-white to-yellow-50/30 border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-yellow-400"
+                        placeholder="Enter your email"
+                        data-testid="input-signup-email"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={signUpForm.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-gray-700 font-premium">Role</FormLabel>
+                    <FormControl>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <SelectTrigger className="bg-gradient-to-r from-white to-yellow-50/30 border-gray-300 text-gray-900 focus:border-yellow-400" data-testid="select-signup-role">
+                          <SelectValue placeholder="Select your role" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="student">Student</SelectItem>
+                          <SelectItem value="teacher">Teacher</SelectItem>
+                          <SelectItem value="parent">Parent</SelectItem>
+                          <SelectItem value="admin">Administrator</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={signUpForm.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-gray-700 font-premium">Password</FormLabel>
+                    <FormControl>
+                      <Input 
+                        {...field} 
+                        type="password"
+                        className="bg-gradient-to-r from-white to-yellow-50/30 border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-yellow-400"
+                        placeholder="Create a strong password"
+                        data-testid="input-signup-password"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={signUpForm.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-gray-700 font-premium">Confirm Password</FormLabel>
+                    <FormControl>
+                      <Input 
+                        {...field} 
+                        type="password"
+                        className="bg-gradient-to-r from-white to-yellow-50/30 border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-yellow-400"
+                        placeholder="Confirm your password"
+                        data-testid="input-signup-confirm-password"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex gap-3 pt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsSignUpOpen(false)}
+                  className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-50"
+                  data-testid="button-signup-cancel"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className="flex-1 luxury-button-gradient hover:opacity-90 transition-all duration-300 shadow-lg font-premium"
+                  data-testid="button-signup-submit"
+                >
+                  {isLoading ? "Creating Account..." : "Create Account"}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Forgot Password Modal */}
+      <Dialog open={isForgotPasswordOpen} onOpenChange={setIsForgotPasswordOpen}>
+        <DialogContent className="luxury-card border-0 shadow-2xl max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-luxury text-gray-800">Reset Password</DialogTitle>
+            <DialogDescription className="text-gray-600 font-elegant">
+              Enter your email address and we'll send you a reset link.
+            </DialogDescription>
+          </DialogHeader>
+          <Form {...forgotPasswordForm}>
+            <form onSubmit={forgotPasswordForm.handleSubmit(handleForgotPassword)} className="space-y-4">
+              <FormField
+                control={forgotPasswordForm.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-gray-700 font-premium">Email</FormLabel>
+                    <FormControl>
+                      <Input 
+                        {...field} 
+                        type="email"
+                        className="bg-gradient-to-r from-white to-yellow-50/30 border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-yellow-400"
+                        placeholder="Enter your email address"
+                        data-testid="input-forgot-email"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex gap-3 pt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsForgotPasswordOpen(false)}
+                  className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-50"
+                  data-testid="button-forgot-cancel"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className="flex-1 luxury-button-gradient hover:opacity-90 transition-all duration-300 shadow-lg font-premium"
+                  data-testid="button-forgot-submit"
+                >
+                  {isLoading ? "Sending..." : "Send Reset Link"}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Reset Password Modal */}
+      <Dialog open={isResetPasswordOpen} onOpenChange={setIsResetPasswordOpen}>
+        <DialogContent className="luxury-card border-0 shadow-2xl max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-luxury text-gray-800">Set New Password</DialogTitle>
+            <DialogDescription className="text-gray-600 font-elegant">
+              Enter your reset token and choose a new password.
+            </DialogDescription>
+          </DialogHeader>
+          <Form {...resetPasswordForm}>
+            <form onSubmit={resetPasswordForm.handleSubmit(handleResetPassword)} className="space-y-4">
+              <FormField
+                control={resetPasswordForm.control}
+                name="token"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-gray-700 font-premium">Reset Token</FormLabel>
+                    <FormControl>
+                      <Input 
+                        {...field} 
+                        className="bg-gradient-to-r from-white to-yellow-50/30 border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-yellow-400"
+                        placeholder="Enter reset token"
+                        data-testid="input-reset-token"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={resetPasswordForm.control}
+                name="newPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-gray-700 font-premium">New Password</FormLabel>
+                    <FormControl>
+                      <Input 
+                        {...field} 
+                        type="password"
+                        className="bg-gradient-to-r from-white to-yellow-50/30 border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-yellow-400"
+                        placeholder="Enter new password"
+                        data-testid="input-reset-new-password"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={resetPasswordForm.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-gray-700 font-premium">Confirm Password</FormLabel>
+                    <FormControl>
+                      <Input 
+                        {...field} 
+                        type="password"
+                        className="bg-gradient-to-r from-white to-yellow-50/30 border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-yellow-400"
+                        placeholder="Confirm new password"
+                        data-testid="input-reset-confirm-password"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex gap-3 pt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsResetPasswordOpen(false)}
+                  className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-50"
+                  data-testid="button-reset-cancel"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className="flex-1 luxury-button-gradient hover:opacity-90 transition-all duration-300 shadow-lg font-premium"
+                  data-testid="button-reset-submit"
+                >
+                  {isLoading ? "Updating..." : "Update Password"}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
 
     </div>
   );
