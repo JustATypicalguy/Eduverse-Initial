@@ -24,6 +24,20 @@ const featureItems = [
     color: "from-yellow-50 to-yellow-100" 
   },
   { 
+    name: "AR Learning", 
+    href: "/ar-learning", 
+    icon: "🌌",
+    description: "Explore space and science with AR visualization",
+    color: "from-purple-50 to-indigo-100" 
+  },
+  { 
+    name: "Emotional Learning", 
+    href: "/emotional-learning", 
+    icon: "💙",
+    description: "AI-powered emotional intelligence development",
+    color: "from-blue-50 to-cyan-100" 
+  },
+  { 
     name: "Group Chat", 
     href: "/group-chat", 
     icon: "💬",
