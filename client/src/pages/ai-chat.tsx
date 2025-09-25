@@ -321,14 +321,14 @@ export default function AiChat() {
                   <Card className="luxury-card border-0 shadow-2xl text-white">
                     <CardContent className="p-6 text-center">
                       <Lightbulb className="mx-auto mb-4 text-yellow-400" size={32} />
-                      <h4 className="font-luxury mb-2">🧪 Interactive Simulations</h4>
+                      <h4 className="font-luxury mb-2 text-[#23252f]">🧪 Interactive Simulations</h4>
                       <p className="text-sm font-elegant text-[#23252f]">Visual demos for science & math</p>
                     </CardContent>
                   </Card>
                   <Card className="luxury-card border-0 shadow-2xl text-white">
                     <CardContent className="p-6 text-center">
                       <Target className="mx-auto mb-4 text-red-400" size={32} />
-                      <h4 className="font-luxury mb-2">🎯 AI Debate Mode</h4>
+                      <h4 className="font-luxury mb-2 text-[#23252f]">🎯 AI Debate Mode</h4>
                       <p className="text-sm text-white/80 font-elegant">Practice critical thinking</p>
                     </CardContent>
                   </Card>
