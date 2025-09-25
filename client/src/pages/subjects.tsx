@@ -62,18 +62,106 @@ export default function Subjects() {
       <title>EduVerse Study Materials - Academic Subjects by Grade Level</title>
       <meta name="description" content="Explore comprehensive study materials and academic subjects organized by grade level at EduVerse. Access age-appropriate learning resources." />
       <div className="pt-24 luxury-gradient min-h-screen">
-        {/* Luxury Theme Header */}
-        <section className="py-20 bg-[#9b9ca1] ml-[0px] mr-[0px]" data-testid="subjects-header">
-          <div className="container mx-auto px-6">
-            <div className="text-center mb-16">
-              <div className="flex items-center justify-center gap-4 mb-6">
-                <span className="text-6xl animate-pulse">📚</span>
-                <h1 className="text-5xl font-luxury text-white/90 drop-shadow-2xl">Study Materials & Subjects</h1>
+        {/* Creative Educational Universe Header */}
+        <section className="relative py-24 bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-900 overflow-hidden" data-testid="subjects-header">
+          {/* Animated Background Elements */}
+          <div className="absolute inset-0">
+            {/* Floating Books */}
+            <div className="absolute top-10 left-10 text-4xl opacity-20 animate-bounce">📖</div>
+            <div className="absolute top-20 right-20 text-3xl opacity-30 animate-pulse">🔬</div>
+            <div className="absolute bottom-20 left-1/4 text-5xl opacity-25" style={{animation: 'float 6s ease-in-out infinite'}}>🎨</div>
+            <div className="absolute top-1/3 right-1/3 text-3xl opacity-20" style={{animation: 'float 4s ease-in-out infinite reverse'}}>🌍</div>
+            <div className="absolute bottom-10 right-10 text-4xl opacity-30 animate-spin" style={{animationDuration: '20s'}}>⚗️</div>
+            <div className="absolute top-40 left-1/3 text-2xl opacity-25" style={{animation: 'float 5s ease-in-out infinite'}}>📐</div>
+            
+            {/* Gradient Overlays */}
+            <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/10 via-transparent to-orange-400/10"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-purple-900/50 to-transparent"></div>
+          </div>
+          
+          <div className="container mx-auto px-6 relative z-10">
+            <div className="text-center">
+              {/* Main Title Section */}
+              <div className="mb-8">
+                <div className="flex items-center justify-center gap-6 mb-8">
+                  {/* Animated Book Stack */}
+                  <div className="relative">
+                    <span className="text-7xl transform hover:scale-110 transition-transform duration-300 filter drop-shadow-2xl">📚</span>
+                    <div className="absolute -top-2 -right-2 w-6 h-6 bg-yellow-400 rounded-full animate-ping"></div>
+                  </div>
+                  
+                  {/* Creative Title */}
+                  <div className="text-left">
+                    <h1 className="text-6xl lg:text-7xl font-bold bg-gradient-to-r from-yellow-300 via-orange-400 to-pink-400 bg-clip-text text-transparent drop-shadow-2xl leading-tight">
+                      Study Materials
+                    </h1>
+                    <h2 className="text-4xl lg:text-5xl font-light text-white/90 mt-2 tracking-wide">
+                      & Academic Subjects ✨
+                    </h2>
+                  </div>
+                  
+                  {/* Animated Globe */}
+                  <div className="relative">
+                    <span className="text-6xl transform hover:scale-110 transition-transform duration-300 filter drop-shadow-2xl animate-spin" style={{animationDuration: '15s'}}>🌐</span>
+                    <div className="absolute -bottom-2 -left-2 w-4 h-4 bg-blue-400 rounded-full animate-bounce"></div>
+                  </div>
+                </div>
+                
+                {/* Creative Subtitle */}
+                <div className="relative">
+                  <p className="text-2xl text-white/90 max-w-4xl mx-auto font-light leading-relaxed mb-6">
+                    🚀 <span className="text-yellow-300 font-semibold">Explore</span> comprehensive learning resources organized by grade level
+                  </p>
+                  <p className="text-xl text-purple-200 max-w-3xl mx-auto">
+                    Featuring engaging activities, real-world examples, and 
+                    <span className="text-orange-300 font-medium"> interactive learning experiences</span> 🎯
+                  </p>
+                </div>
               </div>
-              <p className="text-xl text-white/80 max-w-3xl mx-auto font-elegant drop-shadow-lg">
-                Discover comprehensive learning resources organized by grade level with engaging activities and examples
-              </p>
+              
+              {/* Feature Highlights */}
+              <div className="grid md:grid-cols-4 gap-6 mt-12">
+                <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 transform hover:scale-105 transition-all duration-300 border border-white/20">
+                  <div className="text-4xl mb-3">🎯</div>
+                  <h3 className="text-white font-semibold mb-2">Age-Appropriate</h3>
+                  <p className="text-white/80 text-sm">Content designed for each grade level</p>
+                </div>
+                
+                <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 transform hover:scale-105 transition-all duration-300 border border-white/20">
+                  <div className="text-4xl mb-3">🌟</div>
+                  <h3 className="text-white font-semibold mb-2">Interactive</h3>
+                  <p className="text-white/80 text-sm">Hands-on learning activities</p>
+                </div>
+                
+                <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 transform hover:scale-105 transition-all duration-300 border border-white/20">
+                  <div className="text-4xl mb-3">🏆</div>
+                  <h3 className="text-white font-semibold mb-2">Comprehensive</h3>
+                  <p className="text-white/80 text-sm">All core subjects covered</p>
+                </div>
+                
+                <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 transform hover:scale-105 transition-all duration-300 border border-white/20">
+                  <div className="text-4xl mb-3">💡</div>
+                  <h3 className="text-white font-semibold mb-2">Real-World</h3>
+                  <p className="text-white/80 text-sm">Practical application examples</p>
+                </div>
+              </div>
+              
+              {/* Call to Action */}
+              <div className="mt-12">
+                <div className="inline-flex items-center gap-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-8 py-4 rounded-full font-semibold text-lg shadow-2xl hover:shadow-yellow-400/25 transform hover:scale-105 transition-all duration-300">
+                  <span className="animate-bounce">👇</span>
+                  <span>Choose Your Grade Level Below</span>
+                  <span className="animate-bounce" style={{animationDelay: '0.1s'}}>👇</span>
+                </div>
+              </div>
             </div>
+          </div>
+          
+          {/* Bottom Wave Effect */}
+          <div className="absolute bottom-0 left-0 right-0">
+            <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0 120L48 105C96 90 192 60 288 45C384 30 480 30 576 37.5C672 45 768 60 864 67.5C960 75 1056 75 1152 70C1248 65 1344 55 1392 50L1440 45V120H1392C1344 120 1248 120 1152 120C1056 120 960 120 864 120C768 120 672 120 576 120C480 120 384 120 288 120C192 120 96 120 48 120H0Z" fill="rgba(0,0,0,0.1)"/>
+            </svg>
           </div>
         </section>
         
