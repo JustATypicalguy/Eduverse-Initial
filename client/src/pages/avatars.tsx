@@ -151,29 +151,29 @@ export default function Avatars() {
       <title>EduVerse Learning Avatars - Create Your Unique Learning Character</title>
       <meta name="description" content="Generate your personalized learning avatar with EduVerse. Discover your unique character based on your personality and learning style." />
       
-      <div className="pt-24 min-h-screen bg-gradient-to-br from-purple-50 via-violet-50 to-indigo-50">
+      <div className="pt-24 min-h-screen luxury-gradient">
       <div className="container mx-auto px-6 py-8">
         <div className="max-w-4xl mx-auto">
-          {/* Purple/Violet Theme Header */}
-          <div className="bg-gradient-to-r from-purple-500 via-violet-500 to-indigo-500 text-white py-12 mb-8 rounded-2xl shadow-lg" data-testid="avatars-header">
+          {/* Luxury Header */}
+          <div className="relative py-12 mb-8" data-testid="avatars-header">
             <div className="text-center">
               <div className="flex items-center justify-center gap-3 mb-4">
                 <span className="text-6xl animate-bounce">🎨</span>
-                <h1 className="text-4xl font-bold">
+                <h1 className="text-4xl font-luxury text-white/90 drop-shadow-2xl">
                   Learning Avatars Generator
                 </h1>
               </div>
-              <p className="text-xl text-purple-100 max-w-2xl mx-auto">
+              <p className="text-xl text-white/80 max-w-2xl mx-auto font-elegant drop-shadow-lg">
                 Unleash your creativity! Discover your unique learning avatar based on your personality ✨
               </p>
             </div>
           </div>
 
           {/* Name Input */}
-          <Card className="mb-8">
+          <Card className="luxury-card mb-8 border-0 shadow-2xl">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-purple-600">
-                <Sparkles size={24} />
+              <CardTitle className="flex items-center gap-2 text-gray-800 font-luxury">
+                <Sparkles size={24} className="text-yellow-500" />
                 Enter Your Name
               </CardTitle>
             </CardHeader>
@@ -194,16 +194,19 @@ export default function Avatars() {
                 />
                 <Button 
                   onClick={generateAvatar}
-                  className="bg-purple-600 hover:bg-purple-700 px-8"
+                  className="luxury-button bg-gradient-to-r from-yellow-400 to-yellow-600 text-white hover:shadow-2xl transition-all duration-400 border-2 border-yellow-300/40 relative overflow-hidden font-luxury px-8"
                   data-testid="button-generate-avatar"
                 >
+                  <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 via-transparent to-yellow-400/20 animate-pulse"></div>
+                  <span className="relative z-10">
                   <Sparkles className="mr-2" size={16} />
                   Generate
+                  </span>
                 </Button>
                 <Button 
                   onClick={randomizeAvatar}
                   variant="outline"
-                  className="border-violet-500 text-violet-600 hover:bg-violet-500 hover:text-white"
+                  className="border-gray-300 text-gray-700 hover:bg-gray-100 hover:text-gray-900 font-elegant"
                   data-testid="button-random-avatar"
                 >
                   <Shuffle className="mr-2" size={16} />
@@ -214,8 +217,8 @@ export default function Avatars() {
           </Card>
 
           {/* Generated Avatar */}
-          {showAvatar && studentName.trim() && (
-            <Card className={`mb-8 ${currentAvatar.color} border-2`}>
+          {showAvatar && (isRandomMode || studentName.trim()) && (
+            <Card className="luxury-card mb-8 border-0 shadow-2xl bg-gradient-to-br from-white/95 to-gray-50/95 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="text-center">
                   Your Personal Learning Avatar
@@ -229,18 +232,18 @@ export default function Avatars() {
                       {currentAvatar.emoji}
                     </div>
                     <div className="absolute -top-2 -right-2">
-                      <Badge className="bg-eduverse-blue text-white">
-                        {studentName}
+                      <Badge className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-white">
+                        {isRandomMode ? "Random Avatar" : studentName}
                       </Badge>
                     </div>
                   </div>
                   
                   {/* Avatar Info */}
                   <div className="space-y-4">
-                    <h3 className="text-3xl font-bold text-gray-800">
+                    <h3 className="text-3xl font-luxury text-gray-800">
                       {currentAvatar.title}
                     </h3>
-                    <p className="text-lg text-gray-600 max-w-md mx-auto">
+                    <p className="text-lg text-gray-600 max-w-md mx-auto font-elegant">
                       {currentAvatar.description}
                     </p>
                     
@@ -272,19 +275,19 @@ export default function Avatars() {
           )}
 
           {/* Example Avatars */}
-          <Card className="mb-8">
+          <Card className="luxury-card mb-8 border-0 shadow-2xl">
             <CardHeader>
-              <CardTitle className="text-center text-eduverse-blue">
+              <CardTitle className="text-center text-gray-800 font-luxury">
                 Example Avatars
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {exampleNames.map((example) => (
-                  <div key={example.name} className="text-center p-4 bg-gray-50 rounded-lg">
+                  <div key={example.name} className="text-center p-4 bg-gradient-to-br from-white/80 to-gray-50/80 backdrop-blur-sm rounded-lg border border-white/40 shadow-sm hover:shadow-md transition-all duration-300">
                     <div className="text-3xl mb-2">{getAvatarForName(example.name).emoji}</div>
-                    <div className="font-semibold text-eduverse-blue">{example.name}</div>
-                    <div className="text-xs text-gray-500">{example.avatar}</div>
+                    <div className="font-luxury text-gray-800">{example.name}</div>
+                    <div className="text-xs text-gray-600 font-elegant">{example.avatar}</div>
                   </div>
                 ))}
               </div>
@@ -292,7 +295,7 @@ export default function Avatars() {
           </Card>
 
           {/* All Available Avatars */}
-          <Card>
+          <Card className="luxury-card border-0 shadow-2xl">
             <CardHeader>
               <CardTitle className="text-center text-eduverse-blue">
                 All Available Avatars
@@ -303,7 +306,7 @@ export default function Avatars() {
                 {avatarTypes.map((avatar, index) => (
                   <div 
                     key={index} 
-                    className={`p-4 rounded-lg text-center border-2 ${avatar.color} hover:scale-105 transition-transform cursor-pointer`}
+                    className="p-4 rounded-lg text-center bg-gradient-to-br from-white/80 to-gray-50/80 backdrop-blur-sm border border-white/40 shadow-sm hover:scale-105 hover:shadow-md transition-all duration-300 cursor-pointer"
                     onClick={() => {
                       setStudentName(`Demo User ${index + 1}`);
                       setShowAvatar(true);
@@ -311,8 +314,8 @@ export default function Avatars() {
                     data-testid={`avatar-option-${index}`}
                   >
                     <div className="text-4xl mb-2">{avatar.emoji}</div>
-                    <div className="font-semibold text-sm text-gray-800">{avatar.title}</div>
-                    <div className="text-xs text-gray-600 mt-1">
+                    <div className="font-luxury text-sm text-gray-800">{avatar.title}</div>
+                    <div className="text-xs text-gray-600 font-elegant mt-1">
                       {avatar.traits[0]}, {avatar.traits[1]}
                     </div>
                   </div>
