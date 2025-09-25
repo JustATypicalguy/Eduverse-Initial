@@ -63,7 +63,7 @@ export const users = pgTable("users", {
   username: text("username").notNull().unique(),
   email: text("email").notNull().unique(),
   fullName: text("full_name").notNull(),
-  role: text("role").notNull().default("student"), // 'student', 'teacher', 'admin', 'parent'
+  roles: json("roles").notNull().default(sql`'["student"]'`), // Array of roles: ['student', 'teacher', 'admin', 'parent']
   // Authentication fields
   passwordHash: text("password_hash").notNull(),
   emailVerified: boolean("email_verified").default(false),
@@ -71,7 +71,8 @@ export const users = pgTable("users", {
   passwordResetToken: text("password_reset_token"),
   passwordResetExpires: timestamp("password_reset_expires"),
   // User experience fields
-  preferredRole: text("preferred_role"), // Remember role selection
+  currentRole: text("current_role").notNull().default("student"), // Currently active role
+  preferredRole: text("preferred_role"), // Remember role selection for next login
   lastLoginAt: timestamp("last_login_at"),
   // Social login preparation
   socialProviders: json("social_providers").default({}), // Store social login info
