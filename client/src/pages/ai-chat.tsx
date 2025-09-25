@@ -299,8 +299,8 @@ export default function AiChat() {
                         <div className={`w-20 h-20 bg-gradient-to-r ${buddy.color} rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce-in`}>
                           <IconComponent className="text-white" size={36} />
                         </div>
-                        <h3 className="text-2xl font-luxury mb-4">{buddy.name}</h3>
-                        <p className="text-white/80 mb-6 leading-relaxed font-elegant">{buddy.description}</p>
+                        <h3 className="text-2xl font-luxury mb-4 text-[#1a1c25]">{buddy.name}</h3>
+                        <p className="mb-6 leading-relaxed font-elegant text-[#23252f]">{buddy.description}</p>
                         <Button 
                           className="luxury-button bg-gradient-to-r from-yellow-400 to-yellow-600 text-white hover:shadow-2xl transition-all duration-400 border-2 border-yellow-300/40 relative overflow-hidden font-luxury"
                           data-testid={`button-select-${buddy.id}`}
