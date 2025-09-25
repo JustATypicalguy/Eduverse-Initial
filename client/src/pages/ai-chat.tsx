@@ -343,7 +343,7 @@ export default function AiChat() {
                     <CardContent className="p-6 text-center">
                       <Heart className="mx-auto mb-4 text-pink-400" size={32} />
                       <h4 className="font-luxury mb-2 text-[#23252f]">❤️ Emotion-Aware AI</h4>
-                      <p className="text-sm text-white/80 font-elegant">Adapts to your mood & needs</p>
+                      <p className="text-sm font-elegant text-[#23252f]">Adapts to your mood & needs</p>
                     </CardContent>
                   </Card>
                 </div>
