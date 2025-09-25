@@ -50,7 +50,7 @@ export function GroupChatLayout() {
   };
 
   return (
-    <div className="mx-4 mb-4 h-full bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
+    <div className="mx-4 mb-4 h-full luxury-card border-0 shadow-2xl overflow-hidden flex flex-col">
       {/* Offline Banner */}
       {!isConnected && (
         <div className="bg-red-500 text-white px-4 py-2 text-sm flex items-center justify-center gap-2" data-testid="offline-banner">
@@ -61,7 +61,7 @@ export function GroupChatLayout() {
       
       <div className="flex flex-1">
         {/* Sidebar */}
-        <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
+        <div className="w-80 bg-gradient-to-br from-white/95 to-gray-50/95 backdrop-blur-sm border-r border-white/30 flex flex-col">
         <GroupSidebar
           user={user}
           selectedGroup={selectedGroup}
@@ -83,13 +83,13 @@ export function GroupChatLayout() {
             isConnected={isConnected}
           />
         ) : (
-          <div className="flex-1 flex items-center justify-center bg-white">
+          <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-white/95 to-gray-50/95 backdrop-blur-sm">
             <div className="text-center">
               <div className="text-6xl mb-4">💬</div>
-              <h2 className="text-2xl font-semibold text-gray-600 mb-2">
+              <h2 className="text-2xl font-luxury text-gray-700 mb-2">
                 Welcome to EduVerse Group Chat
               </h2>
-              <p className="text-gray-500">
+              <p className="text-gray-600 font-elegant">
                 Select a group to start chatting with your classmates and teachers
               </p>
             </div>

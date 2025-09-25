@@ -266,12 +266,12 @@ export function ChatArea({
   return (
     <div className="h-full flex flex-col">
       {/* Chat Header */}
-      <div className="bg-white border-b border-gray-200 p-4">
+      <div className="bg-gradient-to-br from-white/95 to-gray-50/95 backdrop-blur-sm border-b border-white/30 p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="text-2xl">{getGroupIcon(group.type)}</div>
             <div>
-              <h2 className="font-semibold text-gray-900 flex items-center gap-2">
+              <h2 className="font-luxury text-gray-900 flex items-center gap-2">
                 {group.name}
                 {isConnected ? (
                   <Wifi className="h-4 w-4 text-green-500" title="Connected" />
@@ -279,7 +279,7 @@ export function ChatArea({
                   <WifiOff className="h-4 w-4 text-red-500" title="Disconnected" />
                 )}
               </h2>
-              <p className="text-sm text-gray-500 flex items-center gap-2">
+              <p className="text-sm text-gray-600 font-elegant flex items-center gap-2">
                 <Users className="h-3 w-3" />
                 12 members • {group.description}
               </p>
@@ -353,8 +353,8 @@ export function ChatArea({
       {/* Messages Area */}
       <div 
         ref={chatContainerRef}
-        className={`flex-1 overflow-y-auto bg-gray-50 p-4 space-y-4 relative transition-all duration-200 ${
-          isDragOver ? 'bg-blue-50 border-2 border-dashed border-blue-300' : ''
+        className={`flex-1 overflow-y-auto bg-gradient-to-br from-gray-50/90 to-white/90 backdrop-blur-sm p-4 space-y-4 relative transition-all duration-300 ${
+          isDragOver ? 'bg-blue-50/90 border-2 border-dashed border-blue-300' : ''
         }`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -374,8 +374,8 @@ export function ChatArea({
           <div className="flex-1 flex items-center justify-center text-gray-500">
             <div className="text-center">
               <div className="text-4xl mb-2">{getGroupIcon(group.type)}</div>
-              <h3 className="font-medium mb-1">Welcome to {group.name}</h3>
-              <p className="text-sm">Start the conversation by sending a message</p>
+              <h3 className="font-luxury mb-1">Welcome to {group.name}</h3>
+              <p className="text-sm font-elegant">Start the conversation by sending a message</p>
               <div className="mt-4 text-xs text-gray-400 space-y-1">
                 <p>💡 You can drag and drop files to share them</p>
                 <p>💬 Click reply on any message to start a thread</p>

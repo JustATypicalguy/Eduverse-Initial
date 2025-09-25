@@ -129,9 +129,9 @@ export function GroupSidebar({ user, selectedGroup, onGroupSelect, onlineUsers, 
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="p-4 border-b border-gray-200">
+      <div className="p-4 border-b border-white/30">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-xl font-semibold text-gray-800">Groups</h1>
+          <h1 className="text-xl font-luxury text-gray-800">Groups</h1>
           <div className="flex gap-2">
             <Button variant="ghost" size="sm">
               <Settings className="h-4 w-4" />
@@ -144,15 +144,15 @@ export function GroupSidebar({ user, selectedGroup, onGroupSelect, onlineUsers, 
 
         {/* User info */}
         {user && (
-          <div className="flex items-center gap-3 mb-4 p-3 bg-gray-50 rounded-lg">
+          <div className="flex items-center gap-3 mb-4 p-3 bg-gradient-to-br from-white/80 to-gray-50/80 backdrop-blur-sm rounded-lg border border-white/40 shadow-sm">
             <Avatar>
               <AvatarFallback className="bg-eduverse-blue text-white">
                 {user.fullName.split(' ').map(n => n[0]).join('').toUpperCase()}
               </AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">
-              <p className="font-medium text-gray-900 truncate">{user.fullName}</p>
-              <p className="text-sm text-gray-500">@{user.username}</p>
+              <p className="font-luxury text-gray-900 truncate">{user.fullName}</p>
+              <p className="text-sm text-gray-600 font-elegant">@{user.username}</p>
               <Badge variant={user.role === 'teacher' || user.role === 'admin' ? 'default' : 'secondary'} className="text-xs">
                 {user.role === 'teacher' ? '👩‍🏫 Teacher' : user.role === 'admin' ? '👨‍💼 Admin' : '👨‍🎓 Student'}
               </Badge>
@@ -205,10 +205,10 @@ export function GroupSidebar({ user, selectedGroup, onGroupSelect, onlineUsers, 
                   <button
                     key={group.id}
                     onClick={() => onGroupSelect(group)}
-                    className={`w-full p-3 rounded-lg text-left transition-colors ${
+                    className={`w-full p-3 rounded-lg text-left transition-all duration-300 ${
                       selectedGroup?.id === group.id
-                        ? 'bg-eduverse-blue text-white'
-                        : 'hover:bg-gray-100'
+                        ? 'bg-gradient-to-r from-yellow-400 to-yellow-600 text-white shadow-lg'
+                        : 'hover:bg-white/60 hover:shadow-md backdrop-blur-sm'
                     }`}
                     data-testid={`group-item-${group.id}`}
                   >
