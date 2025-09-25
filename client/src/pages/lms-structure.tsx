@@ -133,9 +133,9 @@ export default function LMSStructure() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-      {/* Modern Header with floating effect */}
-      <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-white/20 shadow-lg">
+    <div className="min-h-screen luxury-gradient pt-20">
+      {/* Luxury Header */}
+      <div className="relative z-50 py-8 mb-8">
         <div className="container mx-auto px-6 py-6">
           <div className="text-center">
             <div className="flex items-center justify-center gap-3 mb-4">
@@ -145,18 +145,18 @@ export default function LMSStructure() {
                   <TrendingUp className="text-white" size={32} />
                 </div>
               </div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <h1 className="text-4xl font-luxury text-white/90 drop-shadow-2xl">
                 Progress Dashboard
               </h1>
             </div>
-            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+            <p className="text-lg text-white/80 max-w-2xl mx-auto font-elegant drop-shadow-lg">
               Your personalized learning journey with real-time insights and achievements! 🚀
             </p>
           </div>
           
-          {/* Modern Tab Navigation */}
+          {/* Luxury Tab Navigation */}
           <div className="flex justify-center mt-6">
-            <div className="flex bg-white/60 backdrop-blur-sm rounded-2xl p-1 shadow-lg border border-white/30">
+            <div className="flex luxury-card p-1 shadow-2xl border-0">
               {[
                 { key: 'overview', label: 'Overview', icon: Target },
                 { key: 'subjects', label: 'Subjects', icon: BookOpen },
@@ -166,10 +166,10 @@ export default function LMSStructure() {
                 <button
                   key={key}
                   onClick={() => setActiveTab(key as any)}
-                  className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all duration-300 ${
+                  className={`flex items-center gap-2 px-6 py-3 rounded-xl font-elegant transition-all duration-400 ${
                     activeTab === key
-                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg transform scale-105'
-                      : 'text-slate-600 hover:text-blue-600 hover:bg-white/50'
+                      ? 'bg-gradient-to-r from-yellow-400 to-yellow-600 text-white shadow-2xl transform scale-105 border-2 border-yellow-300/40'
+                      : 'text-gray-700 hover:text-gray-900 hover:bg-white/60 hover:shadow-md'
                   }`}
                   data-testid={`tab-${key}`}
                 >
@@ -188,10 +188,10 @@ export default function LMSStructure() {
           {/* Render content based on active tab */}
           {activeTab === 'overview' && (
             <div>
-              {/* Modern Student Overview Card */}
-              <Card className="mb-8 relative overflow-hidden border-0 shadow-2xl">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700"></div>
-                <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/10 via-purple-600/5 to-indigo-700/10 opacity-50"></div>
+              {/* Luxury Student Overview Card */}
+              <Card className="luxury-card mb-8 relative overflow-hidden border-0 shadow-2xl">
+                <div className="absolute inset-0 bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900"></div>
+                <div className="absolute inset-0 bg-gradient-to-tr from-yellow-400/20 via-transparent to-yellow-400/10 opacity-50"></div>
                 <CardHeader className="relative z-10">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
@@ -204,8 +204,8 @@ export default function LMSStructure() {
                         </Avatar>
                       </div>
                       <div className="text-white">
-                        <CardTitle className="text-3xl font-bold mb-1">{selectedStudent.name}</CardTitle>
-                        <p className="text-white/80 text-lg">Student ID: {selectedStudent.id}</p>
+                        <CardTitle className="text-3xl font-luxury mb-1">{selectedStudent.name}</CardTitle>
+                        <p className="text-white/80 text-lg font-elegant">Student ID: {selectedStudent.id}</p>
                         <div className="flex items-center gap-2 mt-2">
                           <div className="flex items-center gap-1 bg-white/20 px-3 py-1 rounded-full text-sm">
                             <Trophy size={14} />
@@ -266,20 +266,20 @@ export default function LMSStructure() {
 
           {/* Subject Progress Cards */}
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-              <BookOpen className="text-eduverse-blue" />
+            <h2 className="text-2xl font-luxury text-white/90 mb-6 flex items-center gap-2 drop-shadow-lg">
+              <BookOpen className="text-yellow-400" />
               Subject Progress
             </h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {selectedStudent.subjects.map((subject) => (
-                <Card key={subject.name} className="hover:shadow-lg transition-shadow">
+                <Card key={subject.name} className="luxury-card border-0 shadow-2xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
                   <CardHeader className="pb-3">
                     <CardTitle className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <span className="text-2xl">{subject.emoji}</span>
                         <span className="text-lg">{subject.name}</span>
                       </div>
-                      <Badge className={`${getGradeColor(subject.grade)} border-0`}>
+                      <Badge className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-white border-0">
                         {subject.grade}%
                       </Badge>
                     </CardTitle>
@@ -310,17 +310,17 @@ export default function LMSStructure() {
                     
                     {/* Subject Stats */}
                     <div className="grid grid-cols-2 gap-2 text-center text-sm">
-                      <div className="p-2 bg-gray-50 rounded">
-                        <div className="font-bold text-eduverse-blue">
+                      <div className="p-2 bg-white/10 backdrop-blur-sm rounded border border-white/20">
+                        <div className="font-luxury text-gray-800">
                           {getGradeLetter(subject.grade)}
                         </div>
-                        <div className="text-gray-500">Letter</div>
+                        <div className="text-gray-600 font-elegant">Letter</div>
                       </div>
-                      <div className="p-2 bg-gray-50 rounded">
-                        <div className="font-bold text-eduverse-blue">
+                      <div className="p-2 bg-white/10 backdrop-blur-sm rounded border border-white/20">
+                        <div className="font-luxury text-gray-800">
                           {subject.progress}%
                         </div>
-                        <div className="text-gray-500">Complete</div>
+                        <div className="text-gray-600 font-elegant">Complete</div>
                       </div>
                     </div>
                   </CardContent>
@@ -331,10 +331,10 @@ export default function LMSStructure() {
 
           {/* Overall Progress Summary */}
           <div className="grid md:grid-cols-2 gap-8 mb-8">
-            <Card>
+            <Card className="luxury-card border-0 shadow-2xl">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-eduverse-blue">
-                  <Target size={24} />
+                <CardTitle className="flex items-center gap-2 text-gray-800 font-luxury">
+                  <Target size={24} className="text-yellow-500" />
                   Performance Analysis
                 </CardTitle>
               </CardHeader>
@@ -357,7 +357,7 @@ export default function LMSStructure() {
                     <div className="text-sm text-gray-600 space-y-2">
                       <div className="flex justify-between">
                         <span>Strongest Subject:</span>
-                        <span className="font-medium text-eduverse-blue">
+                        <span className="font-medium text-yellow-600">
                           Mathematics (92%)
                         </span>
                       </div>
@@ -373,10 +373,10 @@ export default function LMSStructure() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="luxury-card border-0 shadow-2xl">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-eduverse-blue">
-                  <TrendingUp size={24} />
+                <CardTitle className="flex items-center gap-2 text-gray-800 font-luxury">
+                  <TrendingUp size={24} className="text-yellow-500" />
                   Class Rankings
                 </CardTitle>
               </CardHeader>
@@ -385,15 +385,15 @@ export default function LMSStructure() {
                   {exampleStudents.map((student, index) => (
                     <div 
                       key={student.name}
-                      className={`flex items-center justify-between p-3 rounded-lg ${
+                      className={`flex items-center justify-between p-3 rounded-lg transition-all duration-300 ${
                         student.name === selectedStudent.name 
-                          ? 'bg-eduverse-light border border-eduverse-blue' 
-                          : 'bg-gray-50'
+                          ? 'bg-gradient-to-r from-yellow-100 to-yellow-50 border border-yellow-300 shadow-md' 
+                          : 'bg-white/80 backdrop-blur-sm hover:bg-white/90'
                       }`}
                     >
                       <div className="flex items-center gap-3">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold ${
-                          student.rank <= 3 ? 'bg-eduverse-gold' : 'bg-gray-400'
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-luxury ${
+                          student.rank <= 3 ? 'bg-gradient-to-r from-yellow-400 to-yellow-600' : 'bg-gray-400'
                         }`}>
                           {student.rank}
                         </div>
@@ -411,7 +411,7 @@ export default function LMSStructure() {
                 
                 <div className="mt-4 pt-4 border-t text-center">
                   <p className="text-sm text-gray-600">
-                    Ranked <span className="font-bold text-eduverse-blue">#{selectedStudent.rank}</span> out of{" "}
+                    Ranked <span className="font-luxury text-yellow-600">#{selectedStudent.rank}</span> out of{" "}
                     <span className="font-bold">{selectedStudent.totalStudents}</span> students
                   </p>
                 </div>
@@ -420,18 +420,18 @@ export default function LMSStructure() {
           </div>
 
           {/* Example Usage */}
-          <Card className="bg-gradient-to-r from-green-50 to-blue-50 border-green-200">
+          <Card className="luxury-card border-0 shadow-2xl">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-green-800">
-                <Award size={24} />
+              <CardTitle className="flex items-center gap-2 text-gray-800 font-luxury">
+                <Award size={24} className="text-yellow-500" />
                 📊 Example: Student Progress Report
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid md:grid-cols-3 gap-6 text-sm">
                 <div>
-                  <h4 className="font-bold text-green-800 mb-2">📈 Grades Overview:</h4>
-                  <ul className="space-y-1 text-green-700">
+                  <h4 className="font-luxury text-gray-800 mb-2">📈 Grades Overview:</h4>
+                  <ul className="space-y-1 text-gray-700 font-elegant">
                     <li>• Math: 92% (A-)</li>
                     <li>• Science: 88% (B+)</li>  
                     <li>• English: 85% (B+)</li>
@@ -439,8 +439,8 @@ export default function LMSStructure() {
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-bold text-blue-800 mb-2">🎯 Progress Status:</h4>
-                  <ul className="space-y-1 text-blue-700">
+                  <h4 className="font-luxury text-gray-800 mb-2">🎯 Progress Status:</h4>
+                  <ul className="space-y-1 text-gray-700 font-elegant">
                     <li>• Class Rank: #12 of 150</li>
                     <li>• Assignments: 44/46 completed</li>
                     <li>• Strong in: Mathematics</li>
@@ -448,8 +448,8 @@ export default function LMSStructure() {
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-bold text-purple-800 mb-2">🏆 Achievements:</h4>
-                  <ul className="space-y-1 text-purple-700">
+                  <h4 className="font-luxury text-gray-800 mb-2">🏆 Achievements:</h4>
+                  <ul className="space-y-1 text-gray-700 font-elegant">
                     <li>• Top 10% in Math</li>
                     <li>• Perfect History scores</li>
                     <li>• 95% assignment completion</li>
