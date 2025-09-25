@@ -34,7 +34,6 @@ import TeacherAnalytics from "@/pages/teacher-analytics";
 import TeacherCommunication from "@/pages/teacher-communication";
 import TeacherProfile from "@/pages/teacher-profile";
 import PortalLanding from "@/pages/portal-landing";
-import Login from "@/pages/login";
 import News from "@/pages/news";
 import Events from "@/pages/events";
 import StaffDirectory from "@/pages/staff";
@@ -63,12 +62,8 @@ function Router() {
             <Home />
           </Route>
           
-          {/* Public-only routes (login page) */}
-          <Route path="/">
-            <PublicOnlyRoute>
-              <Login />
-            </PublicOnlyRoute>
-          </Route>
+          {/* Redirect root to home page - no login required */}
+          <Route path="/" component={Home} />
           
           {/* Role-based dashboard routes */}
           <Route path="/student">
@@ -126,32 +121,12 @@ function Router() {
             </TeacherRoute>
           </Route>
           
-          {/* Protected multi-role routes */}
-          <Route path="/ai-chat">
-            <MultiRoleRoute roles={['student', 'teacher', 'admin']}>
-              <AiChat />
-            </MultiRoleRoute>
-          </Route>
-          <Route path="/group-chat">
-            <MultiRoleRoute roles={['student', 'teacher', 'admin']}>
-              <GroupChat />
-            </MultiRoleRoute>
-          </Route>
-          <Route path="/ar-learning">
-            <MultiRoleRoute roles={['student', 'teacher']}>
-              <ARLearning />
-            </MultiRoleRoute>
-          </Route>
-          <Route path="/emotional-learning">
-            <MultiRoleRoute roles={['student', 'teacher']}>
-              <EmotionalLearning />
-            </MultiRoleRoute>
-          </Route>
-          <Route path="/avatars">
-            <ProtectedRoute>
-              <Avatars />
-            </ProtectedRoute>
-          </Route>
+          {/* Now publicly accessible - no login required */}
+          <Route path="/ai-chat" component={AiChat} />
+          <Route path="/group-chat" component={GroupChat} />
+          <Route path="/ar-learning" component={ARLearning} />
+          <Route path="/emotional-learning" component={EmotionalLearning} />
+          <Route path="/avatars" component={Avatars} />
           
           {/* Public accessible routes (but enhanced when authenticated) */}
           <Route path="/home" component={Home} />

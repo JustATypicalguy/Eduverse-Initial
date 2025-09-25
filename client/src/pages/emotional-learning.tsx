@@ -249,7 +249,240 @@ export default function EmotionalLearning() {
             </CardContent>
           </Card>
 
-          {/* Example Usage */}
+          {/* Emotional Intelligence Learning Center */}
+          <div className="mt-12">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-eduverse-blue mb-4">🎨 Emotional Intelligence Learning Center</h2>
+              <p className="text-xl text-eduverse-gray">Master your emotions to unlock your learning potential</p>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+              {/* Study Scenarios */}
+              <Card className="bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200 hover:scale-105 transition-transform duration-300" data-testid="scenario-exam">
+                <CardHeader>
+                  <CardTitle className="text-blue-800 flex items-center gap-2">
+                    <span className="text-2xl">📝</span>
+                    Exam Preparation
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3 text-blue-700">
+                    <div className="p-3 bg-white/70 rounded-lg">
+                      <strong className="text-green-600">😊 Calm & Confident:</strong>
+                      <p className="text-sm mt-1">"Perfect mindset for reviewing notes and practicing problems"</p>
+                    </div>
+                    <div className="p-3 bg-white/70 rounded-lg">
+                      <strong className="text-red-600">😰 Test Anxiety:</strong>
+                      <p className="text-sm mt-1">"Use breathing exercises and break study into smaller chunks"</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-green-200 hover:scale-105 transition-transform duration-300" data-testid="scenario-group">
+                <CardHeader>
+                  <CardTitle className="text-green-800 flex items-center gap-2">
+                    <span className="text-2xl">👥</span>
+                    Group Projects
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3 text-green-700">
+                    <div className="p-3 bg-white/70 rounded-lg">
+                      <strong className="text-yellow-600">🤩 Excited:</strong>
+                      <p className="text-sm mt-1">"Great energy for brainstorming and leading discussions"</p>
+                    </div>
+                    <div className="p-3 bg-white/70 rounded-lg">
+                      <strong className="text-gray-600">🤔 Confused:</strong>
+                      <p className="text-sm mt-1">"Ask clarifying questions and request help from teammates"</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200 hover:scale-105 transition-transform duration-300" data-testid="scenario-homework">
+                <CardHeader>
+                  <CardTitle className="text-purple-800 flex items-center gap-2">
+                    <span className="text-2xl">📚</span>
+                    Homework Time
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3 text-purple-700">
+                    <div className="p-3 bg-white/70 rounded-lg">
+                      <strong className="text-blue-600">😌 Calm:</strong>
+                      <p className="text-sm mt-1">"Ideal for deep focus on reading and writing assignments"</p>
+                    </div>
+                    <div className="p-3 bg-white/70 rounded-lg">
+                      <strong className="text-purple-600">😴 Tired:</strong>
+                      <p className="text-sm mt-1">"Take a power nap or switch to easier review tasks"</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          {/* Interactive Emotion Wheel */}
+          <Card className="mb-8 bg-gradient-to-r from-indigo-50 to-purple-50 border-purple-200">
+            <CardHeader>
+              <CardTitle className="text-center text-purple-800 flex items-center justify-center gap-2">
+                <span className="text-2xl">🎡</span>
+                Interactive Emotion Learning Wheel
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center mb-6">
+                <p className="text-purple-700">Click on different emotions to learn how they affect your learning style</p>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                {Object.entries(emotions).map(([key, emotion]) => (
+                  <div
+                    key={key}
+                    onClick={() => selectEmotion(key)}
+                    className={`cursor-pointer p-4 rounded-xl text-center transition-all duration-300 hover:scale-110 ${
+                      currentEmotion.emotion === emotion.emotion 
+                        ? 'bg-purple-200 border-2 border-purple-500 shadow-lg' 
+                        : 'bg-white border border-purple-300 hover:bg-purple-100'
+                    }`}
+                    data-testid={`emotion-wheel-${key}`}
+                  >
+                    <div className="text-3xl mb-2">{emotion.emoji}</div>
+                    <div className="text-sm font-semibold text-purple-800">{emotion.emotion}</div>
+                    <div className="text-xs text-purple-600 mt-1">
+                      {emotion.emotion === 'Happy' && 'Creative ✨'}
+                      {emotion.emotion === 'Excited' && 'Energetic ⚡'}
+                      {emotion.emotion === 'Calm' && 'Focused 🎯'}
+                      {emotion.emotion === 'Stressed' && 'Overwhelmed 😰'}
+                      {emotion.emotion === 'Tired' && 'Low Energy 😴'}
+                      {emotion.emotion === 'Confused' && 'Seeking Help 🤔'}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Mood-Based Study Recommendations */}
+          <Card className="mb-8 bg-gradient-to-r from-yellow-50 to-orange-50 border-orange-200">
+            <CardHeader>
+              <CardTitle className="text-orange-800 flex items-center gap-2">
+                <span className="text-2xl">📈</span>
+                Smart Study Recommendations by Mood
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <h4 className="font-bold text-orange-700 mb-3 flex items-center gap-2">
+                    🚀 High Energy Moods (Happy, Excited)
+                  </h4>
+                  <ul className="space-y-2 text-orange-600">
+                    <li className="flex items-center gap-2">🧪 <span>Tackle challenging math problems</span></li>
+                    <li className="flex items-center gap-2">🎨 <span>Work on creative writing projects</span></li>
+                    <li className="flex items-center gap-2">🗣️ <span>Practice public speaking</span></li>
+                    <li className="flex items-center gap-2">🔬 <span>Conduct science experiments</span></li>
+                    <li className="flex items-center gap-2">🎵 <span>Learn new languages or music</span></li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-bold text-blue-700 mb-3 flex items-center gap-2">
+                    🧘 Low Energy Moods (Calm, Tired)
+                  </h4>
+                  <ul className="space-y-2 text-blue-600">
+                    <li className="flex items-center gap-2">📚 <span>Read textbooks or novels</span></li>
+                    <li className="flex items-center gap-2">📝 <span>Review notes and flashcards</span></li>
+                    <li className="flex items-center gap-2">🖥️ <span>Watch educational videos</span></li>
+                    <li className="flex items-center gap-2">✍️ <span>Organize study materials</span></li>
+                    <li className="flex items-center gap-2">🧑‍🎓 <span>Practice meditation or mindfulness</span></li>
+                  </ul>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Student Success Stories */}
+          <Card className="mb-8 bg-gradient-to-r from-emerald-50 to-teal-50 border-emerald-200">
+            <CardHeader>
+              <CardTitle className="text-emerald-800 flex items-center justify-center gap-2">
+                <span className="text-2xl">🌟</span>
+                Real Student Success Stories
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-3 gap-6">
+                <div className="text-center p-4 bg-white/70 rounded-xl">
+                  <div className="text-4xl mb-3">📈</div>
+                  <h4 className="font-bold text-emerald-700 mb-2">Alex, Grade 10</h4>
+                  <p className="text-emerald-600 text-sm">"Learning to recognize when I'm stressed helped me improve my test scores by 25%. Now I take breaks and use breathing exercises!"</p>
+                </div>
+                <div className="text-center p-4 bg-white/70 rounded-xl">
+                  <div className="text-4xl mb-3">🏆</div>
+                  <h4 className="font-bold text-emerald-700 mb-2">Maya, Grade 8</h4>
+                  <p className="text-emerald-600 text-sm">"I used to procrastinate when confused. Now I know confusion means 'ask for help' - my grades went from C to A!"</p>
+                </div>
+                <div className="text-center p-4 bg-white/70 rounded-xl">
+                  <div className="text-4xl mb-3">😊</div>
+                  <h4 className="font-bold text-emerald-700 mb-2">Jordan, Grade 12</h4>
+                  <p className="text-emerald-600 text-sm">"Understanding my happy moods helped me schedule creative projects better. I finished my college application essays with confidence!"</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* How It Works */}
+          <Card className="mb-8 bg-gradient-to-r from-gray-50 to-slate-50 border-gray-200">
+            <CardHeader>
+              <CardTitle className="text-gray-800 flex items-center gap-2">
+                <Brain size={24} />
+                How Emotional Learning Works
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-2 gap-8">
+                <div>
+                  <h4 className="font-bold text-gray-700 mb-4 flex items-center gap-2">
+                    🧠 The Science Behind It
+                  </h4>
+                  <div className="space-y-3 text-gray-600">
+                    <div className="flex items-start gap-3">
+                      <span className="text-blue-500 font-bold">1.</span>
+                      <p><strong>Emotion Recognition:</strong> AI analyzes facial expressions, voice patterns, and user input to identify current emotional state</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <span className="text-green-500 font-bold">2.</span>
+                      <p><strong>Learning Optimization:</strong> Different emotions enhance different types of learning (creativity, focus, memory)</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <span className="text-purple-500 font-bold">3.</span>
+                      <p><strong>Personalized Tips:</strong> Custom strategies based on your emotional state and learning goals</p>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <h4 className="font-bold text-gray-700 mb-4 flex items-center gap-2">
+                    🚀 Benefits for Students
+                  </h4>
+                  <div className="space-y-3 text-gray-600">
+                    <div className="p-3 bg-blue-100 rounded-lg">
+                      <strong className="text-blue-700">🏆 Better Academic Performance:</strong>
+                      <p className="text-sm mt-1">Students see 15-30% improvement in grades when emotions are managed effectively</p>
+                    </div>
+                    <div className="p-3 bg-green-100 rounded-lg">
+                      <strong className="text-green-700">🙏 Reduced Stress:</strong>
+                      <p className="text-sm mt-1">Early emotion recognition helps prevent burnout and anxiety</p>
+                    </div>
+                    <div className="p-3 bg-purple-100 rounded-lg">
+                      <strong className="text-purple-700">🧠 Enhanced Self-Awareness:</strong>
+                      <p className="text-sm mt-1">Students learn to understand and regulate their emotions independently</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Quick Examples */}
           <div className="grid md:grid-cols-2 gap-6">
             <Card className="bg-blue-50 border-blue-200">
               <CardHeader>
@@ -263,6 +496,9 @@ export default function EmotionalLearning() {
                   <div><strong>Detected:</strong> 😊 Happy</div>
                   <div><strong>Message:</strong> "Amazing energy for learning!"</div>
                   <div><strong>Tip:</strong> "Perfect time for creative projects!"</div>
+                  <div className="mt-3 p-2 bg-blue-100 rounded text-sm">
+                    <strong>Result:</strong> Sarah used her happy mood to write a creative essay and got an A+!
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -279,6 +515,9 @@ export default function EmotionalLearning() {
                   <div><strong>Detected:</strong> 😰 Stressed</div>
                   <div><strong>Message:</strong> "Take a deep breath. You've got this!"</div>
                   <div><strong>Tip:</strong> "Try 5 deep breaths and break tasks into smaller steps"</div>
+                  <div className="mt-3 p-2 bg-red-100 rounded text-sm">
+                    <strong>Result:</strong> Marcus broke his big project into daily tasks and felt much more confident!
+                  </div>
                 </div>
               </CardContent>
             </Card>
