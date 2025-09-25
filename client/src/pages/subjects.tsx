@@ -62,16 +62,16 @@ export default function Subjects() {
       <title>EduVerse Study Materials - Academic Subjects by Grade Level</title>
       <meta name="description" content="Explore comprehensive study materials and academic subjects organized by grade level at EduVerse. Access age-appropriate learning resources." />
       
-      <div className="pt-24">
-        {/* Teal/Cyan Theme Header */}
-        <section className="py-20 bg-gradient-to-br from-teal-500 via-cyan-500 to-blue-500 text-white" data-testid="subjects-header">
+      <div className="pt-24 luxury-gradient min-h-screen">
+        {/* Luxury Theme Header */}
+        <section className="py-20" data-testid="subjects-header">
           <div className="container mx-auto px-6">
             <div className="text-center mb-16">
               <div className="flex items-center justify-center gap-4 mb-6">
                 <span className="text-6xl animate-pulse">📚</span>
-                <h1 className="text-5xl font-bold">Study Materials & Subjects</h1>
+                <h1 className="text-5xl font-luxury text-white/90 drop-shadow-2xl">Study Materials & Subjects</h1>
               </div>
-              <p className="text-xl text-teal-100 max-w-3xl mx-auto">
+              <p className="text-xl text-white/80 max-w-3xl mx-auto font-elegant drop-shadow-lg">
                 Discover comprehensive learning resources organized by grade level with engaging activities and examples
               </p>
             </div>
@@ -79,11 +79,11 @@ export default function Subjects() {
         </section>
         
         {/* Content Section */}
-        <section className="py-20 bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-50">
+        <section className="py-20 bg-black/10 backdrop-blur-sm">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h1 className="text-4xl font-bold text-gray-800 dark:text-white mb-4">Academic Subjects by Grade Level</h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+            <h1 className="text-4xl font-luxury text-white/90 mb-4 drop-shadow-2xl">Academic Subjects by Grade Level</h1>
+            <p className="text-xl text-white/80 max-w-3xl mx-auto font-elegant drop-shadow-lg">
               Discover age-appropriate subjects with specific examples and activities designed for each grade level.
             </p>
           </div>
@@ -99,17 +99,17 @@ export default function Subjects() {
                 return (
                   <Card 
                     key={grade.id}
-                    className={`bg-gradient-to-br ${gradientClasses} dark:from-gray-800 dark:to-gray-700 hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-2`}
+                    className="luxury-card border-0 shadow-2xl hover:scale-105 transition-all duration-400 cursor-pointer"
                     onClick={() => setSelectedGrade(grade.id)}
                     data-testid={`grade-card-${grade.id}`}
                   >
                     <CardContent className="p-8 text-center">
-                      <div className={`w-16 h-16 bg-${iconBgClass} dark:bg-gray-600 rounded-full flex items-center justify-center mb-6 mx-auto`}>
+                      <div className="w-16 h-16 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center mb-6 mx-auto shadow-lg">
                         <IconComponent className="text-white" size={32} />
                       </div>
-                      <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">{grade.name}</h3>
-                      <p className="text-lg text-gray-700 dark:text-gray-200 mb-3">{grade.ageRange}</p>
-                      <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">{grade.description}</p>
+                      <h3 className="text-2xl font-luxury text-gray-800 mb-2">{grade.name}</h3>
+                      <p className="text-lg text-gray-700 mb-3 font-premium">{grade.ageRange}</p>
+                      <p className="text-gray-600 text-sm leading-relaxed font-elegant">{grade.description}</p>
                     </CardContent>
                   </Card>
                 );
@@ -122,10 +122,10 @@ export default function Subjects() {
             <div className="mb-12">
               <div className="flex items-center justify-between mb-8">
                 <div>
-                  <h2 className="text-3xl font-bold text-gray-800 dark:text-white mb-2">
+                  <h2 className="text-3xl font-luxury text-white/90 mb-2 drop-shadow-lg">
                     {gradeLevels.find(g => g.id === selectedGrade)?.name} Subjects
                   </h2>
-                  <p className="text-gray-600 dark:text-gray-300">
+                  <p className="text-white/80 font-elegant drop-shadow-sm">
                     {gradeLevels.find(g => g.id === selectedGrade)?.ageRange}
                   </p>
                 </div>
@@ -134,10 +134,11 @@ export default function Subjects() {
                     setSelectedGrade(null);
                     setSelectedSubject(null);
                   }}
-                  variant="outline"
+                  className="luxury-button bg-gradient-to-r from-yellow-400 to-yellow-600 text-white hover:shadow-2xl transition-all duration-400 border-2 border-yellow-300/40 relative overflow-hidden font-luxury"
                   data-testid="button-back-to-grades"
                 >
-                  ← Back to Grade Levels
+                  <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 via-transparent to-yellow-400/20 animate-pulse"></div>
+                  <span className="relative z-10">← Back to Grade Levels</span>
                 </Button>
               </div>
               
@@ -150,18 +151,18 @@ export default function Subjects() {
                   return (
                     <Card 
                       key={subject.id} 
-                      className={`bg-gradient-to-br ${gradientClasses} dark:from-gray-800 dark:to-gray-700 hover:shadow-lg transition-shadow cursor-pointer ${
-                        selectedSubject === subject.id ? 'ring-2 ring-blue-500 dark:ring-blue-400' : ''
+                      className={`luxury-card border-0 shadow-2xl hover:scale-105 transition-all duration-400 cursor-pointer ${
+                        selectedSubject === subject.id ? 'ring-2 ring-yellow-400' : ''
                       }`}
                       onClick={() => setSelectedSubject(selectedSubject === subject.id ? null : subject.id)}
                       data-testid={`subject-card-${subject.id}`}
                     >
                       <CardContent className="p-6">
-                        <div className={`w-12 h-12 bg-${iconBgClass} dark:bg-gray-600 rounded-lg flex items-center justify-center mb-4`}>
+                        <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center mb-4 shadow-lg">
                           <IconComponent className="text-white" size={24} />
                         </div>
-                        <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">{subject.name}</h3>
-                        <p className="text-gray-600 dark:text-gray-300 text-sm">{subject.description}</p>
+                        <h3 className="text-lg font-luxury text-gray-800 mb-2">{subject.name}</h3>
+                        <p className="text-gray-600 text-sm font-elegant">{subject.description}</p>
                       </CardContent>
                     </Card>
                   );
@@ -170,37 +171,37 @@ export default function Subjects() {
 
               {/* Selected Subject Details */}
               {selectedSubject && (
-                <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl p-8">
+                <div className="luxury-card rounded-2xl p-8 border-0 shadow-2xl">
                   {(() => {
                     const subject = getSubjectsByGrade(selectedGrade).find(s => s.id === selectedSubject);
                     if (!subject) return null;
                     
                     return (
                       <>
-                        <h3 className="text-3xl font-bold text-gray-800 dark:text-white mb-6">{subject.name}</h3>
+                        <h3 className="text-3xl font-luxury text-gray-800 mb-6">{subject.name}</h3>
                         <div className="grid lg:grid-cols-2 gap-8">
                           <div>
-                            <h4 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">What You'll Learn</h4>
+                            <h4 className="text-xl font-luxury text-gray-800 mb-4">What You'll Learn</h4>
                             <div className="space-y-3">
                               {subject.examples.map((example, index) => (
                                 <div key={index} className="flex items-start space-x-3">
                                   <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                                     <Check className="text-white" size={12} />
                                   </div>
-                                  <span className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">{example}</span>
+                                  <span className="text-gray-700 text-sm leading-relaxed font-elegant">{example}</span>
                                 </div>
                               ))}
                             </div>
                           </div>
                           <div>
-                            <h4 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">Skills You'll Develop</h4>
+                            <h4 className="text-xl font-luxury text-gray-800 mb-4">Skills You'll Develop</h4>
                             <div className="space-y-3">
                               {subject.skills.map((skill, index) => (
                                 <div key={index} className="flex items-start space-x-3">
                                   <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                                     <Lightbulb className="text-white" size={12} />
                                   </div>
-                                  <span className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">{skill}</span>
+                                  <span className="text-gray-700 text-sm leading-relaxed font-elegant">{skill}</span>
                                 </div>
                               ))}
                             </div>
@@ -216,11 +217,11 @@ export default function Subjects() {
           
           {/* Featured Learning Experience */}
           {!selectedGrade && (
-            <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl p-8 lg:p-12">
+            <div className="luxury-card rounded-2xl p-8 lg:p-12 border-0 shadow-2xl">
               <div className="grid lg:grid-cols-2 gap-8 items-center">
                 <div>
-                  <h3 className="text-3xl font-bold text-gray-800 dark:text-white mb-6">Grade-Appropriate Learning</h3>
-                  <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+                  <h3 className="text-3xl font-luxury text-gray-800 mb-6">Grade-Appropriate Learning</h3>
+                  <p className="text-gray-600 mb-6 leading-relaxed font-elegant">
                     Our curriculum is carefully designed to match developmental stages, ensuring students 
                     receive age-appropriate challenges and build foundational skills progressively.
                   </p>
@@ -229,25 +230,25 @@ export default function Subjects() {
                       <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
                         <Check className="text-white" size={14} />
                       </div>
-                      <span className="text-gray-700 dark:text-gray-300">Age-appropriate learning activities</span>
+                      <span className="text-gray-700 font-elegant">Age-appropriate learning activities</span>
                     </div>
                     <div className="flex items-center space-x-3">
                       <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
                         <Check className="text-white" size={14} />
                       </div>
-                      <span className="text-gray-700 dark:text-gray-300">Progressive skill development</span>
+                      <span className="text-gray-700 font-elegant">Progressive skill development</span>
                     </div>
                     <div className="flex items-center space-x-3">
                       <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
                         <Check className="text-white" size={14} />
                       </div>
-                      <span className="text-gray-700 dark:text-gray-300">Interactive and engaging methods</span>
+                      <span className="text-gray-700 font-elegant">Interactive and engaging methods</span>
                     </div>
                     <div className="flex items-center space-x-3">
                       <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
                         <Check className="text-white" size={14} />
                       </div>
-                      <span className="text-gray-700 dark:text-gray-300">Real-world application examples</span>
+                      <span className="text-gray-700 font-elegant">Real-world application examples</span>
                     </div>
                   </div>
                 </div>
@@ -255,7 +256,7 @@ export default function Subjects() {
                   <img 
                     src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600" 
                     alt="Students of different ages learning with technology and interactive methods" 
-                    className="rounded-xl shadow-lg w-full" 
+                    className="rounded-xl shadow-2xl w-full border-4 border-yellow-300/30 luxury-card" 
                   />
                 </div>
               </div>

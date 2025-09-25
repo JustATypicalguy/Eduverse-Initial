@@ -72,13 +72,13 @@ export default function Admissions() {
   };
 
   return (
-    <div className="pt-24">
+    <div className="pt-24 luxury-gradient min-h-screen">
       {/* Admissions Header */}
-      <section className="py-20 bg-eduverse-light">
+      <section className="py-20">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h1 className="text-4xl font-bold text-gray-800 mb-4">Admissions</h1>
-            <p className="text-xl text-eduverse-gray max-w-3xl mx-auto">
+            <h1 className="text-4xl font-luxury text-white/90 mb-4 drop-shadow-2xl">Admissions</h1>
+            <p className="text-xl text-white/80 max-w-3xl mx-auto font-elegant drop-shadow-lg">
               Join our diverse international community. We welcome students from all backgrounds 
               who are ready to embrace global learning.
             </p>
@@ -86,58 +86,58 @@ export default function Admissions() {
           
           <div className="grid lg:grid-cols-2 gap-12">
             {/* Application Process */}
-            <Card className="shadow-lg">
+            <Card className="luxury-card border-0 shadow-2xl">
               <CardContent className="p-8">
-                <h3 className="text-2xl font-bold text-gray-800 mb-6">Application Process</h3>
+                <h3 className="text-2xl font-luxury text-gray-800 mb-6">Application Process</h3>
                 <div className="space-y-6">
                   <div className="flex items-start space-x-4">
-                    <div className="w-8 h-8 bg-eduverse-blue rounded-full flex items-center justify-center text-white font-bold text-sm mt-1">
+                    <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center text-white font-bold text-sm mt-1 shadow-lg">
                       1
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-800 mb-2">Submit Application</h4>
-                      <p className="text-gray-600">
+                      <h4 className="font-luxury text-gray-800 mb-2">Submit Application</h4>
+                      <p className="text-gray-600 font-elegant">
                         Complete our online application form with student information and academic records.
                       </p>
                     </div>
                   </div>
                   <div className="flex items-start space-x-4">
-                    <div className="w-8 h-8 bg-eduverse-blue rounded-full flex items-center justify-center text-white font-bold text-sm mt-1">
+                    <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm mt-1 shadow-lg">
                       2
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-800 mb-2">Assessment & Interview</h4>
-                      <p className="text-gray-600">
+                      <h4 className="font-luxury text-gray-800 mb-2">Assessment & Interview</h4>
+                      <p className="text-gray-600 font-elegant">
                         Age-appropriate assessment and family interview to understand student needs.
                       </p>
                     </div>
                   </div>
                   <div className="flex items-start space-x-4">
-                    <div className="w-8 h-8 bg-eduverse-blue rounded-full flex items-center justify-center text-white font-bold text-sm mt-1">
+                    <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white font-bold text-sm mt-1 shadow-lg">
                       3
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-800 mb-2">Documentation</h4>
-                      <p className="text-gray-600">
+                      <h4 className="font-luxury text-gray-800 mb-2">Documentation</h4>
+                      <p className="text-gray-600 font-elegant">
                         Provide required documents including transcripts, recommendations, and health records.
                       </p>
                     </div>
                   </div>
                   <div className="flex items-start space-x-4">
-                    <div className="w-8 h-8 bg-eduverse-blue rounded-full flex items-center justify-center text-white font-bold text-sm mt-1">
+                    <div className="w-8 h-8 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm mt-1 shadow-lg">
                       4
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-800 mb-2">Enrollment</h4>
-                      <p className="text-gray-600">
+                      <h4 className="font-luxury text-gray-800 mb-2">Enrollment</h4>
+                      <p className="text-gray-600 font-elegant">
                         Upon acceptance, complete enrollment process and prepare for orientation.
                       </p>
                     </div>
                   </div>
                 </div>
                 
-                <div className="mt-8 p-6 bg-eduverse-light rounded-lg">
-                  <h4 className="font-semibold text-gray-800 mb-3">Important Dates</h4>
+                <div className="mt-8 p-6 bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-lg shadow-lg border border-yellow-200">
+                  <h4 className="font-luxury text-gray-800 mb-3">Important Dates</h4>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Application Deadline:</span>
@@ -157,9 +157,9 @@ export default function Admissions() {
             </Card>
             
             {/* Application Form */}
-            <Card className="shadow-lg">
+            <Card className="luxury-card border-0 shadow-2xl">
               <CardContent className="p-8">
-                <h3 className="text-2xl font-bold text-gray-800 mb-6">Quick Application Form</h3>
+                <h3 className="text-2xl font-luxury text-gray-800 mb-6">Quick Application Form</h3>
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
@@ -267,13 +267,14 @@ export default function Admissions() {
                   
                   <Button 
                     type="submit" 
-                    className="w-full bg-eduverse-blue text-white hover:bg-eduverse-dark"
+                    className="luxury-button w-full bg-gradient-to-r from-yellow-400 to-yellow-600 text-white hover:shadow-2xl transition-all duration-400 border-2 border-yellow-300/40 relative overflow-hidden font-luxury"
                     disabled={applicationMutation.isPending}
                   >
-                    {applicationMutation.isPending ? "Submitting..." : "Submit Application"}
+                    <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 via-transparent to-yellow-400/20 animate-pulse"></div>
+                    <span className="relative z-10">{applicationMutation.isPending ? "Submitting..." : "Submit Application"}</span>
                   </Button>
                   
-                  <p className="text-sm text-gray-500 text-center">
+                  <p className="text-sm text-gray-500 text-center font-elegant">
                     By submitting this form, you agree to our privacy policy and terms of service.
                   </p>
                 </form>

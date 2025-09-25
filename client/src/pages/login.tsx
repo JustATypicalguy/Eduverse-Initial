@@ -87,7 +87,7 @@ function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) {
   };
 
   return (
-    <div className="relative bg-white/95 backdrop-blur-md border border-gray-200 rounded-2xl p-6 max-w-md mx-auto creative-shadow">
+    <div className="relative luxury-card border-0 rounded-2xl p-6 max-w-md mx-auto shadow-2xl">
       <div className="text-center">
         <div className="flex justify-center mb-3">
           {[...Array(5)].map((_, i) => (
@@ -528,21 +528,21 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-eduverse-light via-white to-blue-50 relative overflow-hidden">
+    <div className="min-h-screen luxury-gradient relative overflow-hidden">
       <FloatingParticles />
       
       <div className="relative z-10 min-h-screen flex flex-col">
         {/* Header */}
         <div className="text-center pt-12 pb-8">
           <div className="inline-block mb-4">
-            <div className="text-6xl font-bold relative">
-              <span className="bg-gradient-to-r from-eduverse-blue to-eduverse-gold bg-clip-text text-transparent animate-pulse-glow" style={{backgroundImage: 'linear-gradient(to right, #1e40af, #D4AF37)'}}>
+            <div className="text-6xl font-luxury font-bold relative">
+              <span className="luxury-text-gradient animate-pulse-glow drop-shadow-2xl">
                 EDUVERSE
               </span>
-              <div className="absolute inset-0 blur-sm bg-gradient-to-r from-eduverse-blue to-eduverse-gold bg-clip-text text-transparent opacity-50 animate-pulse" style={{backgroundImage: 'linear-gradient(to right, #1e40af, #D4AF37)'}}></div>
+              <div className="absolute inset-0 blur-sm luxury-text-gradient opacity-50 animate-pulse"></div>
             </div>
           </div>
-          <p className="text-xl text-eduverse-gray font-light tracking-wide">
+          <p className="text-xl text-white/90 font-elegant tracking-wide drop-shadow-lg">
             One Universe for All Education
           </p>
         </div>
@@ -552,7 +552,7 @@ export default function Login() {
           <div className="lg:w-1/2 max-w-md w-full">
             {/* Role Selection */}
             <div className="mb-8">
-              <h3 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Choose Your Role</h3>
+              <h3 className="text-2xl font-luxury text-white/90 mb-6 text-center drop-shadow-lg">Choose Your Role</h3>
               <div className="grid grid-cols-1 gap-4">
                 {(Object.keys(roleData) as UserRole[]).filter(role => role !== null).map((role) => {
                   const data = roleData[role!];
@@ -561,10 +561,10 @@ export default function Login() {
                     <button
                       key={role}
                       onClick={() => setSelectedRole(role)}
-                      className={`p-4 rounded-xl border-2 transition-all duration-300 ${
+                      className={`luxury-card p-4 rounded-xl border-0 transition-all duration-400 hover:scale-105 ${
                         selectedRole === role
-                          ? `border-eduverse-blue bg-gradient-to-r ${data.color} shadow-lg scale-105`
-                          : 'border-gray-200 bg-white hover:border-eduverse-blue hover:bg-blue-50'
+                          ? `bg-gradient-to-r ${data.color} shadow-2xl scale-105 border border-yellow-300/50`
+                          : 'hover:border-yellow-200/30 hover:shadow-xl'
                       }`}
                       data-testid={`button-role-${role}`}
                     >
@@ -575,8 +575,8 @@ export default function Login() {
                           <IconComponent className={`h-6 w-6 ${selectedRole === role ? 'text-white' : 'text-eduverse-blue'}`} />
                         </div>
                         <div className="text-left">
-                          <div className={`font-semibold capitalize ${selectedRole === role ? 'text-white' : 'text-gray-800'}`}>{role}</div>
-                          <div className={`text-sm ${selectedRole === role ? 'text-white/70' : 'text-eduverse-gray'}`}>{data.benefits}</div>
+                          <div className={`font-luxury capitalize ${selectedRole === role ? 'text-white' : 'text-gray-800'}`}>{role}</div>
+                          <div className={`text-sm font-elegant ${selectedRole === role ? 'text-white/70' : 'text-gray-600'}`}>{data.benefits}</div>
                         </div>
                       </div>
                     </button>
@@ -587,39 +587,39 @@ export default function Login() {
 
             {/* Login Box */}
             {selectedRole && (
-              <Card className="bg-white/95 backdrop-blur-md border border-gray-200 shadow-2xl">
+              <Card className="luxury-card border-0 shadow-2xl">
                 <CardContent className="p-6">
                   <form onSubmit={handleLogin} className="space-y-4">
                     <div className="text-center mb-4">
-                      <h4 className="text-lg font-semibold text-gray-800 capitalize">
+                      <h4 className="text-lg font-luxury text-gray-800 capitalize">
                         {selectedRole} Login
                       </h4>
-                      <p className="text-eduverse-gray text-sm mt-1">
+                      <p className="text-gray-600 font-elegant text-sm mt-1">
                         {roleData[selectedRole].hint}
                       </p>
                     </div>
 
                     <div>
-                      <Label htmlFor="email" className="text-gray-700">Email or Username</Label>
+                      <Label htmlFor="email" className="text-gray-700 font-premium">Email or Username</Label>
                       <Input
                         id="email"
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-eduverse-blue"
+                        className="bg-gradient-to-r from-white to-yellow-50/30 border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-yellow-400 focus:shadow-lg transition-all duration-300"
                         placeholder={`Enter your ${selectedRole} email`}
                         data-testid="input-email"
                       />
                     </div>
 
                     <div>
-                      <Label htmlFor="password" className="text-gray-700">Password</Label>
+                      <Label htmlFor="password" className="text-gray-700 font-premium">Password</Label>
                       <Input
                         id="password"
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-eduverse-blue"
+                        className="bg-gradient-to-r from-white to-yellow-50/30 border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-yellow-400 focus:shadow-lg transition-all duration-300"
                         placeholder="Enter your password"
                         data-testid="input-password"
                       />
@@ -633,13 +633,13 @@ export default function Login() {
                           onCheckedChange={setRememberMe}
                           data-testid="switch-remember-me"
                         />
-                        <Label htmlFor="remember" className="text-gray-700 text-sm">
+                        <Label htmlFor="remember" className="text-gray-700 text-sm font-premium">
                           Remember Me
                         </Label>
                       </div>
                       <Button 
                         variant="link" 
-                        className="text-eduverse-blue hover:text-eduverse-gold p-0 h-auto"
+                        className="luxury-text-gradient hover:opacity-80 p-0 h-auto font-premium"
                         onClick={() => setIsForgotPasswordOpen(true)}
                         type="button"
                         data-testid="button-forgot-password"
@@ -651,10 +651,11 @@ export default function Login() {
                     <Button 
                       type="submit" 
                       disabled={isLoading}
-                      className={`w-full bg-gradient-to-r ${roleData[selectedRole].color} hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed`}
+                      className={`luxury-button w-full bg-gradient-to-r ${roleData[selectedRole].color} hover:shadow-2xl transition-all duration-400 disabled:opacity-50 disabled:cursor-not-allowed font-luxury text-white border-2 border-yellow-300/40 relative overflow-hidden`}
                       data-testid="button-login"
                     >
-                      {isLoading ? "Signing In..." : roleData[selectedRole].buttonText}
+                      <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 via-transparent to-yellow-400/20 animate-pulse"></div>
+                      <span className="relative z-10">{isLoading ? "Signing In..." : roleData[selectedRole].buttonText}</span>
                     </Button>
 
                     {/* Social Login Preparation */}
@@ -693,10 +694,10 @@ export default function Login() {
 
                     {/* Sign Up Link */}
                     <div className="text-center">
-                      <span className="text-sm text-gray-600">Don't have an account? </span>
+                      <span className="text-sm text-gray-600 font-premium">Don't have an account? </span>
                       <Button 
                         variant="link" 
-                        className="text-eduverse-blue hover:text-eduverse-gold p-0 h-auto"
+                        className="luxury-text-gradient hover:opacity-80 p-0 h-auto font-premium"
                         onClick={() => setIsSignUpOpen(true)}
                         type="button"
                         data-testid="button-sign-up"
@@ -714,7 +715,7 @@ export default function Login() {
           <div className="lg:w-1/2 max-w-lg w-full">
             {/* Community Feedback Carousel */}
             <div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-4 text-center">
+              <h3 className="text-xl font-luxury text-white/90 mb-4 text-center drop-shadow-lg">
                 What Our Community Says
               </h3>
               <TestimonialCarousel testimonials={testimonials} />
