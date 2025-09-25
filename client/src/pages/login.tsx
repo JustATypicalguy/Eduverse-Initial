@@ -97,9 +97,9 @@ function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) {
         <blockquote className="text-gray-800 italic mb-4 min-h-[60px] flex items-center justify-center">
           "{testimonials[currentIndex].quote}"
         </blockquote>
-        <div className="text-eduverse-gray text-sm">
-          <div className="font-medium">{testimonials[currentIndex].author}</div>
-          <div className="text-xs">{testimonials[currentIndex].role}</div>
+        <div className="text-gray-600 text-sm">
+          <div className="font-luxury">{testimonials[currentIndex].author}</div>
+          <div className="text-xs font-elegant">{testimonials[currentIndex].role}</div>
         </div>
       </div>
       
@@ -108,7 +108,7 @@ function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) {
           variant="ghost" 
           size="sm" 
           onClick={prevTestimonial}
-          className="text-eduverse-blue hover:text-eduverse-gold hover:bg-blue-50"
+          className="text-blue-600 hover:text-yellow-500 hover:bg-blue-50/30"
           data-testid="button-prev-testimonial"
         >
           <ChevronLeft className="h-4 w-4" />
@@ -120,7 +120,7 @@ function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) {
           variant="ghost" 
           size="sm" 
           onClick={nextTestimonial}
-          className="text-eduverse-blue hover:text-eduverse-gold hover:bg-blue-50"
+          className="text-blue-600 hover:text-yellow-500 hover:bg-blue-50/30"
           data-testid="button-next-testimonial"
         >
           <ChevronRight className="h-4 w-4" />
@@ -132,7 +132,7 @@ function TestimonialCarousel({ testimonials }: TestimonialCarouselProps) {
           <button
             key={index}
             className={`w-2 h-2 rounded-full transition-colors ${
-              index === currentIndex ? 'bg-eduverse-blue' : 'bg-gray-300'
+              index === currentIndex ? 'bg-yellow-500' : 'bg-gray-300'
             }`}
             onClick={() => setCurrentIndex(index)}
             data-testid={`testimonial-dot-${index}`}
@@ -572,7 +572,7 @@ export default function Login() {
                         <div className={`p-3 rounded-lg ${
                           selectedRole === role ? 'bg-white/20' : 'bg-blue-50'
                         }`}>
-                          <IconComponent className={`h-6 w-6 ${selectedRole === role ? 'text-white' : 'text-eduverse-blue'}`} />
+                          <IconComponent className={`h-6 w-6 ${selectedRole === role ? 'text-white' : 'text-blue-600'}`} />
                         </div>
                         <div className="text-left">
                           <div className={`font-luxury capitalize ${selectedRole === role ? 'text-white' : 'text-gray-800'}`}>{role}</div>
@@ -728,16 +728,16 @@ export default function Login() {
           <div className="container mx-auto px-6">
             <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
               {/* Links */}
-              <div className="flex gap-6 text-eduverse-gray text-sm">
-                <Link href="/about" className="hover:text-eduverse-blue transition-colors">About</Link>
-                <Link href="/contact" className="hover:text-eduverse-blue transition-colors">Support</Link>
-                <Link href="/terms" className="hover:text-eduverse-blue transition-colors">Terms</Link>
-                <Link href="/privacy" className="hover:text-eduverse-blue transition-colors">Privacy</Link>
+              <div className="flex gap-6 text-gray-600 text-sm font-elegant">
+                <Link href="/about" className="hover:text-yellow-500 transition-colors">About</Link>
+                <Link href="/contact" className="hover:text-yellow-500 transition-colors">Support</Link>
+                <Link href="/terms" className="hover:text-yellow-500 transition-colors">Terms</Link>
+                <Link href="/privacy" className="hover:text-yellow-500 transition-colors">Privacy</Link>
               </div>
 
               {/* Language Selector */}
               <div className="flex items-center gap-3">
-                <Globe className="h-4 w-4 text-eduverse-gray" />
+                <Globe className="h-4 w-4 text-gray-600" />
                 <Select value={language} onValueChange={setLanguage}>
                   <SelectTrigger className="w-24 bg-white border-gray-300 text-gray-800">
                     <SelectValue />

@@ -453,6 +453,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
           fullName: "Lisa Parent",
           role: "parent",
           password: "demo123"
+        },
+        // Users who can function as both student and teacher
+        {
+          username: "teaching_assistant",
+          email: "ta@eduverse.demo",
+          fullName: "Jordan Teaching Assistant",
+          role: "student",
+          password: "demo123"
+        },
+        {
+          username: "grad_instructor",
+          email: "grad@eduverse.demo",
+          fullName: "Taylor Graduate Instructor",
+          role: "teacher",
+          password: "demo123"
+        },
+        {
+          username: "continuing_teacher",
+          email: "continuing@eduverse.demo",
+          fullName: "Morgan Continuing Education",
+          role: "teacher",
+          password: "demo123"
+        },
+        {
+          username: "student_teacher",
+          email: "studentteacher@eduverse.demo",
+          fullName: "Casey Student Teacher",
+          role: "student",
+          password: "demo123"
         }
       ];
 
