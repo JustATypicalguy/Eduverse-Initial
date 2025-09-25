@@ -66,13 +66,13 @@ export default function Contact() {
   };
 
   return (
-    <div className="pt-24">
+    <div className="pt-24 luxury-gradient min-h-screen">
       {/* Contact Header */}
-      <section className="py-20 bg-white">
+      <section className="py-20">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h1 className="text-4xl font-bold text-gray-800 mb-4">Contact Us</h1>
-            <p className="text-xl text-eduverse-gray max-w-3xl mx-auto">
+            <h1 className="text-4xl font-luxury text-white/90 mb-4 drop-shadow-2xl">Contact Us</h1>
+            <p className="text-xl text-white/80 max-w-3xl mx-auto font-elegant drop-shadow-lg">
               Ready to join our global learning community? Get in touch with our admissions team for more information.
             </p>
           </div>
@@ -82,51 +82,51 @@ export default function Contact() {
             <div className="lg:col-span-2 space-y-8">
               {/* Contact Cards */}
               <div className="grid md:grid-cols-3 gap-6">
-                <Card className="text-center bg-eduverse-light">
+                <Card className="luxury-card text-center border-0 shadow-2xl hover:scale-105 transition-all duration-400">
                   <CardContent className="p-6">
-                    <div className="w-12 h-12 bg-eduverse-blue rounded-full flex items-center justify-center mx-auto mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
                       <Phone className="text-white" size={24} />
                     </div>
-                    <h3 className="font-semibold text-gray-800 mb-2">Phone</h3>
-                    <p className="text-eduverse-gray">01000701016</p>
+                    <h3 className="font-luxury text-gray-800 mb-2">Phone</h3>
+                    <p className="text-gray-600 font-elegant">01000701016</p>
                   </CardContent>
                 </Card>
                 
-                <Card className="text-center bg-eduverse-light">
+                <Card className="luxury-card text-center border-0 shadow-2xl hover:scale-105 transition-all duration-400">
                   <CardContent className="p-6">
-                    <div className="w-12 h-12 bg-eduverse-blue rounded-full flex items-center justify-center mx-auto mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
                       <Mail className="text-white" size={24} />
                     </div>
-                    <h3 className="font-semibold text-gray-800 mb-2">Email</h3>
-                    <p className="text-eduverse-gray bg-white border border-eduverse-blue/20 rounded-lg px-4 py-2 font-mono">admissions@eduverse.edu</p>
+                    <h3 className="font-luxury text-gray-800 mb-2">Email</h3>
+                    <p className="text-gray-600 bg-gradient-to-br from-yellow-50 to-yellow-100 border border-yellow-300/40 rounded-lg px-4 py-2 font-mono shadow-sm">admissions@eduverse.edu</p>
                   </CardContent>
                 </Card>
                 
-                <Card className="text-center bg-eduverse-light">
+                <Card className="luxury-card text-center border-0 shadow-2xl hover:scale-105 transition-all duration-400">
                   <CardContent className="p-6">
-                    <div className="w-12 h-12 bg-eduverse-blue rounded-full flex items-center justify-center mx-auto mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
                       <MapPin className="text-white" size={24} />
                     </div>
-                    <h3 className="font-semibold text-gray-800 mb-2">Location</h3>
-                    <p className="text-eduverse-gray">6th of October City<br />Giza, Egypt</p>
+                    <h3 className="font-luxury text-gray-800 mb-2">Location</h3>
+                    <p className="text-gray-600 font-elegant">6th of October City<br />Giza, Egypt</p>
                   </CardContent>
                 </Card>
               </div>
               
               {/* Map Placeholder */}
-              <Card className="bg-gray-200 h-64 flex items-center justify-center">
+              <Card className="luxury-card bg-gradient-to-br from-gray-100 to-gray-200 h-64 flex items-center justify-center border-0 shadow-2xl">
                 <div className="text-center">
                   <MapPin className="mx-auto text-gray-400 mb-4" size={48} />
-                  <p className="text-gray-500 font-medium">Interactive Map</p>
-                  <p className="text-sm text-gray-400">Campus Location</p>
+                  <p className="text-gray-500 font-luxury">Interactive Map</p>
+                  <p className="text-sm text-gray-400 font-elegant">Campus Location</p>
                 </div>
               </Card>
             </div>
             
             {/* Contact Form */}
-            <Card className="bg-eduverse-light">
+            <Card className="luxury-card border-0 shadow-2xl">
               <CardContent className="p-8">
-                <h3 className="text-2xl font-bold text-gray-800 mb-6">Send us a Message</h3>
+                <h3 className="text-2xl font-luxury text-gray-800 mb-6">Send us a Message</h3>
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
                     <Label htmlFor="name">Full Name *</Label>
@@ -184,10 +184,11 @@ export default function Contact() {
                   
                   <Button 
                     type="submit" 
-                    className="w-full bg-eduverse-blue text-white hover:bg-eduverse-dark"
+                    className="luxury-button w-full bg-gradient-to-r from-yellow-400 to-yellow-600 text-white hover:shadow-2xl transition-all duration-400 border-2 border-yellow-300/40 relative overflow-hidden font-luxury"
                     disabled={contactMutation.isPending}
                   >
-                    {contactMutation.isPending ? "Sending..." : "Send Message"}
+                    <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 via-transparent to-yellow-400/20 animate-pulse"></div>
+                    <span className="relative z-10">{contactMutation.isPending ? "Sending..." : "Send Message"}</span>
                   </Button>
                 </form>
               </CardContent>

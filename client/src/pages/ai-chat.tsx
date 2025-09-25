@@ -218,9 +218,9 @@ export default function AiChat() {
   ];
 
   return (
-    <div className="pt-24 min-h-screen">
+    <div className="pt-24 luxury-gradient min-h-screen">
       {/* AI Chat Header with Enhanced Background */}
-      <section className="py-20 bg-gradient-to-br from-eduverse-blue via-blue-700 to-eduverse-dark text-white relative overflow-hidden eduverse-learning-particles">
+      <section className="py-20 relative overflow-hidden">
         {/* Animated Background Elements */}
         <div className="absolute inset-0">
           {/* Floating geometric shapes */}
@@ -260,8 +260,8 @@ export default function AiChat() {
             <div className="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-6">
               <Bot className="text-white" size={48} />
             </div>
-            <h1 className="text-4xl font-bold mb-4">🤖 EduVerse AI Study Buddy</h1>
-            <p className="text-xl text-blue-100 max-w-3xl mx-auto">
+            <h1 className="text-4xl font-luxury text-white/90 mb-4 drop-shadow-2xl">🤖 EduVerse AI Study Buddy</h1>
+            <p className="text-xl text-white/80 max-w-3xl mx-auto font-elegant drop-shadow-lg">
               Meet your new AI study companion! Choose your perfect learning buddy with a unique personality 
               that matches your style. They'll help with homework, explain concepts, and support your 
               educational journey with personalized interactions.
@@ -284,14 +284,14 @@ export default function AiChat() {
                   </p>
                 </div>
               )}
-              <h2 className="text-3xl font-bold text-center mb-8">Choose Your Study Buddy!</h2>
+              <h2 className="text-3xl font-luxury text-white/90 text-center mb-8 drop-shadow-lg">Choose Your Study Buddy!</h2>
               <div className="grid md:grid-cols-3 gap-8">
                 {studyBuddies.map((buddy) => {
                   const IconComponent = buddy.icon;
                   return (
                     <Card 
                       key={buddy.id}
-                      className="hover:scale-105 transition-all duration-300 cursor-pointer bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/20"
+                      className="luxury-card hover:scale-105 transition-all duration-400 cursor-pointer border-0 shadow-2xl text-white"
                       onClick={() => setSelectedBuddy(buddy)}
                       data-testid={`buddy-card-${buddy.id}`}
                     >
@@ -299,13 +299,14 @@ export default function AiChat() {
                         <div className={`w-20 h-20 bg-gradient-to-r ${buddy.color} rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce-in`}>
                           <IconComponent className="text-white" size={36} />
                         </div>
-                        <h3 className="text-2xl font-bold mb-4">{buddy.name}</h3>
-                        <p className="text-blue-100 mb-6 leading-relaxed">{buddy.description}</p>
+                        <h3 className="text-2xl font-luxury mb-4">{buddy.name}</h3>
+                        <p className="text-white/80 mb-6 leading-relaxed font-elegant">{buddy.description}</p>
                         <Button 
-                          className="bg-white text-eduverse-blue hover:bg-blue-50 font-semibold"
+                          className="luxury-button bg-gradient-to-r from-yellow-400 to-yellow-600 text-white hover:shadow-2xl transition-all duration-400 border-2 border-yellow-300/40 relative overflow-hidden font-luxury"
                           data-testid={`button-select-${buddy.id}`}
                         >
-                          Choose {buddy.name.split(' ')[0]} ✨
+                          <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 via-transparent to-yellow-400/20 animate-pulse"></div>
+                          <span className="relative z-10">Choose {buddy.name.split(' ')[0]} ✨</span>
                         </Button>
                       </CardContent>
                     </Card>
@@ -315,34 +316,34 @@ export default function AiChat() {
               
               {/* Feature Modes */}
               <div className="mt-16">
-                <h3 className="text-2xl font-bold text-center mb-8">🚀 Advanced AI Features Coming Soon!</h3>
+                <h3 className="text-2xl font-luxury text-white/90 text-center mb-8 drop-shadow-lg">🚀 Advanced AI Features Coming Soon!</h3>
                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
+                  <Card className="luxury-card border-0 shadow-2xl text-white">
                     <CardContent className="p-6 text-center">
                       <Lightbulb className="mx-auto mb-4 text-yellow-400" size={32} />
-                      <h4 className="font-bold mb-2">🧪 Interactive Simulations</h4>
-                      <p className="text-sm text-blue-100">Visual demos for science & math</p>
+                      <h4 className="font-luxury mb-2">🧪 Interactive Simulations</h4>
+                      <p className="text-sm text-white/80 font-elegant">Visual demos for science & math</p>
                     </CardContent>
                   </Card>
-                  <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
+                  <Card className="luxury-card border-0 shadow-2xl text-white">
                     <CardContent className="p-6 text-center">
                       <Target className="mx-auto mb-4 text-red-400" size={32} />
-                      <h4 className="font-bold mb-2">🎯 AI Debate Mode</h4>
-                      <p className="text-sm text-blue-100">Practice critical thinking</p>
+                      <h4 className="font-luxury mb-2">🎯 AI Debate Mode</h4>
+                      <p className="text-sm text-white/80 font-elegant">Practice critical thinking</p>
                     </CardContent>
                   </Card>
-                  <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
+                  <Card className="luxury-card border-0 shadow-2xl text-white">
                     <CardContent className="p-6 text-center">
                       <Globe className="mx-auto mb-4 text-green-400" size={32} />
-                      <h4 className="font-bold mb-2">🌍 Global Classroom</h4>
-                      <p className="text-sm text-blue-100">Connect with students worldwide</p>
+                      <h4 className="font-luxury mb-2">🌍 Global Classroom</h4>
+                      <p className="text-sm text-white/80 font-elegant">Connect with students worldwide</p>
                     </CardContent>
                   </Card>
-                  <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
+                  <Card className="luxury-card border-0 shadow-2xl text-white">
                     <CardContent className="p-6 text-center">
                       <Heart className="mx-auto mb-4 text-pink-400" size={32} />
-                      <h4 className="font-bold mb-2">❤️ Emotion-Aware AI</h4>
-                      <p className="text-sm text-blue-100">Adapts to your mood & needs</p>
+                      <h4 className="font-luxury mb-2">❤️ Emotion-Aware AI</h4>
+                      <p className="text-sm text-white/80 font-elegant">Adapts to your mood & needs</p>
                     </CardContent>
                   </Card>
                 </div>
@@ -353,7 +354,7 @@ export default function AiChat() {
           {selectedBuddy && (
             <div className="max-w-4xl mx-auto">
               {/* Chat Interface */}
-              <Card className="overflow-hidden shadow-2xl">
+              <Card className="luxury-card overflow-hidden border-0 shadow-2xl">
                 {/* Demo Mode Banner */}
                 {isDemoMode && (
                   <div className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white p-3 text-center">
@@ -366,18 +367,18 @@ export default function AiChat() {
                 )}
                 
                 {/* Chat Header */}
-                <div className="bg-eduverse-light p-6 border-b">
+                <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-6 border-b border-gray-200">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
                       <div className={`w-12 h-12 bg-gradient-to-r ${selectedBuddy.color} rounded-full flex items-center justify-center`}>
                         <selectedBuddy.icon className="text-white" size={24} />
                       </div>
                       <div>
-                        <h3 className="text-xl font-bold text-gray-800">
+                        <h3 className="text-xl font-luxury text-gray-800">
                           {selectedBuddy.name}
                           {isDemoMode && <span className="ml-2 text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">Demo</span>}
                         </h3>
-                        <p className="text-eduverse-gray">{selectedBuddy.description}</p>
+                        <p className="text-gray-600 font-elegant">{selectedBuddy.description}</p>
                       </div>
                     </div>
                     <div className="flex items-center space-x-4">
@@ -403,7 +404,7 @@ export default function AiChat() {
                   <div key={msg.id}>
                     {msg.isUser ? (
                       <div className="flex items-start space-x-3 justify-end">
-                        <div className="bg-eduverse-blue rounded-lg p-4 max-w-md text-white">
+                        <div className="bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg p-4 max-w-md text-white shadow-lg">
                           <p>{msg.message}</p>
                         </div>
                         <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center flex-shrink-0">
@@ -415,7 +416,7 @@ export default function AiChat() {
                         <div className={`w-8 h-8 bg-gradient-to-r ${selectedBuddy.color} rounded-full flex items-center justify-center flex-shrink-0`}>
                           <selectedBuddy.icon className="text-white" size={16} />
                         </div>
-                        <div className="bg-eduverse-light rounded-lg p-4 max-w-md">
+                        <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-4 max-w-md shadow-sm border border-gray-200">
                           {formatEducationalResponse(msg.response)}
                         </div>
                       </div>
