@@ -1,12 +1,22 @@
 import OpenAI from "openai";
 import { generateDemoResponse } from "./demo";
 
-// Check if we should use demo mode
-const isValidApiKey = process.env.OPENAI_API_KEY && 
-  process.env.OPENAI_API_KEY.startsWith('sk-') && 
-  process.env.OPENAI_API_KEY.length > 20;
+// Check if we should use demo mode with detailed logging
+console.log('[AI Service] Validating OpenAI API key...');
+const apiKey = process.env.OPENAI_API_KEY;
+console.log('[AI Service] API key exists:', !!apiKey);
+console.log('[AI Service] API key length:', apiKey ? apiKey.length : 0);
+console.log('[AI Service] API key starts with sk-:', apiKey ? apiKey.startsWith('sk-') : false);
+console.log('[AI Service] DEMO_MODE env var:', process.env.DEMO_MODE);
+
+const isValidApiKey = apiKey && 
+  apiKey.startsWith('sk-') && 
+  apiKey.length > 20;
+
+console.log('[AI Service] API key is valid:', isValidApiKey);
 
 const isDemoMode = !isValidApiKey || process.env.DEMO_MODE === 'true';
+console.log('[AI Service] Demo mode:', isDemoMode);
 
 // Updated to GPT-5 model released August 7, 2025 as requested for enhanced educational capabilities
 const openai = isDemoMode ? null : new OpenAI({ 
@@ -351,7 +361,6 @@ export async function answerEducationalQuestion(question: string, buddyType: str
     try {
       const response = await openai!.chat.completions.create({
         model,
-        timeout: 30000, // 30 second timeout
         messages: [
         {
           role: "system",
