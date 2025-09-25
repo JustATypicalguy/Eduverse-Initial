@@ -72,7 +72,7 @@ export default function About() {
                   </div>
                   <div>
                     <h4 className="font-luxury text-gray-800">International Baccalaureate (IB)</h4>
-                    <p className="text-gray-600 font-elegant">World School authorization for PYP, MYP, and DP</p>
+                    <p className="font-elegant text-[#ffffff]">World School authorization for PYP, MYP, and DP</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-4">
@@ -106,7 +106,6 @@ export default function About() {
           </div>
         </div>
       </section>
-
       {/* Educational Philosophy */}
       <section className="py-20 bg-white/95 backdrop-blur-sm">
         <div className="container mx-auto px-6">
