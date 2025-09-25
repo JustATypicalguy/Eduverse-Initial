@@ -335,7 +335,7 @@ export default function AiChat() {
                   <Card className="luxury-card border-0 shadow-2xl text-white">
                     <CardContent className="p-6 text-center">
                       <Globe className="mx-auto mb-4 text-green-400" size={32} />
-                      <h4 className="font-luxury mb-2">🌍 Global Classroom</h4>
+                      <h4 className="font-luxury mb-2 text-[#23252f]">🌍 Global Classroom</h4>
                       <p className="text-sm text-white/80 font-elegant">Connect with students worldwide</p>
                     </CardContent>
                   </Card>
