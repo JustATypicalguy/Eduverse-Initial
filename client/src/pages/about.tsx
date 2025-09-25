@@ -81,7 +81,7 @@ export default function About() {
                   </div>
                   <div>
                     <h4 className="font-luxury text-gray-800">Cambridge International</h4>
-                    <p className="text-gray-600 font-elegant">IGCSE and A-Level program accreditation</p>
+                    <p className="font-elegant text-[#ffffff]">IGCSE and A-Level program accreditation</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-4">
@@ -90,7 +90,7 @@ export default function About() {
                   </div>
                   <div>
                     <h4 className="font-luxury text-gray-800">WASC Accredited</h4>
-                    <p className="text-gray-600 font-elegant">Western Association of Schools and Colleges</p>
+                    <p className="font-elegant text-[#f1f6fc]">Western Association of Schools and Colleges</p>
                   </div>
                 </div>
               </div>
