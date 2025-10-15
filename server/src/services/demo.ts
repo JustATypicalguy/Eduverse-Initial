@@ -511,3 +511,45 @@ function applyMotivationalStyle(response: string, message: string): string {
   return motivationalIntros[Math.floor(Math.random() * motivationalIntros.length)] + response + 
          motivationalClosers[Math.floor(Math.random() * motivationalClosers.length)];
 }
+
+export async function getDemoUser(username: string, password: string) {
+  // Demo users - in the real app, this will check the database
+  const demoUsers = [
+    {
+      id: '1',
+      username: 'student_demo',
+      password: 'demo123',
+      role: 'student',
+      fullName: 'Alex Student',
+      email: 'student@eduverse.demo'
+    },
+    {
+      id: '2', 
+      username: 'teacher_demo',
+      password: 'demo123',
+      role: 'teacher',
+      fullName: 'Sarah Teacher',
+      email: 'teacher@eduverse.demo'
+    },
+    {
+      id: '3',
+      username: 'admin_demo',
+      password: 'demo123', 
+      role: 'admin',
+      fullName: 'Mike Administrator',
+      email: 'admin@eduverse.demo'
+    },
+    {
+      id: '4',
+      username: 'parent_demo',
+      password: 'demo123',
+      role: 'parent',
+      fullName: 'Lisa Parent',
+      email: 'parent@eduverse.demo'
+    }
+  ];
+
+  return demoUsers.find(user => 
+    user.username === username && user.password === password
+  );
+}

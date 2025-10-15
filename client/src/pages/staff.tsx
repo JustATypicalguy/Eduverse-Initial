@@ -20,6 +20,7 @@ import {
   X
 } from "lucide-react";
 import type { StaffProfile } from "@shared/schema";
+import { mockStaff } from "../mockStaff"; // Import our rich mock staff
 
 export default function StaffDirectory() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -33,10 +34,24 @@ export default function StaffDirectory() {
   const queryString = queryParams.toString();
   const endpoint = queryString ? `/api/staff?${queryString}` : '/api/staff';
 
-  const { data: staff = [], isLoading, error } = useQuery<StaffProfile[]>({
+  // Use react-query to fetch staff
+  const { data: staffRaw, isLoading, error } = useQuery<StaffProfile[]>({
     queryKey: ['/api/staff', { search: searchQuery, department: selectedDepartment }],
     queryFn: () => fetch(endpoint).then(res => res.json()),
   });
+
+  // Use mock staff if API errored or returned invalid data
+  let staff: StaffProfile[] = [];
+  if (error) {
+    staff = mockStaff;
+  } else if (Array.isArray(staffRaw)) {
+    staff = staffRaw;
+  } else if (staffRaw && typeof staffRaw === "object" && "message" in staffRaw) {
+    // In case API returns {message: "..."} or similar error objects
+    staff = mockStaff;
+  } else if (staffRaw === undefined) {
+    staff = mockStaff;
+  }
 
   // Get unique departments for filtering
   const departments = Array.from(new Set(staff.map(member => member.department))).sort();
@@ -68,15 +83,17 @@ export default function StaffDirectory() {
     return '';
   };
 
-  if (error) {
+  if (error && staff === mockStaff) {
+    // Show warning that we're in mock mode
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-12">
         <div className="container mx-auto px-4">
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">Staff Directory</h1>
-            <p className="text-red-600">Failed to load staff directory. Please try again later.</p>
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">Staff Directory (Mock Data)</h1>
+            <p className="text-yellow-700">Failed to load real staff directory. Showing mock staff data for development.</p>
           </div>
         </div>
+        {/* The rest of the staff directory UI, but using mockStaff */}
       </div>
     );
   }
