@@ -1,36 +1,44 @@
 // server/src/index.ts
-import authRoutes from './api/auth.routes';
+
 import express from 'express';
 import dotenv from 'dotenv';
+import cors from 'cors'; // For handling cross-origin requests from the frontend
 
-// Load environment variables from .env file
+// --- Load Environment Variables ---
+// This should be the first line to ensure variables are available globally.
 dotenv.config();
 
-// Import our new, organized routes
+// --- Import API Routes ---
+import authRoutes from './api/auth.routes';
 import aiRoutes from './api/ai.routes';
-// import authRoutes from './api/auth.routes'; // You would create and import these next
-// import teacherRoutes from './api/teacher.routes';
-// import adminRoutes from './api/admin.routes';
+import courseRoutes from './api/course.routes';
 
+// --- Initialize Express App ---
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Middleware to parse JSON bodies from incoming requests
+// --- Core Middleware ---
+// Enable CORS for all routes - allows your frontend to communicate with this backend.
+app.use(cors()); 
+// Parse incoming JSON requests.
 app.use(express.json());
 
-// --- API ROUTES ---
-// Tell the server to use our new route files.
+// --- API Route Definitions ---
+// Tell the app to use our route files.
+// Any request starting with /api/auth will be handled by authRoutes.
+app.use('/api/auth', authRoutes);
 // Any request starting with /api/ai will be handled by aiRoutes.
 app.use('/api/ai', aiRoutes);
-app.use('/api/auth', authRoutes);
-// app.use('/api/teachers', teacherRoutes);
-// app.use('/api/admin', adminRoutes);
+// Any request starting with /api/courses will be handled by courseRoutes.
+app.use('/api/courses', courseRoutes);
 
-// A simple health check route to make sure the server is running
+// --- Health Check Endpoint ---
+// A simple route to verify that the server is alive and running.
 app.get('/api/health', (req, res) => {
-    res.json({ status: 'ok', timestamp: new Date() });
+    res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// --- Start the Server ---
 app.listen(PORT, () => {
-    console.log(`✅ Eduverse server is running at http://localhost:${PORT}`);
+    console.log(`✅ Eduverse backend server is running and listening on http://localhost:${PORT}`);
 });

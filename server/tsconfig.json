@@ -1,26 +1,14 @@
 {
   "compilerOptions": {
-    /* --- Basic Project Options --- */
-    "target": "ES2020",                 // Compile to a modern version of JavaScript that Node.js understands.
-    "module": "commonjs",                // The standard module system for Node.js.
-    "outDir": "./dist",                  // Where the compiled JavaScript files will go.
-    "rootDir": "./src",                  // Where our source TypeScript code lives.
-
-    /* --- Strictness & Quality --- */
-    "strict": true,                      // Enforces strict type-checking, which catches many bugs.
-    "esModuleInterop": true,             // Allows us to import modules in a cleaner way.
-    "forceConsistentCasingInFileNames": true, // Prevents bugs on case-sensitive file systems.
-    "skipLibCheck": true,                // Skips type-checking of declaration files in node_modules.
-
-    /* --- Path Alias Configuration --- */
-    // This is the part that fixes your "@shared" error.
-    "baseUrl": "./src",                  // Defines the base directory for module resolution.
-    "paths": {
-      "@shared/*": ["../../shared/*"]    // Maps '@shared/' to the actual shared folder location.
-    }
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "outDir": "./dist",
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
   },
-  // Tells TypeScript to only compile files inside the src directory.
   "include": ["src/**/*"],
-  // Tells TypeScript to ignore the node_modules folder.
   "exclude": ["node_modules"]
 }

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import type { User } from '@shared/schema';
+import type { users } from '@shared/schema';
 
 interface AuthState {
-  user: User | null;
+  user: typeof users | null;
   token: string | null;
   isAuthenticated: boolean;
 }
