@@ -1,11 +1,13 @@
 // server/src/index.ts
-import authRoutes from './api/auth.routes';
-import express from 'express';
 import dotenv from 'dotenv';
 
-// Load environment variables from .env file
+// Load environment variables from .env file as early as possible so
+// other modules (like server/src/db/index.ts) see them when imported.
 dotenv.config();
 
+import authRoutes from './api/auth.routes';
+import express from 'express';
+import courseRoutes from './api/course.routes';
 // Import our new, organized routes
 import aiRoutes from './api/ai.routes';
 // import authRoutes from './api/auth.routes'; // You would create and import these next
@@ -23,6 +25,7 @@ app.use(express.json());
 // Any request starting with /api/ai will be handled by aiRoutes.
 app.use('/api/ai', aiRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/courses', courseRoutes);
 // app.use('/api/teachers', teacherRoutes);
 // app.use('/api/admin', adminRoutes);
 

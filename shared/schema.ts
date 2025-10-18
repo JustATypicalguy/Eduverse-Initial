@@ -1,4 +1,4 @@
-import { pgTable, text, varchar, timestamp, pgEnum } from 'drizzle-orm/pg-core';
+import { pgTable, text, varchar, timestamp, pgEnum ,boolean } from 'drizzle-orm/pg-core';
 import { createId } from '@paralleldrive/cuid2';
 
 // Define an enum for user roles for better type safety
@@ -15,4 +15,12 @@ export const users = pgTable('users', {
 
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().$onUpdate(() => new Date()),
+});
+export const courses = pgTable("courses", {
+  id: text("id").primaryKey().$defaultFn(() => createId()), 
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  teacherId: text("teacher_id").notNull(),
+  isPublished: boolean("is_published").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
