@@ -1,51 +1,55 @@
-import { db } from '../db';
-import { courses } from '../db/schema';
-import { eq } from 'drizzle-orm';
+// server/src/services/course.service.ts
 
-interface CreateCourseInput {
+import { db } from '../db/index.js';
+// We use the relative path. It's more robust than an alias.
+// Path from server/src/services/ -> server/ -> / -> shared/
+import { courses, users } from '../../../shared/schema.js'; 
+import { and, eq } from 'drizzle-orm';
+
+export interface CreateCourseDto {
     title: string;
-    description: string;
+    description?: string; 
     teacherId: string;
 }
 
-/**
- * Create a new course owned by a teacher
- */
-export async function createCourse({ title, description, teacherId }: CreateCourseInput) {
-    const [course] = await db
-        .insert(courses)
-        .values({
-            title,
-            description,
-            teacherId,
-            isPublished: false,
-            createdAt: new Date(),
-        })
-        .returning();
+export const createCourse = async (courseData: CreateCourseDto) => {
+    const { title, description, teacherId } = courseData;
 
-    return course;
-}
+    const teacher = await db
+        .select()
+        .from(users)
+        .where(and(eq(users.id, teacherId), eq(users.role, 'teacher')));
+        
+    if (teacher.length === 0) {
+        throw new Error("User does not exist or is not a teacher.");
+    }
 
-/**
- * Get all courses owned by a specific teacher
- */
-export async function getCoursesByTeacher(teacherId: string) {
-    const result = await db
+    const newCourse = await db.insert(courses).values({
+        title,
+        description,
+        teacherId,
+        isPublished: false, 
+    }).returning(); 
+
+    if (!newCourse[0]) {
+        throw new Error("Failed to create the course.");
+    }
+
+    return newCourse[0];
+};
+
+export const getCoursesByTeacher = async (teacherId: string) => {
+    const teacherCourses = await db
         .select()
         .from(courses)
         .where(eq(courses.teacherId, teacherId));
+    return teacherCourses;
+};
 
-    return result;
-}
-
-/**
- * Get all published (public) courses
- */
-export async function getPublishedCourses() {
-    const result = await db
+export const getPublishedCourses = async () => {
+    const publishedCourses = await db
         .select()
         .from(courses)
         .where(eq(courses.isPublished, true));
-
-    return result;
-}
+    return publishedCourses;
+};

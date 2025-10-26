@@ -1,5 +1,5 @@
-import { db } from '../db'; // Assuming you have a Drizzle DB setup file
-import { users } from '../db/schema'; // Assuming your users schema is here
+import { db } from '../db/index.js';
+import { users } from '../../../shared/schema.js';
 import { eq } from 'drizzle-orm';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
