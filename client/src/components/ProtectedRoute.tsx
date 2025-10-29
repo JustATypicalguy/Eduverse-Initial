@@ -23,14 +23,14 @@ export function ProtectedRoute({
   const [, setLocation] = useLocation();
 
   useEffect(() => {
-    // TEMPORARY COMMENT OUT REDIRECT LOGIC FOR TESTING PURPOSES
-    /*
     if (requireAuth && !isAuthenticated) {
+      // Redirect to login if authentication is required but user is not authenticated
       setLocation("/");
       return;
     }
 
     if (isAuthenticated && user && allowedRoles && !allowedRoles.includes(user.role as UserRole)) {
+      // Redirect to appropriate dashboard based on user role
       const roleDashboards: Record<UserRole, string> = {
         'student': '/student',
         'teacher': '/teacher',
@@ -44,7 +44,6 @@ export function ProtectedRoute({
         return;
       }
     }
-    */
   }, [isAuthenticated, user, allowedRoles, setLocation, requireAuth]);
 
   // Show loading state while checking authentication
@@ -110,9 +109,8 @@ export function PublicOnlyRoute({ children }: { children: React.ReactNode }) {
   const [, setLocation] = useLocation();
 
   useEffect(() => {
-    // TEMPORARILY COMMENT OUT FOR TESTING
-    /*
     if (isAuthenticated && user) {
+      // Redirect authenticated users to their appropriate dashboard
       const roleDashboards: Record<UserRole, string> = {
         'student': '/student',
         'teacher': '/teacher',
@@ -122,7 +120,6 @@ export function PublicOnlyRoute({ children }: { children: React.ReactNode }) {
       
       setLocation(roleDashboards[user.role as UserRole] || '/home');
     }
-    */
   }, [isAuthenticated, user, setLocation]);
 
   if (isAuthenticated && user) {

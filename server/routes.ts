@@ -22,9 +22,6 @@ import bcrypt from "bcryptjs";
 import { eq, or } from "drizzle-orm";
 import crypto from "crypto";
 import { z } from "zod";
-import express from 'express';
-
-
 
 // Auth validation schemas
 const registerSchema = insertUserSchema.extend({
@@ -88,18 +85,9 @@ const forgotPasswordRateLimit = rateLimit({
   legacyHeaders: false,
 });
 
-
 export async function registerRoutes(app: Express): Promise<Server> {
   // ==================== AUTHENTICATION ROUTES ====================
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
-  app.use("/api/auth/login", (req, res, next) => {
-  console.log("🛑 CATCH-ALL: Login route hit!");
-  console.log("Method:", req.method);
-  console.log("Headers:", req.headers);
-  console.log("Body:", req.body);
-  next(); // Continue to the actual login handler
-});
+  
   // Register new user
   app.post("/api/auth/register", authRateLimit, authSlowDown, async (req, res) => {
     try {
@@ -172,102 +160,58 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Login user
-app.post("/api/auth/login", async (req, res) => {
-  try {
-    console.log("🎯 LOGIN ENDPOINT HIT!");
-    console.log("Request method:", req.method);
-    console.log("Request URL:", req.url);
-    console.log("Request headers:", req.headers);
-    console.log("Request body:", req.body);
-    
-    // Check if body is parsed
-    if (!req.body || Object.keys(req.body).length === 0) {
-      console.log("⚠️ Request body is empty - body parser might not be working");
-    }
-    
-    const { username, password } = req.body;
-    
-    if (!username || !password) {
-      console.log("❌ Missing username or password in body");
-      return res.status(400).json({
-        success: false,
-        error: 'Username and password are required'
-      });
-    }
-    
-    console.log("🔑 Login attempt for:", username);
-    
-    // Simple demo users
-    const demoUsers = [
-      {
-        id: '1',
-        username: 'student_demo',
-        password: 'demo123',
-        role: 'student',
-        fullName: 'Alex Student',
-        email: 'student@eduverse.demo'
-      },
-      {
-        id: '2', 
-        username: 'teacher_demo',
-        password: 'demo123',
-        role: 'teacher',
-        fullName: 'Sarah Teacher',
-        email: 'teacher@eduverse.demo'
-      },
-      {
-        id: '3',
-        username: 'admin_demo',
-        password: 'demo123', 
-        role: 'admin',
-        fullName: 'Mike Administrator',
-        email: 'admin@eduverse.demo'
-      },
-      {
-        id: '4',
-        username: 'parent_demo',
-        password: 'demo123',
-        role: 'parent',
-        fullName: 'Lisa Parent',
-        email: 'parent@eduverse.demo'
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      // Validate request body using Zod schema
+      const validationResult = loginSchema.safeParse(req.body);
+      if (!validationResult.success) {
+        return res.status(400).json({ 
+          message: "Validation failed", 
+          errors: validationResult.error.flatten().fieldErrors 
+        });
       }
-    ];
 
-    const user = demoUsers.find(u => u.username === username && u.password === password);
-    
-    if (!user) {
-      console.log("❌ Invalid credentials for:", username);
-      return res.json({
-        success: false,
-        error: 'Invalid username or password'
-      });
-    }
+      const { username, password } = validationResult.data;
 
-    console.log("✅ Login successful for:", user.username);
-    
-    const token = `demo-token-${user.id}-${Date.now()}`;
-    
-    res.json({
-      success: true,
-      token,
-      user: {
-        id: user.id,
-        username: user.username,
-        role: user.role,
-        fullName: user.fullName,
-        email: user.email
+      // Find user by username or email
+      let user = await storage.getUserByUsername(username);
+      if (!user) {
+        user = await storage.getUserByEmail(username);
       }
-    });
-    
-  } catch (error) {
-    console.error("💥 LOGIN ENDPOINT ERROR:", error);
-    console.error("Error stack:", error.stack);
-    res.status(500).json({
-      success: false,
-      error: 'Login failed: ' + (error instanceof Error ? error.message : 'Unknown error')
-    });
-  }
-});
+
+      if (!user) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+
+      if (!user.isActive) {
+        return res.status(401).json({ message: "Account is disabled" });
+      }
+
+      // Verify password
+      const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+      if (!isPasswordValid) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+
+      // Update last login
+      await storage.updateLastLogin(user.id);
+
+      // Generate JWT token
+      const token = generateToken(user.id, user.role);
+
+      // Don't return password hash
+      const { passwordHash: _, ...userWithoutPassword } = user;
+
+      res.json({
+        message: "Login successful",
+        token,
+        user: userWithoutPassword
+      });
+    } catch (error) {
+      console.error("Login error:", error);
+      res.status(500).json({ message: "Login failed", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
 
   // Request password reset
   app.post("/api/auth/forgot-password", async (req, res) => {
@@ -1462,107 +1406,28 @@ app.post("/api/auth/login", async (req, res) => {
     return user;
   }
 
-
-app.post("/api/auth/login", async (req, res) => {
-  try {
-    console.log("=== LOGIN ATTEMPT START ===");
-    console.log("Request body:", req.body);
-    
-    const { username, password } = req.body;
-    
-    if (!username || !password) {
-      console.log("Missing username or password");
-      return res.status(400).json({
-        success: false,
-        error: 'Username and password are required'
-      });
-    }
-    
-    console.log("Looking for user:", username);
-    
-    // Simple demo users
-    const demoUsers = [
-      {
-        id: '1',
-        username: 'student_demo',
-        password: 'demo123',
-        role: 'student',
-        fullName: 'Alex Student',
-        email: 'student@eduverse.demo'
-      },
-      {
-        id: '2', 
-        username: 'teacher_demo',
-        password: 'demo123',
-        role: 'teacher',
-        fullName: 'Sarah Teacher',
-        email: 'teacher@eduverse.demo'
-      },
-      {
-        id: '3',
-        username: 'admin_demo',
-        password: 'demo123', 
-        role: 'admin',
-        fullName: 'Mike Administrator',
-        email: 'admin@eduverse.demo'
-      },
-      {
-        id: '4',
-        username: 'parent_demo',
-        password: 'demo123',
-        role: 'parent',
-        fullName: 'Lisa Parent',
-        email: 'parent@eduverse.demo'
+  // Auth endpoints (no auth required)
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      const user = await findUserByUsernameOrEmail(username);
+      
+      if (!user) {
+        return res.status(401).json({ message: "Invalid credentials" });
       }
-    ];
-
-    console.log("Available users:", demoUsers.map(u => u.username));
-    
-    const user = demoUsers.find(u => u.username === username && u.password === password);
-    
-    if (!user) {
-      console.log("❌ User not found or wrong password");
-      return res.json({
-        success: false,
-        error: 'Invalid username or password'
+      
+      // Simple password check (in production, use proper hashing)
+      // For now, just generate token with user info
+      const token = generateToken(user.id, user.role);
+      
+      res.json({ 
+        token, 
+        user: { id: user.id, username: user.username, role: user.role, fullName: user.fullName }
       });
+    } catch (error) {
+      res.status(500).json({ message: "Login failed", error: error instanceof Error ? error.message : "Unknown error" });
     }
-
-    console.log("✅ User found:", user.username);
-    
-    const token = `demo-token-${user.id}-${Date.now()}`;
-    
-    console.log("=== LOGIN SUCCESS ===");
-    
-    res.json({
-      success: true,
-      token,
-      user: {
-        id: user.id,
-        username: user.username,
-        role: user.role,
-        fullName: user.fullName,
-        email: user.email
-      }
-    });
-    
-  } catch (error) {
-    console.error("💥 LOGIN ERROR:", error);
-    console.error("Error stack:", error.stack);
-    res.status(500).json({
-      success: false,
-      error: 'Login failed: ' + (error instanceof Error ? error.message : 'Unknown error')
-    });
-  }
-});
-
-app.get("/api/test-simple", (req, res) => {
-  console.log("✅ Test route hit!");
-  res.json({ 
-    message: "Server is working!", 
-    timestamp: new Date().toISOString() 
   });
-});
 
   // Apply auth middleware to all protected routes
   app.use("/api/groups", authMiddleware);

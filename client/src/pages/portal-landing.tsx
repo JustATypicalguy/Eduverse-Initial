@@ -25,28 +25,18 @@ export default function PortalLanding() {
     return () => clearTimeout(timer);
   }, [user, isAuthenticated, setLocation]);
 
-  // NEW SAFETY CHECK
-  // If we don't have the user object yet, or if they are not logged in, 
-  // just show the loading screen or send them to the login page.
-  if (!user) { // Check if the 'user' box is empty (null)
-    // The previous check handled the loading state correctly, but let's
-    // ensure we don't try to access 'user.role' if 'user' is null.
-    
-    // We can re-use the existing loading block here for simplicity
-    if (!isAuthenticated) {
-      // This is the loading state you already have
-      return (
-        <div className="min-h-screen bg-gradient-to-br from-eduverse-light via-white to-gray-50 flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-eduverse-blue mx-auto mb-4"></div>
-            <p className="text-eduverse-gray">Loading your portal...</p>
-          </div>
+  // Show loading state while auth is being determined
+  if (!user && !isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-eduverse-light via-white to-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-eduverse-blue mx-auto mb-4"></div>
+          <p className="text-eduverse-gray">Loading your portal...</p>
         </div>
-      );
-    }
+      </div>
+    );
   }
 
- 
   if (!user) {
     return null;
   }

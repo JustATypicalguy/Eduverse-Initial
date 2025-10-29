@@ -1,20 +1,20 @@
+// Path: server/src/db/index.ts
+
 import { Pool, neonConfig } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-serverless';
 import ws from "ws";
-import * as schema from "@shared/schema";
+// Path from server/src/db/ to shared/schema.ts is up 3 levels
+import * as schema from "../../../shared/schema.js";
 
-// This is required for serverless environments
 neonConfig.webSocketConstructor = ws;
 
-// Check if the database URL is provided in the environment variables
 if (!process.env.DATABASE_URL) {
   throw new Error(
     "FATAL ERROR: DATABASE_URL is not set in your .env file."
   );
 }
 
-// Create a new database connection pool
+// NOTE: Your team might be using Drizzle with a different driver (like 'pg' for local setup). 
+// This code assumes you are using Neon/serverless environment. If not, change the first two imports.
 export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-
-// Create the Drizzle instance that we'll use throughout our app
 export const db = drizzle({ client: pool, schema });

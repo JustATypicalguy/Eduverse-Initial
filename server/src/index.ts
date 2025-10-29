@@ -1,36 +1,33 @@
 // server/src/index.ts
-import authRoutes from './api/auth.routes';
+
+// guaranteeing the .env file 
+// is loaded before the DB connection file runs.
+import 'dotenv/config'; 
+
 import express from 'express';
-import dotenv from 'dotenv';
+import cors from 'cors';
 
-// Load environment variables from .env file
-dotenv.config();
-
-// Import our new, organized routes
-import aiRoutes from './api/ai.routes';
-// import authRoutes from './api/auth.routes'; // You would create and import these next
-// import teacherRoutes from './api/teacher.routes';
-// import adminRoutes from './api/admin.routes';
+// Import our API routes (with .js extensions)
+import authRoutes from './api/auth.routes.js';
+import aiRoutes from './api/ai.routes.js';
+import courseRoutes from './api/course.routes.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Middleware to parse JSON bodies from incoming requests
+app.use(cors()); 
 app.use(express.json());
 
-// --- API ROUTES ---
-// Tell the server to use our new route files.
-// Any request starting with /api/ai will be handled by aiRoutes.
-app.use('/api/ai', aiRoutes);
+// --- API Route Definitions ---
 app.use('/api/auth', authRoutes);
-// app.use('/api/teachers', teacherRoutes);
-// app.use('/api/admin', adminRoutes);
+app.use('/api/ai', aiRoutes);
+app.use('/api/courses', courseRoutes);
 
-// A simple health check route to make sure the server is running
 app.get('/api/health', (req, res) => {
-    res.json({ status: 'ok', timestamp: new Date() });
+    res.status(200).json({ status: 'ok', timestamp: new Date() });
 });
 
 app.listen(PORT, () => {
-    console.log(`✅ Eduverse server is running at http://localhost:${PORT}`);
+    // This will now print if the fix is successful
+    console.log(`✅ Eduverse backend server is running and listening on http://localhost:${PORT}`);
 });
