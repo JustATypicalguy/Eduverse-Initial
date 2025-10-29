@@ -1,17 +1,16 @@
 // server/src/index.ts
 
-import express from 'express';
-import dotenv from 'dotenv';
-import cors from 'cors';
+// guaranteeing the .env file 
+// is loaded before the DB connection file runs.
+import 'dotenv/config'; 
 
-// Load environment variables from .env file
-dotenv.config();
+import express from 'express';
+import cors from 'cors';
 
 // Import our API routes (with .js extensions)
 import authRoutes from './api/auth.routes.js';
 import aiRoutes from './api/ai.routes.js';
 import courseRoutes from './api/course.routes.js';
-// We will NOT import staff.routes.js as it doesn't exist yet
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -29,5 +28,6 @@ app.get('/api/health', (req, res) => {
 });
 
 app.listen(PORT, () => {
+    // This will now print if the fix is successful
     console.log(`✅ Eduverse backend server is running and listening on http://localhost:${PORT}`);
 });
